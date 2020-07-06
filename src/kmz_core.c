@@ -265,7 +265,7 @@ KmzImage * make_image_from_gd_x2(KmzGd2xImageFile image) {
     this->image.pixels = calloc(this->image.len, sizeof(kmz_color_32));
     
     if (image.header.color.is_truecolor) {
-        memcpy(this->image.pixels, image.pixels, this->image.len);
+        memcpy(this->image.pixels, image.pixels, this->image.len * sizeof(kmz_color_32));
     } else {
         for (size_t i = 0; i < this->image.len; ++i) {
             this->image.pixels[i] = image.header.color.value.palette.palette[image.pixels[i]];

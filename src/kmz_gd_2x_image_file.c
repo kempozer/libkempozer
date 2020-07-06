@@ -144,7 +144,7 @@ kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFil
     if (0 != _kmz_write_short(f, i->header.signature.dimen.h)) {
         return ERR_WRITE_HEIGHT;
     }
-    if (0 != _kmz_write_byte(f, i->header.color.is_truecolor)) {
+    if (0 != _kmz_write_byte(f, i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR)) {
         return ERR_WRITE_IS_TRUECOLOR;
     }
     
@@ -161,10 +161,6 @@ kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFil
     size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
     size_t is_truecolor = i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
     i->header.color.is_truecolor = is_truecolor;
-    
-    if (0 != _kmz_write_byte(f, i->header.color.is_truecolor)) {
-        return ERR_WRITE_IS_TRUECOLOR;
-    }
     
     if (is_truecolor) {
         if (0 != _kmz_write_int_buffer(f, i->pixels, len)) {
