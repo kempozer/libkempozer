@@ -19,25 +19,25 @@
 /**
  * Creates a new KmzImage using the built-in KmzImage type for the given GD 2x image file.
  */
-KmzImage * make_image_from_gd_x2(KmzGd2xImageFile image);
+KmzImage * kmz_make_image_from_gd_x2(KmzGd2xImageFile image);
 
 /**
  * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
  */
-KmzMatrix * make_matrix_from_image(KmzImage * image,
+KmzMatrix * kmz_make_matrix_from_image(KmzImage * image,
                                    size_t size);
 
 /**
  * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
  */
-KmzMatrix * make_matrix_from_image_and_pos(KmzImage * image,
+KmzMatrix * kmz_make_matrix_from_image_and_pos(KmzImage * image,
                                            kmz_point point,
                                            size_t size);
 
 /**
  * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
  */
-KmzMatrix * make_matrix_from_image_and_pos_x_y(KmzImage * image,
+KmzMatrix * kmz_make_matrix_from_image_and_pos_x_y(KmzImage * image,
                                                ssize_t x,
                                                ssize_t y,
                                                size_t size);

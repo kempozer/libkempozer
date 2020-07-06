@@ -130,14 +130,14 @@ static const KmzMatrix _KmzCoreStdMatrix__methods = {
     .free=&_KmzCoreStdMatrix__free,
 };
 
-KmzMatrix * make_matrix_from_image(KmzImage * image,
-                                   size_t size) {
-    return make_matrix_from_image_and_pos(image, kmz_point__ZERO, size);
+KmzMatrix * kmz_make_matrix_from_image(KmzImage * image,
+                                       size_t size) {
+    return kmz_make_matrix_from_image_and_pos(image, kmz_point__ZERO, size);
 }
 
-KmzMatrix * make_matrix_from_image_and_pos(KmzImage * image,
-                                           kmz_point point,
-                                           size_t size) {
+KmzMatrix * kmz_make_matrix_from_image_and_pos(KmzImage * image,
+                                               kmz_point point,
+                                               size_t size) {
     _KmzCoreStdMatrix * this = malloc(sizeof(_KmzCoreStdMatrix));
     this->header = _KmzCoreStdMatrix__methods;
     this->body.freed = 0;
@@ -148,13 +148,13 @@ KmzMatrix * make_matrix_from_image_and_pos(KmzImage * image,
     return (void*)this;
 }
 
-KmzMatrix * make_matrix_from_image_and_pos_x_y(KmzImage * image,
-                                               ssize_t x,
-                                               ssize_t y,
-                                               size_t size) {
+KmzMatrix * kmz_make_matrix_from_image_and_pos_x_y(KmzImage * image,
+                                                   ssize_t x,
+                                                   ssize_t y,
+                                                   size_t size) {
     const kmz_point point = {.x=x, .y=y};
     
-    return make_matrix_from_image_and_pos(image, point, size);
+    return kmz_make_matrix_from_image_and_pos(image, point, size);
 }
 // endregion;
 
@@ -220,7 +220,7 @@ void _KmzCoreStdImage__set_argb_at(KmzImage * me, kmz_point point, kmz_color_32 
 }
 
 KmzMatrix * _KmzCoreStdImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size) {
-    return make_matrix_from_image_and_pos(me, point, size);
+    return kmz_make_matrix_from_image_and_pos(me, point, size);
 }
 
 size_t _KmzCoreStdImage__is_valid(KmzImage * me, kmz_point point) {
@@ -256,7 +256,7 @@ static const KmzImage _KmzCoreStdImage__methods = {
     .free=&_KmzCoreStdImage__free,
 };
 
-KmzImage * make_image_from_gd_x2(KmzGd2xImageFile image) {
+KmzImage * kmz_make_image_from_gd_x2(KmzGd2xImageFile image) {
     _KmzCoreStdImage * this = malloc(sizeof(_KmzCoreStdImage));
     this->header = _KmzCoreStdImage__methods;
     this->image.dimen = image.header.signature.dimen;
