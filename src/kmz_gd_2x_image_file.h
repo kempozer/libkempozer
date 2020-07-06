@@ -93,6 +93,8 @@ enum kmz_gd_2x_image_file_status_e {
     ERR_WRITE_PALETTE_COLORS = -16,
     ERR_READ_PIXELS = -17,
     ERR_WRITE_PIXELS = -18,
+    ERR_INVALID_FILE_PTR = -19,
+    ERR_INVALID_IMAGE_PTR = -20,
     ERR_UNKNOWN = 0xFFFFFFFF,
     
 };

@@ -30,24 +30,16 @@ int _kmz_write_short(FILE * f, uint16_t v) {
     return ferror(f);
 }
 
-int _kmz_read_int(FILE * f, uint32_t * r) {
-    if (1 == fread(r, sizeof(uint32_t), 1, f)) {
-        *r = ntohl(*r);
-        return 0;
-    }
-    return ferror(f);
-}
-
-int _kmz_write_int(FILE * f, uint32_t v) {
-    v = htonl(v);
-    if (1 == fwrite(&v, sizeof(uint32_t), 1, f)) {
-        return 0;
-    }
-    return ferror(f);
-}
-
 int _kmz_read_int_buffer(FILE * f, uint32_t * r, size_t s) {
-    if (s == fread(r, sizeof(uint32_t), s, f)) {
+    size_t total = 0, remainder = s;
+    while (remainder > 8192 && !feof(f)) {
+        total += fread(r + total, sizeof(uint32_t), 8192, f);
+        remainder -= 8192;
+    }
+    if (remainder && !feof(f)) {
+        total += fread(r + total, sizeof(uint32_t), remainder, f);
+    }
+    if (s == total) {
         for (size_t i = 0; i < s; ++i) {
             r[i] = ntohl(r[i]);
         }
@@ -60,7 +52,26 @@ int _kmz_write_int_buffer(FILE * f, uint32_t * r, size_t s) {
     for (size_t i = 0; i < s; ++i) {
         r[i] = htonl(r[i]);
     }
-    if (s == fwrite(r, sizeof(uint32_t), s, f)) {
+    size_t total = 0, remainder = s;
+    while (remainder > 8192 && !feof(f)) {
+        total += fwrite(r + total, sizeof(uint32_t), 8192, f);
+        remainder -= 8192;
+    }
+    if (remainder && !feof(f)) {
+        total += fwrite(r + total, sizeof(uint32_t), remainder, f);
+    }
+    return s == total ? 0 : ferror(f);
+}
+
+int _kmz_read_int(FILE * f, uint32_t * r) {
+    if (1 == fread(r, sizeof(uint32_t), 1, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_write_int(FILE * f, uint32_t v) {
+    if (1 == fwrite(&v, sizeof(uint32_t), 1, f)) {
         return 0;
     }
     return ferror(f);
@@ -70,18 +81,109 @@ int _kmz_write_int_buffer(FILE * f, uint32_t * r, size_t s) {
 // region Functions:
 
 kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile * o) {
-    return ERR_UNKNOWN;
+    if (NULL == f) {
+        return ERR_INVALID_FILE_PTR;
+    } else if (NULL == o) {
+        return ERR_INVALID_IMAGE_PTR;
+    }
+    
+    int r;
+    if (0 != (r = _kmz_read_short(f, &o->header.signature.type))) {
+        return ERR_READ_SIGNATURE;
+    }
+    if (0 != (r = _kmz_read_short(f, &o->header.signature.dimen.w))) {
+        return ERR_READ_WIDTH;
+    }
+    if (0 != (r = _kmz_read_short(f, &o->header.signature.dimen.h))) {
+        return ERR_READ_HEIGHT;
+    }
+    if (0 != (r = _kmz_read_byte(f, &o->header.color.is_truecolor))) {
+        return ERR_READ_IS_TRUECOLOR;
+    }
+    
+    switch (o->header.signature.type) {
+        case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
+            if (0 != _kmz_read_int(f, &o->header.color.value.truecolor.transparent)) {
+                return ERR_READ_TRUECOLOR_TRANSPARENT;
+            }
+            break;
+        case KMZ_GD_2x_IMAGE_FILE_PALETTE:
+            return ERR_UNKNOWN;
+    }
+    
+    size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
+    size_t is_truecolor = o->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
+    o->header.color.is_truecolor = is_truecolor;
+    
+    if (is_truecolor) {
+        o->pixels = calloc(len, sizeof(kmz_color_32));
+        if (0 != _kmz_read_int_buffer(f, o->pixels, len)) {
+            return ERR_READ_PIXELS;
+        }
+    } else {
+        return ERR_UNKNOWN;
+    }
+    
+    return OK;
 }
 
 
 kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFile * i) {
-    return ERR_UNKNOWN;
+    if (NULL == f) {
+        return ERR_INVALID_FILE_PTR;
+    } else if (NULL == i) {
+        return ERR_INVALID_IMAGE_PTR;
+    }
+    
+    if (0 != _kmz_write_short(f, i->header.signature.type)) {
+        return ERR_WRITE_SIGNATURE;
+    }
+    if (0 != _kmz_write_short(f, i->header.signature.dimen.w)) {
+        return ERR_WRITE_WIDTH;
+    }
+    if (0 != _kmz_write_short(f, i->header.signature.dimen.h)) {
+        return ERR_WRITE_HEIGHT;
+    }
+    if (0 != _kmz_write_byte(f, i->header.color.is_truecolor)) {
+        return ERR_WRITE_IS_TRUECOLOR;
+    }
+    
+    switch (i->header.signature.type) {
+        case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
+            if (0 != _kmz_write_int(f, i->header.color.value.truecolor.transparent)) {
+                return ERR_WRITE_TRUECOLOR_TRANSPARENT;
+            }
+            break;
+        case KMZ_GD_2x_IMAGE_FILE_PALETTE:
+            return ERR_UNKNOWN;
+    }
+    
+    size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
+    size_t is_truecolor = i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
+    i->header.color.is_truecolor = is_truecolor;
+    
+    if (0 != _kmz_write_byte(f, i->header.color.is_truecolor)) {
+        return ERR_WRITE_IS_TRUECOLOR;
+    }
+    
+    if (is_truecolor) {
+        if (0 != _kmz_write_int_buffer(f, i->pixels, len)) {
+            return ERR_WRITE_PIXELS;
+        }
+    } else {
+        return ERR_UNKNOWN;
+    }
+    return OK;
 }
 
 const char * kmz_status_msg(kmz_gd_2x_image_file_status status) {
     switch (status) {
         case OK:
             return NULL;
+        case ERR_INVALID_FILE_PTR:
+            return "An invalid file pointer has been provided";
+        case ERR_INVALID_IMAGE_PTR:
+            return "An invalid image pointer has been provided";
         case ERR_READ_SIGNATURE:
             return "An error has occurred while reading the GD 2x header signature";
         case ERR_WRITE_SIGNATURE:

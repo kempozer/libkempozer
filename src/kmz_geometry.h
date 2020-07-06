@@ -8,7 +8,7 @@
  * Provides a geometric shape that represents a rectangle.
  */
 struct kmz_rectangle_t {
-    size_t w, h;
+    uint16_t w, h;
 };
 typedef struct kmz_rectangle_t kmz_rectangle;
 
