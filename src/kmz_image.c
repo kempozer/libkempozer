@@ -1,6 +1,6 @@
 #include "kmz_image.h"
 
-char * KmzImage__get_type(KmzImage * me) {
+const char * KmzImage__get_type(KmzImage * me) {
     return me->get_type(me);
 }
 
@@ -28,15 +28,15 @@ void KmzImage__set_argb_at_x_y(KmzImage * me, size_t x, size_t y, kmz_color_32 c
     me->set_argb_at(me, point, color);
 }
 
-KmzMatrix KmzImage__get_matrix(KmzImage * me, size_t size) {
+KmzMatrix * KmzImage__get_matrix(KmzImage * me, size_t size) {
     return me->get_matrix_at(me, kmz_point__ZERO, size);
 }
 
-KmzMatrix KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size) {
+KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size) {
     return me->get_matrix_at(me, point, size);
 }
 
-KmzMatrix KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size) {
+KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size) {
     const kmz_point point = {.x=x, .y=y};
     
     return me->get_matrix_at(me, point, size);

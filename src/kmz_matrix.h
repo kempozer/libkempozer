@@ -16,7 +16,7 @@ struct kmz_matrix_t {
      *
      * @param me
      */
-    char * (*get_type)(struct kmz_matrix_t *);
+    const char * (*get_type)(struct kmz_matrix_t *);
 
     /**
      * Gets the size of the matrix referenced.
@@ -58,14 +58,6 @@ struct kmz_matrix_t {
     void (*set_color_at)(struct kmz_matrix_t *, kmz_point, kmz_color_32);
 
     /**
-     * Determines if the given point lies within the matrix referenced.
-     *
-     * @param me
-     * @param point
-     */
-    size_t (*is_valid)(struct kmz_matrix_t *, kmz_point);
-
-    /**
      * Frees the matrix referenced.
      */
     void (*free)(struct kmz_matrix_t *);
@@ -73,7 +65,7 @@ struct kmz_matrix_t {
 typedef struct kmz_matrix_t KmzMatrix;
 
 // region Functions:
-char * KmzMatrix__get_type(KmzMatrix * me);
+const char * KmzMatrix__get_type(KmzMatrix * me);
 
 size_t KmzMatrix__get_size(KmzMatrix * me);
 
@@ -90,10 +82,6 @@ kmz_color_32 KmzMatrix__get_color_at_x_y(KmzMatrix * me, size_t x, size_t y);
 void KmzMatrix__set_color_at(KmzMatrix * me, kmz_point point, kmz_color_32 color);
 
 void KmzMatrix__set_color_at_x_y(KmzMatrix * me, size_t x, size_t y, kmz_color_32 color);
-
-size_t KmzMatrix__is_valid(KmzMatrix * me, kmz_point point);
-
-size_t KmzMatrix__is_valid_x_y(KmzMatrix * me, size_t x, size_t y);
 
 void KmzMatrix__free(KmzMatrix * me);
 // endregion;

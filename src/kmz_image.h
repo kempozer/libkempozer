@@ -18,7 +18,7 @@ struct kmz_image_t {
      *
      * @param me
      */
-    char * (*get_type)(struct kmz_image_t *);
+    const char * (*get_type)(struct kmz_image_t *);
     
     /**
      * Gets the size of the image referenced.
@@ -50,7 +50,7 @@ struct kmz_image_t {
      * @param me
      * @param point
      */
-    KmzMatrix (*get_matrix_at)(struct kmz_image_t *, kmz_point, size_t);
+    KmzMatrix * (*get_matrix_at)(struct kmz_image_t *, kmz_point, size_t);
     
     /**
      * Gets whether or not the point is within the image referenced.
@@ -70,7 +70,7 @@ struct kmz_image_t {
 typedef struct kmz_image_t KmzImage;
 
 // region Functions:
-char * KmzImage__get_type(KmzImage * me);
+const char * KmzImage__get_type(KmzImage * me);
 
 struct kmz_rectangle_t KmzImage__get_dimen(KmzImage * me);
 
@@ -82,11 +82,11 @@ void KmzImage__set_argb_at(KmzImage * me, kmz_point point, kmz_color_32 color);
 
 void KmzImage__set_argb_at_x_y(KmzImage * me, size_t x, size_t y, kmz_color_32 color);
 
-KmzMatrix KmzImage__get_matrix(KmzImage * me, size_t size);
+KmzMatrix * KmzImage__get_matrix(KmzImage * me, size_t size);
 
-KmzMatrix KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size);
+KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size);
 
-KmzMatrix KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size);
+KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size);
 
 size_t KmzImage__is_valid(KmzImage * me, kmz_point point);
 
