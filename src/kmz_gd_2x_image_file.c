@@ -1,6 +1,70 @@
 #include "kmz_gd_2x_image_file.h"
 // region Helpers:
+int _kmz_read_byte(FILE * f, uint8_t * r) {
+    if (1 == fread(r, sizeof(uint8_t), 1, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
 
+int _kmz_write_byte(FILE * f, uint8_t v) {
+    if (1 == fwrite(&v, sizeof(uint8_t), 1, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_read_short(FILE * f, uint16_t * r) {
+    if (1 == fread(r, sizeof(uint16_t), 1, f)) {
+        *r = ntohs(*r);
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_write_short(FILE * f, uint16_t v) {
+    v = htons(v);
+    if (1 == fwrite(&v, sizeof(uint16_t), 1, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_read_int(FILE * f, uint32_t * r) {
+    if (1 == fread(r, sizeof(uint32_t), 1, f)) {
+        *r = ntohl(*r);
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_write_int(FILE * f, uint32_t v) {
+    v = htonl(v);
+    if (1 == fwrite(&v, sizeof(uint32_t), 1, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_read_int_buffer(FILE * f, uint32_t * r, size_t s) {
+    if (s == fread(r, sizeof(uint32_t), s, f)) {
+        for (size_t i = 0; i < s; ++i) {
+            r[i] = ntohl(r[i]);
+        }
+        return 0;
+    }
+    return ferror(f);
+}
+
+int _kmz_write_int_buffer(FILE * f, uint32_t * r, size_t s) {
+    for (size_t i = 0; i < s; ++i) {
+        r[i] = htonl(r[i]);
+    }
+    if (s == fwrite(r, sizeof(uint32_t), s, f)) {
+        return 0;
+    }
+    return ferror(f);
+}
 // endregion;
 
 // region Functions:

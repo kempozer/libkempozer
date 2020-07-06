@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <arpa/inet.h>
 #include "kmz_color.h"
 #include "kmz_geometry.h"
 
