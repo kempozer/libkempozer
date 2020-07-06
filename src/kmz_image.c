@@ -8,6 +8,14 @@ kmz_rectangle KmzImage__get_dimen(KmzImage * me) {
     return me->get_dimen(me);
 }
 
+size_t KmzImage__has_argb_buffer(KmzImage * me) {
+    return me->has_argb_buffer(me);
+}
+
+kmz_color_32 * KmzImage__get_argb_buffer(KmzImage * me) {
+    return me->get_argb_buffer(me);
+}
+
 kmz_color_32 KmzImage__get_argb_at(KmzImage * me, kmz_point point) {
     return me->get_argb_at(me, point);
 }

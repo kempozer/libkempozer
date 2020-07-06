@@ -15,6 +15,7 @@
 #include "kmz_gd_2x_image_file.h"
 #include "kmz_color.h"
 #include "kmz_geometry.h"
+#include <assert.h>
 
 /**
  * Creates a new KmzImage using the built-in KmzImage type for the given GD 2x image file.

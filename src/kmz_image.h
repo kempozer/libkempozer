@@ -28,6 +28,20 @@ struct kmz_image_t {
     kmz_rectangle (*get_dimen)(struct kmz_image_t *);
     
     /**
+     * Returns 1 if an internal ARGB color buffer is used within the image referenced, otherwise 0.
+     *
+     * @param me
+     */
+    size_t (*has_argb_buffer)(struct kmz_image_t *);
+    
+    /**
+     * Gets a pointer to the internal ARGB color buffer within the image referenced. This may return a NULL pointer if an ARGB color buffer is not used.
+     *
+     * @param me
+     */
+    kmz_color_32 * (*get_argb_buffer)(struct kmz_image_t *);
+    
+    /**
      * Gets an ARGB color at the given point within the image referenced.
      *
      * @param me
@@ -73,6 +87,10 @@ typedef struct kmz_image_t KmzImage;
 const char * KmzImage__get_type(KmzImage * me);
 
 struct kmz_rectangle_t KmzImage__get_dimen(KmzImage * me);
+
+size_t KmzImage__has_argb_buffer(KmzImage * me);
+
+kmz_color_32 * KmzImage__get_argb_buffer(KmzImage * me);
 
 kmz_color_32 KmzImage__get_argb_at(KmzImage * me, kmz_point point);
 
