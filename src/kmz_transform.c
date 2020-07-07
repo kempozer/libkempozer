@@ -23,7 +23,7 @@ void kmz_apply_color_transform_in(KmzColorTransform transformation, kmz_point po
            max_x = _kmz_clamp(dimen.w, x, image->dimen.w),
            max_y = _kmz_clamp(dimen.h, y, image->dimen.h);
     
-    kmz_point p = {};
+    kmz_point p = {.x=0, .y=0};
     for (p.y = y; p.y < max_y; ++p.y) {
         for (p.x = x; p.x < max_x; ++p.x) {
             KmzImage__set_argb_at(image, p, transformation(KmzImage__get_argb_at(image, p)));
