@@ -1,11 +1,3 @@
-//
-//  kmz_transform.c
-//  checker
-//
-//  Created by Bryan Wofter on 7/6/20.
-//  Copyright © 2020 dirtypixels. All rights reserved.
-//
-
 #include "kmz_transform.h"
 
 ssize_t _kmz_clamp(ssize_t val, ssize_t min, ssize_t max) {
