@@ -18,23 +18,18 @@ ssize_t _kmz_clamp(ssize_t val, ssize_t min, ssize_t max) {
 }
 
 void kmz_apply_color_transform(KmzColorTransform transformation, KmzImage * image) {
-    kmz_apply_color_transform_in(transformation, kmz_point__ZERO, KmzImage__get_dimen(image), image);
+    kmz_apply_color_transform_in(transformation, kmz_point__ZERO, image->dimen, image);
 }
 
 void kmz_apply_color_transform_from(KmzColorTransform transformation, kmz_point pos, KmzImage * image) {
-    kmz_apply_color_transform_in(transformation, pos, KmzImage__get_dimen(image), image);
+    kmz_apply_color_transform_in(transformation, pos, image->dimen, image);
 }
 
 void kmz_apply_color_transform_in(KmzColorTransform transformation, kmz_point pos, kmz_rectangle dimen, KmzImage * image) {
-    const kmz_rectangle i_dimen = KmzImage__get_dimen(image);
-    
-    size_t i_h = i_dimen.h,
-           i_w = i_dimen.w;
-    
-    size_t x = _kmz_clamp(pos.x, 0, i_w),
-           y = _kmz_clamp(pos.y, 0, i_h),
-           max_x = _kmz_clamp(dimen.w, x, i_w),
-           max_y = _kmz_clamp(dimen.h, y, i_h);
+    size_t x = _kmz_clamp(pos.x, 0, image->dimen.w),
+           y = _kmz_clamp(pos.y, 0, image->dimen.h),
+           max_x = _kmz_clamp(dimen.w, x, image->dimen.w),
+           max_y = _kmz_clamp(dimen.h, y, image->dimen.h);
     
     kmz_point p = {};
     for (p.y = y; p.y < max_y; ++p.y) {
@@ -45,34 +40,25 @@ void kmz_apply_color_transform_in(KmzColorTransform transformation, kmz_point po
 }
 
 void kmz_apply_matrix_transform(KmzMatrixTransform transformation, KmzImage * image, size_t size) {
-    kmz_apply_matrix_transform_in(transformation, kmz_point__ZERO, KmzImage__get_dimen(image), image, size);
+    kmz_apply_matrix_transform_in(transformation, kmz_point__ZERO, image->dimen, image, size);
 }
 
 void kmz_apply_matrix_transform_from(KmzMatrixTransform transformation, kmz_point pos, KmzImage * image, size_t size) {
-    kmz_apply_matrix_transform_in(transformation, pos, KmzImage__get_dimen(image), image, size);
+    kmz_apply_matrix_transform_in(transformation, pos, image->dimen, image, size);
 }
 
 void kmz_apply_matrix_transform_in(KmzMatrixTransform transformation, kmz_point pos, kmz_rectangle dimen, KmzImage * image, size_t size) {
-    const kmz_rectangle i_dimen = KmzImage__get_dimen(image);
-    
-    size_t i_h = i_dimen.h,
-           i_w = i_dimen.w;
-    
-    size_t x = _kmz_clamp(pos.x, 0, i_w),
-           y = _kmz_clamp(pos.y, 0, i_h),
-           max_x = _kmz_clamp(dimen.w, x, i_w),
-           max_y = _kmz_clamp(dimen.h, y, i_h);
+    size_t x = _kmz_clamp(pos.x, 0, image->dimen.w),
+           y = _kmz_clamp(pos.y, 0, image->dimen.h),
+           max_x = _kmz_clamp(dimen.w, x, image->dimen.w),
+           max_y = _kmz_clamp(dimen.h, y, image->dimen.h);
     
     KmzMatrix * matrix = KmzImage__get_matrix(image, size);
 
-    kmz_point p = {};
-    for (p.y = y; p.y < max_y; ++p.y) {
-        for (p.x = x; p.x < max_x; ++p.x) {
-            KmzMatrix__set_pos(matrix, p);
-            KmzImage__set_argb_at(image, p, transformation(matrix));
+    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
+        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
+            KmzImage__set_argb_at(image, matrix->pos, transformation(matrix));
         }
     }
-    
-    KmzMatrix__free(matrix);
     free(matrix);
 }

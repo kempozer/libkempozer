@@ -11,10 +11,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "kmz_core.h"
 #include "kmz_color.h"
-#include "kmz_matrix.h"
 #include "kmz_geometry.h"
-#include "kmz_image.h"
 
 typedef kmz_color_32 (*KmzColorTransform)(kmz_color_32);
 
