@@ -20,7 +20,6 @@ kmz_color_32 KmzImage__get_argb_at(KmzImage * me, kmz_point point) {
 
 kmz_color_32 KmzImage__get_argb_at_x_y(KmzImage * me, size_t x, size_t y) {
     const kmz_point point = {.x=x, .y=y};
-    
     return KmzImage__get_argb_at(me, point);
 }
 
@@ -43,6 +42,7 @@ KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size)
     matrix->image = me;
     matrix->pos = point;
     matrix->size = size;
+    matrix->hsize = matrix->size / 2;
     return matrix;
 }
 
