@@ -1,6 +1,7 @@
 #include "kmz_core.h"
 
 // region Image:
+
 ssize_t _KmzImage__get_index(KmzImage * me, kmz_point point) {
     return ((me->dimen.w * point.y) + point.x);
 }
@@ -76,6 +77,7 @@ KmzImage * kmz_make_image_from_gd_x2(KmzGd2xImageFile image) {
 // endregion;
 
 // region Matrix:
+
 ssize_t _KmzMatrix__clamp(ssize_t val, ssize_t min, ssize_t max) {
     if (val < min) {
         return min;
