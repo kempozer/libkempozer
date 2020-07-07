@@ -5,7 +5,6 @@
 #include "kmz_gd_2x_image_file.h"
 #include "kmz_color.h"
 #include "kmz_geometry.h"
-#include <assert.h>
 
 // region Image:
 
@@ -28,7 +27,7 @@ typedef struct kmz_image_t KmzImage;
 /**
  * Creates a new KmzImage using the built-in KmzImage type for the given GD 2x image file.
  */
-KmzImage * kmz_make_image_from_gd_x2(KmzGd2xImageFile image);
+KmzImage * kmz_make_image_from_gd_2x(KmzGd2xImageFile image);
 
 /**
  * Gets a color from within the image.
