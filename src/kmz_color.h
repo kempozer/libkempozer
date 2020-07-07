@@ -16,6 +16,7 @@ struct kmz_argb_color_t {
 };
 typedef struct kmz_argb_color_t kmz_argb_color;
 
+// TODO: Implement more colors
 static const kmz_argb_color kmz_argb_color__BLACK = {.a=0, .r=0, .g=0, .b=0},
                             kmz_argb_color__RED = {.a=0, .r=0xFF, .g=0, .b=0},
                             kmz_argb_color__GREEN = {.a=0, .r=0, .g=0xFF, .b=0},
