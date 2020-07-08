@@ -28,27 +28,27 @@ KmzTransformNode * _kmz_make_transform_node(KmzTransformList * list,
     return node;
 }
 
-void kmz_transform_list_push_color(KmzTransformList * list, KmzColorTransform transform) {
+void KmzTransformList__push_color(KmzTransformList * list, KmzColorTransform transform) {
     KmzTransformNode * node = _kmz_make_transform_node(list, 1, 0);
     node->value.color = transform;
 }
 
-void kmz_transform_list_push_matrix(KmzTransformList * list, KmzMatrixTransform transform) {
+void KmzTransformList__push_matrix(KmzTransformList * list, KmzMatrixTransform transform) {
     KmzTransformNode * node = _kmz_make_transform_node(list, 1, 1);
     node->value.matrix = transform;
 }
 
-void kmz_transform_list_unshift_color(KmzTransformList * list, KmzColorTransform transform) {
+void KmzTransformList__unshift_color(KmzTransformList * list, KmzColorTransform transform) {
     KmzTransformNode * node = _kmz_make_transform_node(list, 0, 0);
     node->value.color = transform;
 }
 
-void kmz_transform_list_unshift_matrix(KmzTransformList * list, KmzMatrixTransform transform) {
+void KmzTransformList__unshift_matrix(KmzTransformList * list, KmzMatrixTransform transform) {
     KmzTransformNode * node = _kmz_make_transform_node(list, 0, 1);
     node->value.matrix = transform;
 }
 
-KmzTransformNode * kmz_transform_list_pop(KmzTransformList * list) {
+KmzTransformNode * KmzTransformList__pop(KmzTransformList * list) {
     KmzTransformNode * node = NULL;
     if (list->tail) {
         node = list->tail;
@@ -63,7 +63,7 @@ KmzTransformNode * kmz_transform_list_pop(KmzTransformList * list) {
     return node;
 }
 
-KmzTransformNode * kmz_transform_list_dequeue(KmzTransformList * list) {
+KmzTransformNode * KmzTransformList__dequeue(KmzTransformList * list) {
     KmzTransformNode * node = NULL;
     if (list->head) {
         node = list->head;

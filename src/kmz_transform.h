@@ -33,26 +33,26 @@ struct kmz_transform_list_t {
 };
 typedef struct kmz_transform_list_t KmzTransformList;
 
-void kmz_transform_list_push_color(KmzTransformList * list, KmzColorTransform transform);
+void KmzTransformList__push_color(KmzTransformList * list, KmzColorTransform transform);
 
-void kmz_transform_list_push_matrix(KmzTransformList * list, KmzMatrixTransform transform);
+void KmzTransformList__push_matrix(KmzTransformList * list, KmzMatrixTransform transform);
 
-KmzTransformNode * kmz_transform_list_pop(KmzTransformList * list);
+KmzTransformNode * KmzTransformList__pop(KmzTransformList * list);
 
-void kmz_transform_list_unshift_color(KmzTransformList * list, KmzColorTransform transform);
+void KmzTransformList__unshift_color(KmzTransformList * list, KmzColorTransform transform);
 
-void kmz_transform_list_unshift_matrix(KmzTransformList * list, KmzMatrixTransform transform);
+void KmzTransformList__unshift_matrix(KmzTransformList * list, KmzMatrixTransform transform);
 
-KmzTransformNode * kmz_transform_list_dequeue(KmzTransformList * list);
+KmzTransformNode * KmzTransformList__dequeue(KmzTransformList * list);
 
-#define kmz_transform_list_push(list, transform) _Generic((transform), \
-    KmzColorTransform: kmz_transform_list_push_color, \
-    KmzMatrixTransform: kmz_transform_list_push_matrix \
+#define KmzTransformList__push(list, transform) _Generic((transform), \
+    KmzColorTransform: KmzTransformList__push_color, \
+    KmzMatrixTransform: KmzTransformList__push_matrix \
 )(list, transform)
 
-#define kmz_transform_list_unshift(list, transform) _Generic((transform), \
-    KmzColorTransform: kmz_transform_list_unshift_color, \
-    KmzMatrixTransform: kmz_transform_list_unshift_matrix \
+#define KmzTransformList__unshift(list, transform) _Generic((transform), \
+    KmzColorTransform: KmzTransformList__unshift_color, \
+    KmzMatrixTransform: KmzTransformList__unshift_matrix \
 )(list, transform)
 // endregion;
 
