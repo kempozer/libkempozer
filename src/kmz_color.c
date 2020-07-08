@@ -28,19 +28,19 @@ kmz_percent _kmz_rgb2delta(kmz_percent max, kmz_percent channel, kmz_percent max
 // endregion;
 
 // region Funcions:
-kmz_argb_color kmz_argb_color_from_color_32(kmz_color_32 color) {
+kmz_argb_color kmz_argb_color__from_color_32(kmz_color_32 color) {
     const kmz_channel * c = (kmz_channel*)&color;
     
-    return kmz_argb_color_from_channels(c[3], c[2], c[1], c[0]);
+    return kmz_argb_color__from_channels(c[3], c[2], c[1], c[0]);
 }
 
-kmz_argb_color kmz_argb_color_from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b) {
+kmz_argb_color kmz_argb_color__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b) {
     const kmz_argb_color c = {.a=a, .r=r, .g=g, .b=b};
     
     return c;
 }
 
-kmz_argb_color kmz_argb_color_from_ahsl_color(kmz_ahsl_color color) {
+kmz_argb_color kmz_argb_color__from_ahsl_color(kmz_ahsl_color color) {
     kmz_channel a = color.a, r, g, b;
     
     if (0. == color.l) {
@@ -63,20 +63,20 @@ kmz_argb_color kmz_argb_color_from_ahsl_color(kmz_ahsl_color color) {
         b = ((kmz_channel)round(255. * _kmz_hue2rgb(part_1, part_2, color.h - _KMZ_ONE_THIRD)));
     }
     
-    return kmz_argb_color_from_channels(a, r, g, b);
+    return kmz_argb_color__from_channels(a, r, g, b);
 }
 
-kmz_ahsl_color kmz_ahsl_color_from_color_32(kmz_color_32 color) {
-    return kmz_ahsl_color_from_argb_color(kmz_argb_color_from_color_32(color));
+kmz_ahsl_color kmz_ahsl_color__from_color_32(kmz_color_32 color) {
+    return kmz_ahsl_color__from_argb_color(kmz_argb_color__from_color_32(color));
 }
 
-kmz_ahsl_color kmz_ahsl_color_from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l) {
+kmz_ahsl_color kmz_ahsl_color__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l) {
     const kmz_ahsl_color c = {.a=a, .h=h, .s=s, .l=l};
     
     return c;
 }
 
-kmz_ahsl_color kmz_ahsl_color_from_argb_color(kmz_argb_color color) {
+kmz_ahsl_color kmz_ahsl_color__from_argb_color(kmz_argb_color color) {
     kmz_channel a = color.a;
     kmz_percent h, s, l;
     
@@ -128,14 +128,14 @@ kmz_ahsl_color kmz_ahsl_color_from_argb_color(kmz_argb_color color) {
         }
     }
     
-    return kmz_ahsl_color_from_channels(a, h, s, l);
+    return kmz_ahsl_color__from_channels(a, h, s, l);
 }
 
-kmz_color_32 kmz_color_32_from_argb_color(kmz_argb_color color) {
+kmz_color_32 kmz_color_32__from_argb_color(kmz_argb_color color) {
     return ((color.a << 24u) | (color.r << 16u) | (color.g << 8u) | color.b);
 }
 
-kmz_color_32 kmz_color_32_from_ahsl_color(kmz_ahsl_color color) {
-    return kmz_color_32_from_argb_color(kmz_argb_color_from_ahsl_color(color));
+kmz_color_32 kmz_color_32__from_ahsl_color(kmz_ahsl_color color) {
+    return kmz_color_32__from_argb_color(kmz_argb_color__from_ahsl_color(color));
 }
 // endregion;

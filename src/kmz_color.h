@@ -41,21 +41,21 @@ static const kmz_ahsl_color kmz_ahsl_color__BLACK = {.a=0, .h=0., .s=0., .l=0.},
 
 // region Functions:
 
-kmz_argb_color kmz_argb_color_from_color_32(kmz_color_32 color);
+kmz_argb_color kmz_argb_color__from_color_32(kmz_color_32 color);
 
-kmz_argb_color kmz_argb_color_from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b);
+kmz_argb_color kmz_argb_color__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b);
 
-kmz_argb_color kmz_argb_color_from_ahsl_color(kmz_ahsl_color color);
+kmz_argb_color kmz_argb_color__from_ahsl_color(kmz_ahsl_color color);
 
-kmz_ahsl_color kmz_ahsl_color_from_color_32(kmz_color_32 color);
+kmz_ahsl_color kmz_ahsl_color__from_color_32(kmz_color_32 color);
 
-kmz_ahsl_color kmz_ahsl_color_from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
+kmz_ahsl_color kmz_ahsl_color__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
 
-kmz_ahsl_color kmz_ahsl_color_from_argb_color(kmz_argb_color color);
+kmz_ahsl_color kmz_ahsl_color__from_argb_color(kmz_argb_color color);
 
-kmz_color_32 kmz_color_32_from_argb_color(kmz_argb_color color);
+kmz_color_32 kmz_color_32__from_argb_color(kmz_argb_color color);
 
-kmz_color_32 kmz_color_32_from_ahsl_color(kmz_ahsl_color color);
+kmz_color_32 kmz_color_32__from_ahsl_color(kmz_ahsl_color color);
 
 // endregion;
 
