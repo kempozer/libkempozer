@@ -25,9 +25,19 @@ struct kmz_image_t {
 typedef struct kmz_image_t KmzImage;
 
 /**
- * Creates a new KmzImage using the built-in KmzImage type for the given GD 2x image file.
+ * Creates a new KmzImage using the given GD 2x image file.
  */
-KmzImage * kmz_make_image_from_gd_2x(KmzGd2xImageFile image);
+KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image);
+
+/**
+ * Creates a new KmzImage using the given color buffer.
+ */
+KmzImage * KmzImage__new_from_buffer(kmz_rectangle dimen, kmz_color_32 * pixels);
+
+/**
+ * Frees the image and its pixel pointer.
+ */
+void KmzImage__free(KmzImage * me);
 
 /**
  * Gets a color from within the image.
@@ -81,19 +91,14 @@ struct kmz_matrix_t {
 typedef struct kmz_matrix_t KmzMatrix;
 
 /**
- * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
+ * Creates a new KmzMatrix for the given image.
  */
-KmzMatrix * kmz_make_matrix_from_image(KmzImage * image, size_t size);
+KmzMatrix * KmzMatrix__new_from_image(KmzImage * image, size_t size);
 
 /**
- * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
+ * Creates a new KmzMatrix for the given image.
  */
-KmzMatrix * kmz_make_matrix_from_image_and_pos(KmzImage * image, kmz_point point, size_t size);
-
-/**
- * Creates a new KmzMatrix using the built-in KmzMatrix type for the given image.
- */
-KmzMatrix * kmz_make_matrix_from_image_and_pos_x_y(KmzImage * image, ssize_t x, ssize_t y, size_t size);
+KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, kmz_point point, size_t size);
 
 /**
  * Gets a color from the image referenced by the given matrix relative to the matrix's current position.

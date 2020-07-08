@@ -25,21 +25,16 @@ void KmzImage__set_argb_at_x_y(KmzImage * me, size_t x, size_t y, kmz_color_32 c
 }
 
 KmzMatrix * KmzImage__get_matrix(KmzImage * me, size_t size) {
-    return KmzImage__get_matrix_at(me, kmz_point__ZERO, size);
+    return KmzMatrix__new_from_image_and_pos(me, kmz_point__ZERO, size);
 }
 
 KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size) {
-    KmzMatrix * matrix = malloc(sizeof(KmzMatrix));
-    matrix->image = me;
-    matrix->pos = point;
-    matrix->size = size;
-    matrix->hsize = matrix->size / 2;
-    return matrix;
+    return KmzMatrix__new_from_image_and_pos(me, point, size);
 }
 
 KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size) {
     const kmz_point point = {.x=x, .y=y};
-    return KmzImage__get_matrix_at(me, point, size);
+    return KmzMatrix__new_from_image_and_pos(me, point, size);
 }
 
 size_t KmzImage__is_valid(KmzImage * me, kmz_point point) {
@@ -52,24 +47,38 @@ size_t KmzImage__is_valid_x_y(KmzImage * me, size_t x, size_t y) {
     return KmzImage__is_valid(me, point);
 }
 
-void _KmzImage__populate_from_gd_2x(KmzImage * me, KmzGd2xImageFile image) {
-    me->dimen = image.header.signature.dimen;
+void _KmzImage__populate_from_gd_2x(KmzImage * me, KmzGd2xImageFile * image) {
+    me->dimen = image->header.signature.dimen;
     me->len = me->dimen.h * me->dimen.w;
     me->pixels = calloc(me->len, sizeof(kmz_color_32));
     
-    if (image.header.color.is_truecolor) {
-        memcpy(me->pixels, image.pixels, me->len * sizeof(kmz_color_32));
+    if (image->header.color.is_truecolor) {
+        memcpy(me->pixels, image->pixels, me->len * sizeof(kmz_color_32));
     } else {
         for (size_t i = 0; i < me->len; ++i) {
-            me->pixels[i] = image.header.color.value.palette.palette[image.pixels[i]];
+            me->pixels[i] = image->header.color.value.palette.palette[image->pixels[i]];
         }
     }
 }
 
-KmzImage * kmz_make_image_from_gd_2x(KmzGd2xImageFile image) {
+KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image) {
     KmzImage * me = malloc(sizeof(KmzImage));
     _KmzImage__populate_from_gd_2x(me, image);
     return me;
+}
+
+KmzImage * KmzImage__new_from_buffer(kmz_rectangle dimen, kmz_color_32 * pixels) {
+    KmzImage * me = malloc(sizeof(KmzImage));
+    me->dimen = dimen;
+    me->len = dimen.h * dimen.w;
+    me->pixels = calloc(me->len, sizeof(kmz_color_32));
+    memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
+    return me;
+}
+
+void KmzImage__free(KmzImage * me) {
+    free(me->pixels);
+    free(me);
 }
 
 // endregion;
@@ -111,6 +120,19 @@ void KmzMatrix__set_color_at(KmzMatrix * me, kmz_point point, kmz_color_32 color
 void KmzMatrix__set_color_at_x_y(KmzMatrix * me, size_t x, size_t y, kmz_color_32 color) {
     const kmz_point point = {.x=x, .y=y};
     KmzMatrix__set_color_at(me, point, color);
+}
+
+KmzMatrix * KmzMatrix__new_from_image(KmzImage * image, size_t size) {
+    return KmzMatrix__new_from_image_and_pos(image, kmz_point__ZERO, size);
+}
+
+KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, kmz_point point, size_t size) {
+    KmzMatrix * me = malloc(sizeof(KmzMatrix));
+    me->image = image;
+    me->pos = point;
+    me->size = size;
+    me->hsize = me->size / 2;
+    return me;
 }
 
 // endregion;
