@@ -70,9 +70,6 @@ struct kmz_gd_2x_image_file_t {
 };
 typedef struct kmz_gd_2x_image_file_t KmzGd2xImageFile;
 
-/**
- * Represents the status returned from a read or write operation involving a GD image file.
- */
 enum kmz_gd_2x_image_file_status_e {
     OK = 0,
     ERR_READ_SIGNATURE = -1,

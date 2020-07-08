@@ -18,12 +18,4 @@ typedef struct kmz_point_t kmz_point;
 
 static const kmz_point kmz_point__ZERO = {.x=0, .y=0};
 
-// region Functions:
-
-kmz_rectangle kmz_rectangle_from_dimen(size_t w, size_t h);
-
-kmz_point kmz_point_from_coord(ssize_t x, ssize_t y);
-
-// endregion;
-
 #endif /* kmz_geometry_h */
