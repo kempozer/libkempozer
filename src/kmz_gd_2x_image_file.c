@@ -1,5 +1,6 @@
 #include "kmz_gd_2x_image_file.h"
 // region Helpers:
+
 int _kmz_read_byte(FILE * f, uint8_t * r) {
     if (1 == fread(r, sizeof(uint8_t), 1, f)) {
         return 0;
@@ -108,7 +109,8 @@ kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile
             }
             break;
         case KMZ_GD_2x_IMAGE_FILE_PALETTE:
-            return ERR_UNKNOWN;
+            // TODO: Implement palette image loading
+            return ERR_UNSUPPORTED_OPERATION;
     }
     
     size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
@@ -155,7 +157,8 @@ kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFil
             }
             break;
         case KMZ_GD_2x_IMAGE_FILE_PALETTE:
-            return ERR_UNKNOWN;
+            // TODO: Implement palette image writing
+            return ERR_UNSUPPORTED_OPERATION;
     }
     
     size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
@@ -167,7 +170,8 @@ kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFil
             return ERR_WRITE_PIXELS;
         }
     } else {
-        return ERR_UNKNOWN;
+        // TODO: Implement palette image writing
+        return ERR_UNSUPPORTED_OPERATION;
     }
     return OK;
 }
@@ -216,6 +220,8 @@ const char * kmz_status_msg(kmz_gd_2x_image_file_status status) {
             return "An error has occurred while reading the GD 2x pixels";
         case ERR_WRITE_PIXELS:
             return "An error has occurred while writing the GD 2x pixels";
+        case ERR_UNSUPPORTED_OPERATION:
+            return "An unsupported operation has been encountered";
         case ERR_UNKNOWN:
             return "An unknown error has occurred";
     }
@@ -227,4 +233,5 @@ const char * kmz_status_msg_with_err_code(kmz_gd_2x_image_file_status status, in
     sprintf(o, "%s: %d", msg, error);
     return o;
 }
+
 // endregion;
