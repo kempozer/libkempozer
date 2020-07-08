@@ -149,18 +149,12 @@ void kmz_apply_matrix_transform_in(KmzMatrixTransform transformation,
     free(matrix);
 }
 
-/**
- * Applies the given compound transformation function to each pixel within the image.
- */
 void kmz_apply_compound_transform(KmzTransformList transformation,
                                   KmzImage * image,
                                   size_t size) {
     kmz_apply_compound_transform_in(transformation, kmz_point__ZERO, image->dimen, image, size);
 }
 
-/**
- * Applies the given compound transformation function to each pixel within the image.
- */
 void kmz_apply_compound_transform_from(KmzTransformList transformation,
                                        kmz_point pos,
                                        KmzImage * image,
@@ -168,9 +162,6 @@ void kmz_apply_compound_transform_from(KmzTransformList transformation,
     kmz_apply_compound_transform_in(transformation, pos, image->dimen, image, size);
 }
 
-/**
- * Applies the given compound transformation function to each pixel within the image.
- */
 void kmz_apply_compound_transform_in(KmzTransformList transformation,
                                      kmz_point pos,
                                      kmz_rectangle dimen,
