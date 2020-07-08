@@ -18,7 +18,7 @@
  */
 struct kmz_gd_2x_image_file_signature_header_t {
     uint16_t type;
-    kmz_rectangle dimen;
+    KmzRectangle dimen;
 };
 typedef struct kmz_gd_2x_image_file_signature_header_t KmzGd2xImageFileSignatureHeader;
 

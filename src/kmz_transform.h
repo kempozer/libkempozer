@@ -66,15 +66,15 @@ void kmz_apply_color_transform(KmzColorTransform transformation,
  * Applies the given transformation function to each pixel within the image.
  */
 void kmz_apply_color_transform_from(KmzColorTransform transformation,
-                                    kmz_point pos,
+                                    KmzPoint pos,
                                     KmzImage * image);
 
 /**
  * Applies the given transformation function to each pixel within the image.
  */
 void kmz_apply_color_transform_in(KmzColorTransform transformation,
-                                  kmz_point pos,
-                                  kmz_rectangle dimen,
+                                  KmzPoint pos,
+                                  KmzRectangle dimen,
                                   KmzImage * image);
 
 /**
@@ -88,7 +88,7 @@ void kmz_apply_matrix_transform(KmzMatrixTransform transformation,
  * Applies the given matrix transformation function to each pixel within the image.
  */
 void kmz_apply_matrix_transform_from(KmzMatrixTransform transformation,
-                                     kmz_point pos,
+                                     KmzPoint pos,
                                      KmzImage * image,
                                      size_t size);
 
@@ -96,8 +96,8 @@ void kmz_apply_matrix_transform_from(KmzMatrixTransform transformation,
  * Applies the given matrix transformation function to each pixel within the image.
  */
 void kmz_apply_matrix_transform_in(KmzMatrixTransform transformation,
-                                   kmz_point pos,
-                                   kmz_rectangle dimen,
+                                   KmzPoint pos,
+                                   KmzRectangle dimen,
                                    KmzImage * image,
                                    size_t size);
 
@@ -112,7 +112,7 @@ void kmz_apply_compound_transform(KmzTransformList transformation,
  * Applies the given compound transformation function to each pixel within the image.
  */
 void kmz_apply_compound_transform_from(KmzTransformList transformation,
-                                       kmz_point pos,
+                                       KmzPoint pos,
                                        KmzImage * image,
                                        size_t size);
 
@@ -120,8 +120,8 @@ void kmz_apply_compound_transform_from(KmzTransformList transformation,
  * Applies the given compound transformation function to each pixel within the image.
  */
 void kmz_apply_compound_transform_in(KmzTransformList transformation,
-                                     kmz_point pos,
-                                     kmz_rectangle dimen,
+                                     KmzPoint pos,
+                                     KmzRectangle dimen,
                                      KmzImage * image,
                                      size_t size);
 

@@ -4,46 +4,46 @@
 
 // region Image:
 
-kmz_color_32 KmzImage__get_argb_at(KmzImage * me, kmz_point point) {
+kmz_color_32 KmzImage__get_argb_at(KmzImage * me, KmzPoint point) {
     const ssize_t i = _KmzImage__get_index(me, point);
     return me->pixels[i];
 }
 
 kmz_color_32 KmzImage__get_argb_at_x_y(KmzImage * me, size_t x, size_t y) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     return KmzImage__get_argb_at(me, point);
 }
 
-void KmzImage__set_argb_at(KmzImage * me, kmz_point point, kmz_color_32 color) {
+void KmzImage__set_argb_at(KmzImage * me, KmzPoint point, kmz_color_32 color) {
     const ssize_t i = _KmzImage__get_index(me, point);
     me->pixels[i] = color;
 }
 
 void KmzImage__set_argb_at_x_y(KmzImage * me, size_t x, size_t y, kmz_color_32 color) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     KmzImage__set_argb_at(me, point, color);
 }
 
 KmzMatrix * KmzImage__get_matrix(KmzImage * me, size_t size) {
-    return KmzMatrix__new_from_image_and_pos(me, kmz_point__ZERO, size);
+    return KmzMatrix__new_from_image_and_pos(me, KmzPoint__ZERO, size);
 }
 
-KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, kmz_point point, size_t size) {
+KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size) {
     return KmzMatrix__new_from_image_and_pos(me, point, size);
 }
 
 KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     return KmzMatrix__new_from_image_and_pos(me, point, size);
 }
 
-size_t KmzImage__is_valid(KmzImage * me, kmz_point point) {
+size_t KmzImage__is_valid(KmzImage * me, KmzPoint point) {
     return (me->dimen.w > point.x && point.x > -1 &&
             me->dimen.h > point.y && point.y > -1);
 }
 
 size_t KmzImage__is_valid_x_y(KmzImage * me, size_t x, size_t y) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     return KmzImage__is_valid(me, point);
 }
 
@@ -67,7 +67,7 @@ KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image) {
     return me;
 }
 
-KmzImage * KmzImage__new_from_buffer(kmz_rectangle dimen, kmz_color_32 * pixels) {
+KmzImage * KmzImage__new_from_buffer(KmzRectangle dimen, kmz_color_32 * pixels) {
     KmzImage * me = malloc(sizeof(KmzImage));
     me->dimen = dimen;
     me->len = dimen.h * dimen.w;
@@ -94,39 +94,39 @@ ssize_t _KmzMatrix__clamp(ssize_t val, ssize_t min, ssize_t max) {
     return val;
 }
 
-kmz_point _KmzMatrix__clamp_point(KmzMatrix * me, kmz_point point) {
+KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point) {
     const ssize_t x = me->pos.x + (point.x - me->hsize),
                   y = me->pos.y + (point.y - me->hsize);
-    const kmz_point p = {
+    const KmzPoint p = {
         .x=_KmzMatrix__clamp(x, 0, me->image->dimen.w - 1),
         .y=_KmzMatrix__clamp(y, 0, me->image->dimen.h - 1)
     };
     return p;
 }
 
-kmz_color_32 KmzMatrix__get_color_at(KmzMatrix * me, kmz_point point) {
+kmz_color_32 KmzMatrix__get_color_at(KmzMatrix * me, KmzPoint point) {
     return KmzImage__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point));
 }
 
 kmz_color_32 KmzMatrix__get_color_at_x_y(KmzMatrix * me, size_t x, size_t y) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     return KmzMatrix__get_color_at(me, point);
 }
 
-void KmzMatrix__set_color_at(KmzMatrix * me, kmz_point point, kmz_color_32 color) {
+void KmzMatrix__set_color_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color) {
     KmzImage__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point), color);
 }
 
 void KmzMatrix__set_color_at_x_y(KmzMatrix * me, size_t x, size_t y, kmz_color_32 color) {
-    const kmz_point point = {.x=x, .y=y};
+    const KmzPoint point = {.x=x, .y=y};
     KmzMatrix__set_color_at(me, point, color);
 }
 
 KmzMatrix * KmzMatrix__new_from_image(KmzImage * image, size_t size) {
-    return KmzMatrix__new_from_image_and_pos(image, kmz_point__ZERO, size);
+    return KmzMatrix__new_from_image_and_pos(image, KmzPoint__ZERO, size);
 }
 
-KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, kmz_point point, size_t size) {
+KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, KmzPoint point, size_t size) {
     KmzMatrix * me = malloc(sizeof(KmzMatrix));
     me->image = image;
     me->pos = point;
