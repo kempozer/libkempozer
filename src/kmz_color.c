@@ -28,6 +28,10 @@ kmz_percent _kmz_rgb2delta(kmz_percent max, kmz_percent channel, kmz_percent max
 // endregion;
 
 // region Funcions:
+KmzArgbColor KmzArgbColor__from_hex(const char * color) {
+    return KmzArgbColor__from_color_32(kmz_color_32__from_hex(color));
+}
+
 KmzArgbColor KmzArgbColor__from_color_32(kmz_color_32 color) {
     const kmz_channel * c = (kmz_channel*)&color;
     
@@ -64,6 +68,10 @@ KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color) {
     }
     
     return KmzArgbColor__from_channels(a, r, g, b);
+}
+
+KmzAhslColor KmzAhslColor__from_hex(const char * color) {
+    return KmzAhslColor__from_argb_color(KmzArgbColor__from_hex(color));
 }
 
 KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color) {
@@ -138,4 +146,24 @@ kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color) {
 kmz_color_32 kmz_color_32__from_ahsl_color(KmzAhslColor color) {
     return kmz_color_32__from_argb_color(KmzArgbColor__from_ahsl_color(color));
 }
+
+kmz_color_32 kmz_color_32__from_hex(const char * color) {
+    switch (strlen(color)) {
+        case 10:
+        case 8:
+            if ('0' == color[0] && ('x' == color[1] || 'X' == color[1])) {
+                return (kmz_color_32)strtol(color, NULL, 0);
+            }
+            break;
+        case 9:
+        case 7:
+            if ('#' == color[0]) {
+                return (kmz_color_32)strtol(color, NULL, 16);
+            }
+            break;
+    }
+    return 0;
+}
+
+
 // endregion;

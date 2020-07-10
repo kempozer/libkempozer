@@ -137,39 +137,27 @@ KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_
 
 // region Filtering:
 
-typedef kmz_color_32 (*KmzColorFilter)(kmz_color_32);
-
-typedef kmz_color_32 (*KmzMatrixColorFilter)(KmzMatrix *);
-
-/**
- * Applies a color filter function to the image referenced.
- */
-void KmzImage__apply_color_filter(KmzImage * me, KmzColorFilter filter);
-
-/**
- * Applies a color filter function to the image referenced.
- */
-void KmzImage__apply_color_filter_at(KmzImage * me, KmzColorFilter filter, KmzPoint pos);
-
-/**
- * Applies a color filter function to the image referenced.
- */
-void KmzImage__apply_color_filter_to(KmzImage * me, KmzColorFilter filter, KmzRectangle area);
+typedef kmz_color_32 (*KmzFilter)(size_t argc, void * argv, KmzMatrix *);
 
 /**
  * Applies a matrix filter function to the image referenced.
  */
-void KmzImage__apply_matrix_color_filter(KmzImage * me, KmzMatrixColorFilter filter, size_t size);
+void KmzImage__apply_filter(KmzImage * me, KmzFilter filter, size_t m_size);
 
 /**
  * Applies a matrix filter function to the image referenced.
  */
-void KmzImage__apply_matrix_color_filter_at(KmzImage * me, KmzMatrixColorFilter filter, KmzPoint pos, size_t size);
+void KmzImage__apply_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size);
 
 /**
  * Applies a matrix filter function to the image referenced.
  */
-void KmzImage__apply_matrix_color_filter_to(KmzImage * me, KmzMatrixColorFilter filter, KmzRectangle area, size_t size);
+void KmzImage__apply_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size);
+
+/**
+ * Applies a matrix filter function to the image referenced.
+ */
+void KmzImage__apply_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size);
 
 // endregion;
 
