@@ -12,7 +12,7 @@ struct kmz_image_t {
     /**
      * @const
      */
-    KmzRectangle dimen;
+    KmzSize dimen;
     /**
      * @const
      */
@@ -32,12 +32,7 @@ KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image);
 /**
  * Creates a new KmzImage using the given color buffer.
  */
-KmzImage * KmzImage__new_from_buffer(KmzRectangle dimen, kmz_color_32 * pixels);
-
-/**
- * Frees the image and its pixel pointer.
- */
-void KmzImage__free(KmzImage * me);
+KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels);
 
 /**
  * Gets a color from within the image.
@@ -137,6 +132,44 @@ KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size);
  * Creates a new matrix of the given size.
  */
 KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size);
+
+// endregion;
+
+// region Filtering:
+
+typedef kmz_color_32 (*KmzColorFilter)(kmz_color_32);
+
+typedef kmz_color_32 (*KmzMatrixColorFilter)(KmzMatrix *);
+
+/**
+ * Applies a color filter function to the image referenced.
+ */
+void KmzImage__apply_color_filter(KmzImage * me, KmzColorFilter filter);
+
+/**
+ * Applies a color filter function to the image referenced.
+ */
+void KmzImage__apply_color_filter_at(KmzImage * me, KmzColorFilter filter, KmzPoint pos);
+
+/**
+ * Applies a color filter function to the image referenced.
+ */
+void KmzImage__apply_color_filter_to(KmzImage * me, KmzColorFilter filter, KmzRectangle area);
+
+/**
+ * Applies a matrix filter function to the image referenced.
+ */
+void KmzImage__apply_matrix_color_filter(KmzImage * me, KmzMatrixColorFilter filter, size_t size);
+
+/**
+ * Applies a matrix filter function to the image referenced.
+ */
+void KmzImage__apply_matrix_color_filter_at(KmzImage * me, KmzMatrixColorFilter filter, KmzPoint pos, size_t size);
+
+/**
+ * Applies a matrix filter function to the image referenced.
+ */
+void KmzImage__apply_matrix_color_filter_to(KmzImage * me, KmzMatrixColorFilter filter, KmzRectangle area, size_t size);
 
 // endregion;
 
