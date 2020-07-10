@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "kmz_geometry.h"
 
 typedef float kmz_percent;
@@ -30,15 +32,21 @@ KmzArgbColor KmzArgbColor__from_channels(kmz_channel a, kmz_channel r, kmz_chann
 
 KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color);
 
+KmzArgbColor KmzArgbColor__from_hex(const char * color);
+
 KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color);
 
 KmzAhslColor KmzAhslColor__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
 
 KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color);
 
+KmzAhslColor KmzAhslColor__from_hex(const char * color);
+
 kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color);
 
 kmz_color_32 kmz_color_32__from_ahsl_color(KmzAhslColor color);
+
+kmz_color_32 kmz_color_32__from_hex(const char * color);
 
 // endregion;
 
