@@ -1,6 +1,7 @@
 #include "kmz_core.h"
 
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
+#define _KmzImage__between(val, in_min, ex_max) val >= in_min && val < ex_max
 
 // region Image:
 
@@ -67,18 +68,13 @@ KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image) {
     return me;
 }
 
-KmzImage * KmzImage__new_from_buffer(KmzRectangle dimen, kmz_color_32 * pixels) {
+KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels) {
     KmzImage * me = malloc(sizeof(KmzImage));
     me->dimen = dimen;
     me->len = dimen.h * dimen.w;
     me->pixels = calloc(me->len, sizeof(kmz_color_32));
     memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
     return me;
-}
-
-void KmzImage__free(KmzImage * me) {
-    free(me->pixels);
-    free(me);
 }
 
 // endregion;
@@ -133,6 +129,68 @@ KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, KmzPoint point, 
     me->size = size;
     me->hsize = me->size / 2;
     return me;
+}
+
+// endregion;
+
+// region Filtering:
+
+ssize_t _KmzImage__clamp(ssize_t val, ssize_t min, ssize_t max) {
+    if (val < min) {
+        return min;
+    } else if (val > max) {
+        return max;
+    }
+    return val;
+}
+
+void KmzImage__apply_color_filter(KmzImage * me, KmzColorFilter filter) {
+    KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
+    KmzImage__apply_color_filter_to(me, filter, area);
+}
+
+void KmzImage__apply_color_filter_at(KmzImage * me, KmzColorFilter filter, KmzPoint pos) {
+    KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
+    KmzImage__apply_color_filter_to(me, filter, area);
+}
+
+void KmzImage__apply_color_filter_to(KmzImage * me, KmzColorFilter filter, KmzRectangle area) {
+    size_t x = _KmzImage__clamp(area.pos.x, 0, me->dimen.w),
+           y = _KmzImage__clamp(area.pos.y, 0, me->dimen.h),
+           max_x = _KmzImage__clamp(area.size.w + x, x, me->dimen.w),
+           max_y = _KmzImage__clamp(area.size.h + y, y, me->dimen.h);
+    
+    KmzPoint p = {.x=0, .y=0};
+    for (p.y = y; p.y < max_y; ++p.y) {
+        for (p.x = x; p.x < max_x; ++p.x) {
+            KmzImage__set_argb_at(me, p, filter(KmzImage__get_argb_at(me, p)));
+        }
+    }
+}
+
+void KmzImage__apply_matrix_color_filter(KmzImage * me, KmzMatrixColorFilter filter, size_t size) {
+    KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
+    KmzImage__apply_matrix_color_filter_to(me, filter, area, size);
+}
+
+void KmzImage__apply_matrix_color_filter_at(KmzImage * me, KmzMatrixColorFilter filter, KmzPoint pos, size_t size) {
+    KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
+    KmzImage__apply_matrix_color_filter_to(me, filter, area, size);
+}
+
+void KmzImage__apply_matrix_color_filter_to(KmzImage * me, KmzMatrixColorFilter filter, KmzRectangle area, size_t size) {
+    size_t x = _KmzImage__clamp(area.pos.x, 0, me->dimen.w),
+           y = _KmzImage__clamp(area.pos.y, 0, me->dimen.h),
+           max_x = _KmzImage__clamp(area.size.w + x, x, me->dimen.w),
+           max_y = _KmzImage__clamp(area.size.h + y, y, me->dimen.h);
+    
+    KmzMatrix * matrix = KmzImage__get_matrix(me, size);
+    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
+        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
+            KmzImage__set_argb_at(me, matrix->pos, filter(matrix));
+        }
+    }
+    free(matrix);
 }
 
 // endregion;
