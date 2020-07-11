@@ -170,12 +170,10 @@ void KmzImage__apply_buffered_filter(KmzImage * me, KmzFilter filter, size_t m_s
 void KmzImage__apply_buffered_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size, KmzImage * buffer) {
     KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
     KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, buffer);
-    
 }
 
 void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size, KmzImage * buffer) {
     KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
-    
 }
 
 void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
