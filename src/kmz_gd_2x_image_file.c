@@ -88,17 +88,16 @@ kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile
         return ERR_INVALID_IMAGE_PTR;
     }
     
-    int r;
-    if (0 != (r = _kmz_read_short(f, &o->header.signature.type))) {
+    if (0 != _kmz_read_short(f, &o->header.signature.type)) {
         return ERR_READ_SIGNATURE;
     }
-    if (0 != (r = _kmz_read_short(f, &o->header.signature.dimen.w))) {
+    if (0 != _kmz_read_short(f, &o->header.signature.dimen.w)) {
         return ERR_READ_WIDTH;
     }
-    if (0 != (r = _kmz_read_short(f, &o->header.signature.dimen.h))) {
+    if (0 != _kmz_read_short(f, &o->header.signature.dimen.h)) {
         return ERR_READ_HEIGHT;
     }
-    if (0 != (r = _kmz_read_byte(f, &o->header.color.is_truecolor))) {
+    if (0 != _kmz_read_byte(f, &o->header.color.is_truecolor)) {
         return ERR_READ_IS_TRUECOLOR;
     }
     
