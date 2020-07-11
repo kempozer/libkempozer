@@ -159,6 +159,28 @@ void KmzImage__apply_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle are
  */
 void KmzImage__apply_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size);
 
+/**
+ * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
+ */
+void KmzImage__apply_buffered_filter(KmzImage * me, KmzFilter filter, size_t m_size, KmzImage * buffer);
+
+/**
+ * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
+ */
+void KmzImage__apply_buffered_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size, KmzImage * buffer);
+
+/**
+ * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
+ */
+void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size, KmzImage * buffer);
+
+/**
+ * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
+ */
+void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
+                                                  KmzImage * buffer);
+
+
 // endregion;
 
 #endif /* kmz_core_h */

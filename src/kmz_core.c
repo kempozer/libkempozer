@@ -146,19 +146,38 @@ ssize_t _KmzImage__clamp(ssize_t val, ssize_t min, ssize_t max) {
 
 void KmzImage__apply_filter(KmzImage * me, KmzFilter filter, size_t m_size) {
     KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
-    KmzImage__apply_filter_with_args_to(me, 0, NULL, filter, area, m_size);
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
 }
 
 void KmzImage__apply_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size) {
     KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
-    KmzImage__apply_filter_with_args_to(me, 0, NULL, filter, area, m_size);
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
 }
 
 void KmzImage__apply_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size) {
-    KmzImage__apply_filter_with_args_to(me, 0, NULL, filter, area, m_size);
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
 }
 
 void KmzImage__apply_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size) {
+    KmzImage__apply_buffered_filter_with_args_to(me, argc, argv, filter, area, m_size, me);
+}
+
+void KmzImage__apply_buffered_filter(KmzImage * me, KmzFilter filter, size_t m_size, KmzImage * buffer) {
+    KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, buffer);
+}
+
+void KmzImage__apply_buffered_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size, KmzImage * buffer) {
+    KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, buffer);
+}
+
+void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size, KmzImage * buffer) {
+    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
+}
+
+void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
+                                                  KmzImage * buffer) {
     size_t x = _KmzImage__clamp(area.pos.x, 0, me->dimen.w),
            y = _KmzImage__clamp(area.pos.y, 0, me->dimen.h),
            max_x = _KmzImage__clamp(area.size.w + x, x, me->dimen.w),
@@ -167,7 +186,7 @@ void KmzImage__apply_filter_with_args_to(KmzImage * me, size_t argc, void * argv
     KmzMatrix * matrix = KmzImage__get_matrix(me, m_size);
     for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
         for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
-            KmzImage__set_argb_at(me, matrix->pos, filter(argc, argv, matrix));
+            KmzImage__set_argb_at(buffer, matrix->pos, filter(argc, argv, matrix));
         }
     }
     free(matrix);
