@@ -1,7 +1,12 @@
 #include "kmz_core.h"
 
+// region Helpers:
+
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
 #define _KmzImage__between(val, in_min, ex_max) val >= in_min && val < ex_max
+#define _kmz__clamp(val, min, max) val < min ? min : (val > max ? max : val)
+
+// endregion;
 
 // region Image:
 
@@ -81,21 +86,15 @@ KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels) {
 
 // region Matrix:
 
-ssize_t _KmzMatrix__clamp(ssize_t val, ssize_t min, ssize_t max) {
-    if (val < min) {
-        return min;
-    } else if (val > max) {
-        return max;
-    }
-    return val;
-}
-
 KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point) {
     const ssize_t x = me->pos.x + (point.x - me->hsize),
-                  y = me->pos.y + (point.y - me->hsize);
+                  y = me->pos.y + (point.y - me->hsize),
+                  max_x = me->image->dimen.w - 1,
+                  max_y = me->image->dimen.h - 1;
+    
     const KmzPoint p = {
-        .x=_KmzMatrix__clamp(x, 0, me->image->dimen.w - 1),
-        .y=_KmzMatrix__clamp(y, 0, me->image->dimen.h - 1)
+        .x=_kmz__clamp(x, 0, max_x),
+        .y=_kmz__clamp(y, 0, max_y)
     };
     return p;
 }
@@ -135,15 +134,6 @@ KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, KmzPoint point, 
 
 // region Filtering:
 
-ssize_t _KmzImage__clamp(ssize_t val, ssize_t min, ssize_t max) {
-    if (val < min) {
-        return min;
-    } else if (val > max) {
-        return max;
-    }
-    return val;
-}
-
 void KmzImage__apply_filter(KmzImage * me, KmzFilter filter, size_t m_size) {
     KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
     KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
@@ -178,10 +168,10 @@ void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRect
 
 void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
                                                   KmzImage * buffer) {
-    size_t x = _KmzImage__clamp(area.pos.x, 0, me->dimen.w),
-           y = _KmzImage__clamp(area.pos.y, 0, me->dimen.h),
-           max_x = _KmzImage__clamp(area.size.w + x, x, me->dimen.w),
-           max_y = _KmzImage__clamp(area.size.h + y, y, me->dimen.h);
+    size_t x = _kmz__clamp(area.pos.x, 0, me->dimen.w),
+           y = _kmz__clamp(area.pos.y, 0, me->dimen.h),
+           max_x = _kmz__clamp(area.size.w + x, x, me->dimen.w),
+           max_y = _kmz__clamp(area.size.h + y, y, me->dimen.h);
     
     KmzMatrix * matrix = KmzImage__get_matrix(me, m_size);
     for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
