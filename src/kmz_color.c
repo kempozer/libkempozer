@@ -158,7 +158,7 @@ kmz_color_32 kmz_color_32__from_hex(const char * color) {
         case 9:
         case 7:
             if ('#' == color[0]) {
-                return (kmz_color_32)strtol(color, NULL, 16);
+                return (kmz_color_32)strtol(color + 1, NULL, 16);
             }
             break;
     }
