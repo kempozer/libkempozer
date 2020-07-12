@@ -1,4 +1,4 @@
 ---
-url: /contributing
-title: Contributing
+path: /contributing
+name: Contributing
 ---
