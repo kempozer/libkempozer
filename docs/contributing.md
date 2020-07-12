@@ -2,7 +2,7 @@
 permalink: contributing.html
 ---
 
-{% include menu.md %}
+{% include menu.html %}
 
 # Contributing to libkempozer
 
