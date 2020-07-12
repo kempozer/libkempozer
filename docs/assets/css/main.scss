@@ -10,8 +10,10 @@ header {
   width: 20vw;
 }
 
-@media print, screen and (max-width: 960px) header {
-  width: 100vw;
+@media print, screen and (max-width: 960px) {
+  header {
+    width: 100vw;
+  }
 }
 
 section {
