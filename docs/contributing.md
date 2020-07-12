@@ -1,3 +1,7 @@
+---
+permalink: contributing.html
+---
+
 # Contributing to libkempozer
 
 ### Found a bug?
