@@ -1,5 +1,5 @@
 ---
-permalink: code_of_conduct.html
+permalink: code-of-conduct.html
 title: Code of Conduct
 ---
 
