@@ -19,8 +19,11 @@ nav {
   padding: 10px 20px;
   font-size: 16px;
   display: flex;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
 }
 
-nav > a {
+nav > span > a {
   color: $fg_color;
 }
