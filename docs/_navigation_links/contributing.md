@@ -1,5 +1,5 @@
 ---
 order: 1
-path: /contributing
+href: /contributing
 name: Contributing
 ---
