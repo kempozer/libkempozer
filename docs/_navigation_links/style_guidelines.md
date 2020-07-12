@@ -1,5 +1,5 @@
 ---
 order: 1
-path: /style_guidelines
+path: /style-guidelines.html
 name: Code Style Guidelines
 ---
