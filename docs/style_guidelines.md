@@ -96,6 +96,7 @@ All exposed struct constants __must__:
 * be declared with the modifier `static const`.
 * be named using upper snake casing.
 * be prefixed with the `typedef` identifier of the struct followed by `__`.
+
   Example:
     ```c
     static const int KmzMyStruct__MY_CONSTANT = 0;
