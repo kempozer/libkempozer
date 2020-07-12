@@ -1,0 +1,29 @@
+---
+---
+
+$bg_color: #171717;
+$fg_color: #FDFDFB;
+$br_color: #000000;
+$br_width: 1px;
+$br_style: solid;
+$br_corner: 4px;
+
+nav {
+  background-color: $bg_color;
+  color: $fg_color;
+  float: left;
+  border: $br_width $br_style $br_color;
+  border-radius: $br_corner;
+  margin: 0px 25px 0 0;
+  width: 100%;
+  padding: 10px 20px;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  align-content: space-around;
+}
+
+nav > span > a {
+  color: $fg_color;
+}

@@ -1,0 +1,46 @@
+---
+---
+
+div.wrapper {
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+nav {
+  box-sizing: border-box;
+  margin: 0 0 25px 0;
+}
+
+header, footer {
+  margin: 0 12.25px 0 25px;
+  width: calc(30vw - 37.25px);
+  box-sizing: border-box;
+}
+
+section {
+  width: calc(70vw - 37.25px);
+  box-sizing: border-box;
+  margin: 0 25px 0 12.25px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 25px 0 10px;
+}
+
+@media print, screen and (max-width: 960px) {
+  header {
+    margin: 0 25px 0 0;
+    width: calc(100vw - 25px);
+  }
+  
+  section {
+    margin: 0 25px;
+    padding: 0;
+    width: calc(100vw - 50px);
+  }
+  
+  footer {
+    margin: 0 25px;
+    width: calc(100vw - 50px);
+  }
+}

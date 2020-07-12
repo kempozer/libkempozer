@@ -1,0 +1,10 @@
+<link rel="stylesheet" href="/assets/css/menu.css" />
+<nav>
+{% for link in site.navigation_links %}
+  {% if page.title != link.name %}
+    <span>
+      <a href="{{ link.href }}">{{ link.name }}</a>
+    </span>
+  {% endif %}
+{% endfor %}
+</nav>

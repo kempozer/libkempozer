@@ -1,3 +1,11 @@
+---
+permalink: code-of-conduct.html
+title: Code of Conduct
+---
+
+{% include shared.html %}
+{% include menu.html %}
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
