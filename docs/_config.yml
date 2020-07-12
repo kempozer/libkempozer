@@ -1,3 +1,4 @@
 theme: jekyll-theme-dinky
+show_downloads: true
 collections:
   - navigation_links
