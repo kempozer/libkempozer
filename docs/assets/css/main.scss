@@ -6,8 +6,12 @@ div.wrapper {
   box-sizing: border-box;
 }
 
+nav {
+  box-sizing: border-box;
+}
+
 header {
-  margin: 0 25px 0 0;
+  margin: 0 30px 0 0;
   width: 20vw;
   box-sizing: border-box;
 }
@@ -24,6 +28,7 @@ footer {
 
 @media print, screen and (max-width: 960px) {
   header {
+  margin: 30px 25px 0 0;
     width: 100vw;
   }
   
