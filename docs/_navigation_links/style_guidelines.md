@@ -1,4 +1,4 @@
 ---
 url: /style_guidelines
-text: Code Style Guidelines
+title: Code Style Guidelines
 ---
