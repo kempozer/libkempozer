@@ -4,7 +4,7 @@
 static const kmz_percent _KMZ_ONE_THIRD = (1. / 3.),
                          _KMZ_TWO_THIRDS = (2. / 3.);
 
-kmz_percent _kmz_hue2rgb(kmz_percent part_1, kmz_percent part_2, kmz_percent hue) {
+static inline kmz_percent _kmz_hue2rgb(kmz_percent part_1, kmz_percent part_2, kmz_percent hue) {
     if (hue < 0.) {
         hue = (1. - fmodf(-hue, 1.));
     } else if (hue > 1.) {
