@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="/assets/css/menu.css" />
 <nav>
 {% for link in site.navigation_links %}
-  <a href="{{ link.url }}">{{ link.title }}</a>
+  | <a href="{{ link.url }}">{{ link.title }}</a> |
 {% endfor %}
 </nav>
