@@ -1,3 +1,3 @@
 ---
 ---
-{% include menu.md %}
+{% include menu.html %}
