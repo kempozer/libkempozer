@@ -27,6 +27,7 @@ All exposed structs __must__:
 * include a `typedef` following the struct declaration with the struct identifier converted to __Pascal Case excluding the trailing t__.
 * use the doxygen `@const` tag on fields that are read-only.
 * prefix non-public fields with `_`.
+
   Example:
     ```c
     struct kmz_my_struct_t {
@@ -36,6 +37,7 @@ All exposed structs __must__:
     typedef struct kmz_my_struct_t KmzMyStruct;
     ```
 * provide a __macro constructor__ if the struct represents a value type.
+
   Example:
     ```c
     struct kmz_my_value_struct_t {
@@ -53,6 +55,7 @@ All exposed struct constructors __must__:
 * follow all [method naming conventions](#methods).
 * be prefixed with `from_` immediately following the common method prefix.
 * return `<struct>` or `<struct> *`.
+
   Example:
     ```c
     KmzMyStruct * KmzMyStruct__from_int(int var) {
@@ -70,11 +73,13 @@ All exposed struct methods __must__:
 * be named using snake casing.
 * be prefixed with the `typedef` identifier of the struct followed by `__`.
 * have a first parameter of `<struct> me` or `<struct> * me`.
+
   Example:
     ```c
     int KmzMyStruct__get_var(KmzMyStruct * me);
     ```
 * include the opening parenthesis (`{`) on the same line as the method identifier in the source file.
+
   Example:
     ```c
     int KmzMyStruct__get_var(KmzMyStruct * me) {
@@ -101,11 +106,13 @@ All exposed macros that are designed to be used in code __must__:
 * be named using lower snake casing.
 * be defined as a function macro.
 * be prefixed with `kmz__`.
+
   Example:
     ```c
     #define kmz__my_macro(arg1)
     ```
 * define a name for any varargs expected.
+
   Example:
     ```c
     #define kmz_my_vararg_macro(args...)
