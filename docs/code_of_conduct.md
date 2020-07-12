@@ -1,5 +1,6 @@
 ---
 permalink: code_of_conduct.html
+title: Code of Conduct
 ---
 
 {% include menu.html %}
