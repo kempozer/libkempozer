@@ -25,12 +25,25 @@ All exposed structs __must__:
 * be prefixed with `kmz_`.
 * include the opening parenthesis (`{`) on the same line as the struct identifier.
 * include a `typedef` following the struct declaration with the struct identifier converted to __Pascal Case excluding the trailing t__.
+* use the doxygen `@const` tag on fields that are read-only.
+* prefix non-public fields with `_`.
   * Example:
     ```c
     struct kmz_my_struct_t {
+        /** @const */
         int _var;
     };
     typedef struct kmz_my_struct_t KmzMyStruct;
+    ```
+* provide a __macro constructor__ if the struct represents a value type.
+  * Example:
+    ```c
+    struct kmz_my_value_struct_t {
+        int var_1, var_2;
+    };
+    typedef struct kmz_my_value_struct_t KmzMyValueStruct;
+    
+    #define my_value_struct(var_1, var_2) (MyValueStruct) {var_1,var_2}
     ```
 
 ### Constructors
@@ -40,6 +53,13 @@ All exposed struct constructors __must__:
 * follow all [method naming conventions](#methods).
 * be prefixed with `from_` immediately following the common method prefix.
 * return `<struct>` or `<struct> *`.
+  * Example:
+    ```c
+    KmzMyStruct * KmzMyStruct__from_int(int var) {
+        KmzMyStruct * me = malloc(sizeof(KmzMyStruct));
+        return me;
+    }
+    ```
 
 ### Methods
 
