@@ -59,21 +59,18 @@ KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels) {
 // endregion;
 
 // region Matrix:
-static inline KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point, KmzSize dimen) {
-    const ssize_t x = me->pos.x + (point.x - me->hsize),
-                  y = me->pos.y + (point.y - me->hsize),
-                  max_x = dimen.w - 1,
-                  max_y = dimen.h - 1;
+#define _kmz__clamp_point(me, point) (
+static inline KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point) {
     
-    return (KmzPoint) {.x=kmz__clamp(x, 0, max_x), .y=kmz__clamp(y, 0, max_y)};
+    return (KmzPoint) {.x=kmz__clamp(me->pos.x + (point.x - me->hsize), 0, me->image_dimen.w - 1), .y=kmz__clamp(me->pos.y + (point.y - me->hsize), 0, me->image_dimen.h - 1)};
 }
 
 kmz_color_32 KmzMatrix__get_argb_at(KmzMatrix * me, KmzPoint point) {
-    return KmzImageLike__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen));
+    return KmzImageLike__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point));
 }
 
 void KmzMatrix__set_argb_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color) {
-    KmzImageLike__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen), color);
+    KmzImageLike__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point), color);
 }
 
 KmzMatrix * KmzMatrix__new_from_image_like(KmzImageLike image, KmzPoint point, size_t size) {

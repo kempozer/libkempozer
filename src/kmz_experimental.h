@@ -48,20 +48,20 @@ KmzImageLike: KmzImageLike__get_matrix_at_x_y)(m, x, y)
 
 
 
-#define kmzexp_rectangle(p_or_x, s_or_y, w_and_h...) _Generic((p_or_x), \
+#define kmzexp_rectangle(p_or_x, s_or_y, w_and_h...) (_Generic((p_or_x), \
 KmzPoint: (KmzRectangle) {p_or_x,s_or_y}, \
-default: (KmzRectangle) {{p_or_x,s_or_y}, {w_and_h}})
+default: (KmzRectangle) {{p_or_x,s_or_y}, {w_and_h}}))
 
-#define kmzexp_rectanglef(p_or_x, s_or_y, w_and_h...) _Generic((p_or_x), \
+#define kmzexp_rectanglef(p_or_x, s_or_y, w_and_h...) (_Generic((p_or_x), \
 KmzPointF: (KmzRectangleF) {p_or_x,s_or_y}, \
-default: (KmzRectangleF) {{p_or_x,s_or_y}, {w_and_h}})
+default: (KmzRectangleF) {{p_or_x,s_or_y}, {w_and_h}}))
 
-#define kmzexp_line(s_or_x, e_or_y, e_x_and_e_y...) _Generic((s_or_x), \
+#define kmzexp_line(s_or_x, e_or_y, e_x_and_e_y...) (_Generic((s_or_x), \
 KmzPoint: (KmzLine) {s_or_x,e_or_y} \
-default: (KmzLine) {{s_or_x,e_or_y},{e_x_and_e_y}})
+default: (KmzLine) {{s_or_x,e_or_y},{e_x_and_e_y}}))
 
-#define kmzexp_linef(s_or_x, e_or_y, e_x_and_e_y...) _Generic((s_or_x), \
+#define kmzexp_linef(s_or_x, e_or_y, e_x_and_e_y...) (_Generic((s_or_x), \
 KmzPointF: (KmzLineF) {s_or_x,e_or_y} \
-default: (KmzLineF) {{s_or_x,e_or_y},{e_x_and_e_y}})
+default: (KmzLineF) {{s_or_x,e_or_y},{e_x_and_e_y}}))
 
 #endif /* kmz_experimental_h */

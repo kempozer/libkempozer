@@ -105,21 +105,21 @@ static const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0
 // endregion;
 
 // region Helpers:
-#define kmz_size(w, h) (KmzSize) {w,h}
+#define kmz_size(w, h) ((KmzSize){w,h})
 
-#define kmz_sizef(w, h) (KmzSizeF) {w,h}
+#define kmz_sizef(w, h) ((KmzSizeF){w,h})
 
-#define kmz_point(x, y) (KmzPoint) {x,y}
+#define kmz_point(x, y) ((KmzPoint){x,y})
 
-#define kmz_pointf(x, y) (KmzPoint) {x,y}
+#define kmz_pointf(x, y) ((KmzPoint){x,y})
 
-#define kmz_rectangle(pos, size) (KmzRectangle) {pos,size}
+#define kmz_rectangle(pos, size) ((KmzRectangle){pos,size})
 
-#define kmz_rectanglef(pos, size) (KmzRectangleF) {pos,size}
+#define kmz_rectanglef(pos, size) ((KmzRectangleF){pos,size})
 
-#define kmz_line(start, end) (KmzLine) {start,end}
+#define kmz_line(start, end) ((KmzLine){start,end})
 
-#define kmz_linef(start, end) (KmzLineF) {start,end}
+#define kmz_linef(start, end) ((KmzLineF){start,end})
 // endregion;
 
 #endif /* kmz_geometry_h */
