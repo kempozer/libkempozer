@@ -1,5 +1,5 @@
 ---
 order: 0
-path: /
+href: /
 name: Home
 ---
