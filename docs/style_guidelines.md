@@ -2,6 +2,8 @@
 permalink: style_guidelines.html
 ---
 
+{% include menu.md %}
+
 # Style guidelines
 
 ### Source files
