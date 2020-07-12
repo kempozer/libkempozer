@@ -1,4 +1,4 @@
 ---
-url: /code_of_conduct
-title: Code of Conduct
+path: /code_of_conduct.html
+name: Code of Conduct
 ---
