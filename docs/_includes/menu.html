@@ -3,7 +3,7 @@
 {% for link in site.navigation_links %}
   {% if page.title != link.name %}
     <span>
-      <a href="{{ link.path }}">{{ link.name }}</a>
+      <a href="{{ link.url }}">{{ link.name }}</a>
     </span>
   {% endif %}
 {% endfor %}
