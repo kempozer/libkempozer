@@ -1,0 +1,18 @@
+---
+---
+
+$bg_color: #171717;
+$fg_color: #FDFDFB;
+$br_color: #000000;
+$br_width: 1px;
+$br_style: solid;
+$br_corner: 4px;
+
+nav {
+  background-color: $gb_color;
+  color: $fg_color;
+  float: left;
+  border: $br_width $br_style $br_color;
+  border-radius: $br_corner;
+  margin: 0px 25px 0 0;
+}
