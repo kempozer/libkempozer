@@ -1,5 +1,6 @@
 ---
 permalink: style_guidelines.html
+title: Code Style Guidelines
 ---
 
 {% include menu.html %}
