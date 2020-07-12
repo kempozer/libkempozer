@@ -1,4 +1,5 @@
 ---
-url: /style_guidelines
-title: Code Style Guidelines
+order: 1
+path: /style_guidelines
+name: Code Style Guidelines
 ---
