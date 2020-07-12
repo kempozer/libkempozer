@@ -12,4 +12,10 @@ enum kmz_bool_t {
 typedef enum kmz_bool_t KmzBool;
 // endregion;
 
+// region Helpers:
+
+#define kmz__between(val, in_min, ex_max) val >= in_min && val < ex_max
+#define kmz__clamp(val, min, max) val < min ? min : (val > max ? max : val)
+// endregion;
+
 #endif /* kmz_numerics_h */

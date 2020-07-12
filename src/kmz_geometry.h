@@ -104,4 +104,30 @@ static const KmzLine KmzLine__ZERO = {.start={.x=0, .y=0}, .end={.x=0, .y=0}};
 static const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0.}};
 // endregion;
 
+// region Helpers:
+#define kmz_size(w, h) (KmzSize) {w,h}
+
+#define kmz_sizef(w, h) (KmzSizeF) {w,h}
+
+#define kmz_point(x, y) (KmzPoint) {x,y}
+
+#define kmz_pointf(x, y) (KmzPoint) {x,y}
+
+#define kmz_rectangle(p_or_x, s_or_y, w_and_h...) _Generic((p_or_x), \
+KmzPoint: (KmzRectangle) {p_or_x,s_or_y}, \
+default: (KmzRectangle) {{p_or_x,s_or_y}, {w_and_h}})
+
+#define kmz_rectanglef(p_or_x, s_or_y, w_and_h...) _Generic((p_or_x), \
+KmzPointF: (KmzRectangleF) {p_or_x,s_or_y}, \
+default: (KmzRectangleF) {{p_or_x,s_or_y}, {w_and_h}})
+
+#define kmz_line(s_or_x, e_or_y, e_x_and_e_y...) _Generic((s_or_x), \
+KmzPoint: (KmzLine) {s_or_x,e_or_y} \
+default: (KmzLine) {{s_or_x,e_or_y},{e_x_and_e_y}})
+
+#define kmz_linef(s_or_x, e_or_y, e_x_and_e_y...) _Generic((s_or_x), \
+KmzPointF: (KmzLineF) {s_or_x,e_or_y} \
+default: (KmzLineF) {{s_or_x,e_or_y},{e_x_and_e_y}})
+// endregion;
+
 #endif /* kmz_geometry_h */
