@@ -2,7 +2,7 @@
 permalink: code_of_conduct.html
 ---
 
-{% include menu.md %}
+{% include menu.html %}
 
 # Contributor Covenant Code of Conduct
 
