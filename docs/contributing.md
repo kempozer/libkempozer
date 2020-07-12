@@ -1,5 +1,6 @@
 ---
 permalink: contributing.html
+title: Contributing
 ---
 
 {% include menu.html %}
