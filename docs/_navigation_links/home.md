@@ -1,4 +1,5 @@
 ---
-url: /
-title: Home
+order: 0
+path: /
+name: Home
 ---

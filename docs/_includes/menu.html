@@ -1,9 +1,9 @@
 <link rel="stylesheet" href="/assets/css/menu.css" />
 <nav>
 {% for link in site.navigation_links %}
-  {% if page.title != link.title %}
+  {% if page.title != link.name %}
     <span>
-      <a href="{{ link.url }}">{{ link.title }}</a>
+      <a href="{{ link.path }}">{{ link.name }}</a>
     </span>
   {% endif %}
 {% endfor %}
