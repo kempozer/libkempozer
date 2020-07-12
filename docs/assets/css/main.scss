@@ -3,19 +3,23 @@
 
 div.wrapper {
   width: 100vw;
+  box-sizing: border-box;
 }
 
 header {
   margin: 0 25px 0 0;
   width: 20vw;
+  box-sizing: border-box;
 }
 
 section {
   width: 70vw;
+  box-sizing: border-box;
 }
 
 footer {
   width: 20vw;
+  box-sizing: border-box;
 }
 
 @media print, screen and (max-width: 960px) {
