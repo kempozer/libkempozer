@@ -1,8 +1,10 @@
 <link rel="stylesheet" href="/assets/css/menu.css" />
 <nav>
 {% for link in site.navigation_links %}
-  <span>
-    | <a href="{{ link.url }}">{{ link.title }}</a> |
-  </span>
+  {% if page.title != link.title %}
+    <span>
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    </span>
+  {% endif %}
 {% endfor %}
 </nav>
