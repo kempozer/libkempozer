@@ -8,7 +8,7 @@ title: Code Style Guidelines
 
 # Style guidelines
 
-libkempozer is implemented using (C11)[https://en.cppreference.com/w/c].
+libkempozer is implemented using [C11](https://en.cppreference.com/w/c).
 
 ### Source files
 
