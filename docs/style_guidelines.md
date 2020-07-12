@@ -1,3 +1,7 @@
+---
+permalink: style_guidelines.html
+---
+
 # Style guidelines
 
 ### Source files
