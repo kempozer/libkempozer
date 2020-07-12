@@ -1,2 +1,3 @@
 ---
 ---
+{% include menu.md %}

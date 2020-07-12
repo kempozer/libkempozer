@@ -2,6 +2,8 @@
 permalink: code_of_conduct.html
 ---
 
+{% include menu.md %}
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
