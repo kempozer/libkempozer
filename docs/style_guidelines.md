@@ -2,7 +2,7 @@
 permalink: style_guidelines.html
 ---
 
-{% include menu.md %}
+{% include menu.html %}
 
 # Style guidelines
 
