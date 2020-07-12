@@ -1,5 +1,5 @@
 ---
 order: 1
-href: /code_of_conduct
+href: /code-of-conduct
 name: Code of Conduct
 ---
