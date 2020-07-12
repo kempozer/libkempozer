@@ -3,7 +3,8 @@ permalink: license.html
 Title: License
 ---
 
-{% include shared.html %} {% include menu.html %}
+{% include shared.html %}
+{% include menu.html %}
 
 BSD 3-Clause License
 
