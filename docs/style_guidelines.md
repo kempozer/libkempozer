@@ -3,6 +3,7 @@ permalink: style-guidelines.html
 title: Code Style Guidelines
 ---
 
+{% include shared.html %}
 {% include menu.html %}
 
 # Style guidelines
