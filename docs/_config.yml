@@ -3,3 +3,4 @@ show_downloads: true
 collections:
   navigation_links:
     sort_by: order
+    permalink: /:name
