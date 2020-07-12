@@ -6,8 +6,7 @@
 #include "kmz_color.h"
 #include "kmz_geometry.h"
 
-// region Image:
-
+// region Types:
 struct kmz_image_t {
     /**
      * @const
@@ -24,6 +23,27 @@ struct kmz_image_t {
 };
 typedef struct kmz_image_t KmzImage;
 
+struct kmz_matrix_t {
+    /**
+     * @const
+     */
+    size_t size;
+    /**
+     * @const
+     */
+    size_t hsize;
+    KmzPoint pos;
+    /**
+     * @const
+     */
+    KmzImage * image;
+};
+typedef struct kmz_matrix_t KmzMatrix;
+
+typedef kmz_color_32 (*KmzFilter)(size_t argc, void * argv, KmzMatrix *);
+// endregion;
+
+// region Functions:
 /**
  * Creates a new KmzImage using the given GD 2x image file.
  */
@@ -64,27 +84,6 @@ size_t KmzImage__is_valid(KmzImage * me, KmzPoint point);
  */
 size_t KmzImage__is_valid_x_y(KmzImage * me, size_t x, size_t y);
 
-// endregion;
-
-// region Matrix:
-
-struct kmz_matrix_t {
-    /**
-     * @const
-     */
-    size_t size;
-    /**
-     * @const
-     */
-    size_t hsize;
-    KmzPoint pos;
-    /**
-     * @const
-     */
-    KmzImage * image;
-};
-typedef struct kmz_matrix_t KmzMatrix;
-
 /**
  * Creates a new KmzMatrix for the given image.
  */
@@ -114,9 +113,6 @@ void KmzMatrix__set_color_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color)
  * Sets a color in the image referenced by the given matrix relative to the matrix's current position.
  */
 void KmzMatrix__set_color_at_x_y(KmzMatrix * me, size_t x, size_t y, kmz_color_32 color);
-// endregion;
-
-// region Image Matrix:
 
 /**
  * Creates a new matrix of the given size.
@@ -132,12 +128,6 @@ KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size);
  * Creates a new matrix of the given size.
  */
 KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size);
-
-// endregion;
-
-// region Filtering:
-
-typedef kmz_color_32 (*KmzFilter)(size_t argc, void * argv, KmzMatrix *);
 
 /**
  * Applies a matrix filter function to the image referenced.
@@ -179,8 +169,6 @@ void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRect
  */
 void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
                                                   KmzImage * buffer);
-
-
 // endregion;
 
 #endif /* kmz_core_h */

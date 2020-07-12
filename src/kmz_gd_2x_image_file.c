@@ -8,11 +8,44 @@ int _kmz_read_byte(FILE * f, uint8_t * r) {
     return ferror(f);
 }
 
+int _kmz_read_byte_buffer(FILE * f, uint8_t * r, size_t s) {
+    size_t total = 0, remainder = s;
+    while (remainder > 8192 && !feof(f)) {
+        total += fread(r + total, sizeof(uint8_t), 8192, f);
+        remainder -= 8192;
+    }
+    if (remainder && !feof(f)) {
+        total += fread(r + total, sizeof(uint8_t), remainder, f);
+    }
+    if (s == total) {
+        for (size_t i = 0; i < s; ++i) {
+            r[i] = ntohl(r[i]);
+        }
+        return 0;
+    }
+    return ferror(f);
+}
+
 int _kmz_write_byte(FILE * f, uint8_t v) {
     if (1 == fwrite(&v, sizeof(uint8_t), 1, f)) {
         return 0;
     }
     return ferror(f);
+}
+
+int _kmz_write_byte_buffer(FILE * f, uint8_t * r, size_t s) {
+    for (size_t i = 0; i < s; ++i) {
+        r[i] = htonl(r[i]);
+    }
+    size_t total = 0, remainder = s;
+    while (remainder > 8192 && !feof(f)) {
+        total += fwrite(r + total, sizeof(uint8_t), 8192, f);
+        remainder -= 8192;
+    }
+    if (remainder && !feof(f)) {
+        total += fwrite(r + total, sizeof(uint8_t), remainder, f);
+    }
+    return s == total ? 0 : ferror(f);
 }
 
 int _kmz_read_short(FILE * f, uint16_t * r) {
@@ -108,8 +141,15 @@ kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile
             }
             break;
         case KMZ_GD_2x_IMAGE_FILE_PALETTE:
-            // TODO: Implement palette image loading
-            return ERR_UNSUPPORTED_OPERATION;
+            if (0 != _kmz_read_short(f, &o->header.color.value.palette.count)) {
+                return ERR_READ_PALETTE_COUNT;
+            }
+            if (0 != _kmz_read_int(f, &o->header.color.value.palette.transparent)) {
+                return ERR_READ_PALETTE_TRANSPARENT;
+            }
+            if (0 != _kmz_read_int_buffer(f, o->header.color.value.palette.colors, 256)) {
+                return ERR_READ_PALETTE_COLORS;
+            }
     }
     
     size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
@@ -122,7 +162,16 @@ kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile
             return ERR_READ_PIXELS;
         }
     } else {
-        return ERR_UNKNOWN;
+        o->pixels = calloc(len, sizeof(kmz_color_32));
+        uint8_t * buffer = calloc(len, sizeof(uint8_t));
+        if (0 != _kmz_read_byte_buffer(f, buffer, len)) {
+            free(buffer);
+            return ERR_READ_PIXELS;
+        }
+        for (size_t i = 0; i < len; ++i) {
+            o->pixels[i] = o->header.color.value.palette.colors[buffer[i]];
+        }
+        free(buffer);
     }
     
     return OK;

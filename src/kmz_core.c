@@ -62,7 +62,7 @@ void _KmzImage__populate_from_gd_2x(KmzImage * me, KmzGd2xImageFile * image) {
         memcpy(me->pixels, image->pixels, me->len * sizeof(kmz_color_32));
     } else {
         for (size_t i = 0; i < me->len; ++i) {
-            me->pixels[i] = image->header.color.value.palette.palette[image->pixels[i]];
+            me->pixels[i] = image->header.color.value.palette.colors[image->pixels[i]];
         }
     }
 }

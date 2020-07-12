@@ -13,6 +13,7 @@
 #define KMZ_GD_2x_IMAGE_FILE_PALETTE 0xFFFF
 #define KMZ_GD_2x_IMAGE_NO_TRANSPARENT 0xFFFFFFFF
 
+// region Types:
 /**
  * Represents the signature portion of a GD image.
  */
@@ -36,7 +37,7 @@ typedef struct kmz_gd_2x_image_file_truecolor_header_t KmzGd2xImageFileTruecolor
 struct kmz_gd_2x_image_file_palette_header_t {
     uint16_t count;
     kmz_color_32 transparent;
-    kmz_color_32 palette[256];
+    kmz_color_32 colors[256];
 };
 typedef struct kmz_gd_2x_image_file_palette_header_t KmzGd2xImageFilePaletteHeader;
 
@@ -97,6 +98,7 @@ enum kmz_gd_2x_image_file_status_e {
     
 };
 typedef enum kmz_gd_2x_image_file_status_e kmz_gd_2x_image_file_status;
+// endregion;
 
 // region Functions:
 /**
