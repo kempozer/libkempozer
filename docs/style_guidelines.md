@@ -57,6 +57,7 @@ All exposed struct constructors __must__:
     ```c
     KmzMyStruct * KmzMyStruct__from_int(int var) {
         KmzMyStruct * me = malloc(sizeof(KmzMyStruct));
+        me->_var = var;
         return me;
     }
     ```
