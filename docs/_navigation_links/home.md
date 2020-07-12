@@ -1,4 +1,4 @@
 ---
-url: /
-title: Home
+path: /index
+name: Home
 ---
