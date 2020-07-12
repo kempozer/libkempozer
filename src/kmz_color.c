@@ -22,9 +22,8 @@ kmz_percent _kmz_hue2rgb(kmz_percent part_1, kmz_percent part_2, kmz_percent hue
     return part_1;
 }
 
-kmz_percent _kmz_rgb2delta(kmz_percent max, kmz_percent channel, kmz_percent max_delta, kmz_percent half_max_delta) {
-    return ((((max - channel) / 6.) + half_max_delta) / max_delta);
-}
+#define _kmz_rgb2delta(max, channel, max_delta, half_max_delta) \
+    ((((max - channel) / 6.) + half_max_delta) / max_delta)
 // endregion;
 
 // region Funcions:
@@ -34,13 +33,11 @@ KmzArgbColor KmzArgbColor__from_hex(const char * color) {
 
 KmzArgbColor KmzArgbColor__from_color_32(kmz_color_32 color) {
     const kmz_channel * c = (kmz_channel*)&color;
-    
     return KmzArgbColor__from_channels(c[3], c[2], c[1], c[0]);
 }
 
 KmzArgbColor KmzArgbColor__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b) {
     const KmzArgbColor c = {.a=a, .r=r, .g=g, .b=b};
-    
     return c;
 }
 
@@ -70,6 +67,10 @@ KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color) {
     return KmzArgbColor__from_channels(a, r, g, b);
 }
 
+KmzBool KmzArgbColor__equal_to(KmzArgbColor me, KmzArgbColor other) {
+    return me.a == other.a && me.r == other.r && me.g == other.g && me.b == other.b;
+}
+
 KmzAhslColor KmzAhslColor__from_hex(const char * color) {
     return KmzAhslColor__from_argb_color(KmzArgbColor__from_hex(color));
 }
@@ -80,7 +81,6 @@ KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color) {
 
 KmzAhslColor KmzAhslColor__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l) {
     const KmzAhslColor c = {.a=a, .h=h, .s=s, .l=l};
-    
     return c;
 }
 
@@ -139,6 +139,10 @@ KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color) {
     return KmzAhslColor__from_channels(a, h, s, l);
 }
 
+KmzBool KmzAhslColor__equal_to(KmzAhslColor me, KmzAhslColor other) {
+    return me.a == other.a && me.h == other.h && me.s == other.s && me.l == other.l;
+}
+
 kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color) {
     return ((color.a << 24u) | (color.r << 16u) | (color.g << 8u) | color.b);
 }
@@ -163,6 +167,10 @@ kmz_color_32 kmz_color_32__from_hex(const char * color) {
             break;
     }
     return 0;
+}
+
+KmzBool kmz_color_32__equal_to(kmz_color_32 me, kmz_color_32 other) {
+    return me == other;
 }
 
 

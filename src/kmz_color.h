@@ -7,10 +7,9 @@
 #include <math.h>
 #include <string.h>
 #include "kmz_geometry.h"
+#include "kmz_numerics.h"
 
-typedef float kmz_percent;
-typedef uint8_t kmz_channel;
-typedef uint16_t kmz_long_channel;
+// region Types:
 typedef uint32_t kmz_color_32;
 
 struct kmz_argb_color_t {
@@ -23,34 +22,81 @@ struct kmz_ahsl_color_t {
     kmz_percent h, s, l;
 };
 typedef struct kmz_ahsl_color_t KmzAhslColor;
-
-// region Functions:
-
-KmzArgbColor KmzArgbColor__from_color_32(kmz_color_32 color);
-
-KmzArgbColor KmzArgbColor__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b);
-
-KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color);
-
-KmzArgbColor KmzArgbColor__from_hex(const char * color);
-
-KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color);
-
-KmzAhslColor KmzAhslColor__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
-
-KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color);
-
-KmzAhslColor KmzAhslColor__from_hex(const char * color);
-
-kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color);
-
-kmz_color_32 kmz_color_32__from_ahsl_color(KmzAhslColor color);
-
-kmz_color_32 kmz_color_32__from_hex(const char * color);
-
 // endregion;
 
-// region Colors:
+// region Functions:
+/**
+ * Creates a new ARGB color from the provided value.
+ */
+KmzArgbColor KmzArgbColor__from_color_32(kmz_color_32 color);
+
+/**
+ * Creates a new ARGB color from the provided values.
+ */
+KmzArgbColor KmzArgbColor__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b);
+
+/**
+ * Creates a new ARGB color from the provided value.
+ */
+KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color);
+
+/**
+ * Creates a new ARGB color from the provided value.
+ */
+KmzArgbColor KmzArgbColor__from_hex(const char * color);
+
+/**
+ * Determines if the provided ARGB colors are equal.
+ */
+KmzBool KmzArgbColor__equal_to(KmzArgbColor me, KmzArgbColor other);
+
+/**
+ * Creates a new AHSL color from the provided value.
+ */
+KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color);
+
+/**
+ * Creates a new AHSL color from the provided value.
+ */
+KmzAhslColor KmzAhslColor__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
+
+/**
+ * Creates a new AHSL color from the provided value.
+ */
+KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color);
+
+/**
+ * Creates a new AHSL color from the provided value.
+ */
+KmzAhslColor KmzAhslColor__from_hex(const char * color);
+
+/**
+ * Determines if the provided AHSL colors are equal.
+ */
+KmzBool KmzAhslColor__equal_to(KmzAhslColor me, KmzAhslColor other);
+
+/**
+ * Creates a new color 32 color from the provided value.
+ */
+kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color);
+
+/**
+ * Creates a new color 32 color from the provided value.
+ */
+kmz_color_32 kmz_color_32__from_ahsl_color(KmzAhslColor color);
+
+/**
+ * Creates a new color 32 color from the provided value.
+ */
+kmz_color_32 kmz_color_32__from_hex(const char * color);
+
+/**
+ * Determines if the provided color 32 colors are equal.
+ */
+KmzBool kmz_color_32__equal_to(kmz_color_32 me, kmz_color_32 other);
+// endregion;
+
+// region Constants:
 static const KmzArgbColor KmzArgbColor__ALICE_BLUE = {.a=0, .r=0xF0, .g=0xF8, .b=0xFF},
 KmzArgbColor__ANTIQUE_WHITE = {.a=0, .r=0xFA, .g=0xEB, .b=0xD7},
 KmzArgbColor__AQUA = {.a=0, .r=0x00, .g=0xFF, .b=0xFF},
