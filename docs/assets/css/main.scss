@@ -11,15 +11,15 @@ nav {
 }
 
 header {
-  margin: 0 25px 0 0;
-  width: calc(25vw - 25px);
+  margin: 0 25px;
+  width: calc(30vw - 50px);
   box-sizing: border-box;
 }
 
 section {
-  width: 70vw;
+  width: calc(70vw - 50px);
   box-sizing: border-box;
-  padding: 0 2.5vw;
+  padding: 0 25px;
 }
 
 footer {
