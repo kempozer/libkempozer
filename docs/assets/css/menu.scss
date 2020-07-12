@@ -15,4 +15,9 @@ nav {
   border: $br_width $br_style $br_color;
   border-radius: $br_corner;
   margin: 0px 25px 0 0;
+  width: 100%;
+}
+
+nav > a {
+  color: $fg_color;
 }
