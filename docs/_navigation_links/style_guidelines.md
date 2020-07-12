@@ -1,4 +1,4 @@
 ---
-url=/style_guidelines
-text=Code Style Guidelines
+url: /style_guidelines
+text: Code Style Guidelines
 ---
