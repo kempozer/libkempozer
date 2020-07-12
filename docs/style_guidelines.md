@@ -1,5 +1,5 @@
 ---
-permalink: style_guidelines.html
+permalink: style-guidelines.html
 title: Code Style Guidelines
 ---
 
