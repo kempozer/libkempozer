@@ -3,6 +3,7 @@ permalink: contributing.html
 title: Contributing
 ---
 
+{% include shared.html %}
 {% include menu.html %}
 
 # Contributing to libkempozer
