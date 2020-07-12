@@ -1,6 +1,6 @@
 ---
 permalink: license.html
-Title: License
+title: License
 ---
 
 {% include shared.html %}
