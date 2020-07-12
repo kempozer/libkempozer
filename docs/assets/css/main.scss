@@ -30,15 +30,15 @@ footer {
 
 @media print, screen and (max-width: 960px) {
   header {
-  margin: 30px 25px 0 0;
-    width: 100vw;
+  margin: 0 25px 0 0;
+    width: calc(100vw - 25px);
   }
   
   section {
-    width: 100vw;
+    width: calc(100vw - 50px);
   }
   
   footer {
-    width: 100vw;
+    width: calc(100vw - 50px);
   }
 }
