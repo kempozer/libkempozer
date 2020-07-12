@@ -215,31 +215,4 @@ void KmzImageLike__apply_buffered_filter(KmzImageLike me, size_t argc, kmz_arg_p
 #define KmzImageLike__get_matrix_at_x_y(me, x, y, size) KmzImageLike__get_matrix_at(me, kmz_point(x, y), size)
 // endregion;
 
-// region Hacks:
-// NOTE: These macros *may not* be present in future versions. Avoid relying on them until they've been decided upon.
-#define kmz__get_argb_at(me, point) _Generic((me), \
-KmzImage *: KmzImage__get_argb_at, KmzImageLike: KmzImageLike__get_argb_at, KmzMatrix *: KmzMatrix__get_argb_at)(me, point)
-
-#define kmz__set_argb_at_x_y(me, x, y) _Generic((me), \
-KmzImage *: KmzImage__get_argb_at_x_y, KmzImageLike: KmzImageLike__get_argb_at_x_y, KmzMatrix *: KmzMatrix__get_argb_at_x_y)(me, x, y, color)
-
-#define kmz__get_argb_at_x_y(me, x, y) _Generic((me), \
-KmzImage *: KmzImage__get_argb_at_x_y, KmzImageLike: KmzImageLike__get_argb_at_x_y, KmzMatrix *: KmzMatrix__get_argb_at_x_y)(me, x, y)
-
-#define kmz__set_argb_at(me, point, color) _Generic((me), \
-KmzImage *: KmzImage__set_argb_at, KmzImageLike: KmzImageLike__set_argb_at, KmzMatrix *: KmzMatrix__set_argb_at)(me, point, color)
-
-#define kmz__is_valid(me, point) _Generic((me), \
-KmzImage *: KmzImage__is_valid, KmzImageLike: KmzImageLike__is_valid)(me, point)
-
-#define kmz__is_valid_x_y(me, x, y) _Generic((me), \
-KmzImage *: KmzImage__is_valid_x_y, KmzImageLike: KmzImageLike__is_valid_x_y)(me, x, y)
-
-#define kmz__get_matrix_at(me, point) _Generic((me), \
-KmzImage *: KmzImage__get_matrix_at, KmzImageLike: KmzImagelike__get_matrix_at)(me, point)
-
-#define kmz__get_matrix_at_x_y(me, point) _Generic((me), \
-KmzImage *: KmzImage__get_matrix_at_x_y, KmzImageLike: KmzImageLike__get_matrix_at_x_y)(m, x, y)
-// endregion;
-
 #endif /* kmz_core_h */
