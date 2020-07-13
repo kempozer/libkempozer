@@ -29,10 +29,6 @@ struct kmz_image_like_vtab_t {
      * @const
      */
     KmzBool (* is_valid)(kmz_image_ptr, KmzPoint);
-    /**
-     * @const
-     */
-    struct kmz_matrix_t * (* get_matrix_at)(kmz_image_ptr, KmzPoint, size_t);
 };
 typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
 
