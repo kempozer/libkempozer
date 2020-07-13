@@ -27,8 +27,8 @@ void KmzImage__set_argb_at(KmzImage * me, KmzPoint point, kmz_color_32 color) {
     me->pixels[_KmzImage__get_index(me, point)] = color;
 }
 
-KmzMatrix * KmzImage__get_matrix(KmzImage * me, KmzPoint point, size_t size) {
-    return KmzImageLike__get_matrix_at(KmzImage__to_image_like(me), point, size);
+KmzImageMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size) {
+    return KmzImageMatrix__new_from_image(me, point, size);
 }
 
 KmzBool KmzImage__is_valid(KmzImage * me, KmzPoint point) {
@@ -59,18 +59,15 @@ KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels) {
 // endregion;
 
 // region Matrix:
-#define _kmz__clamp_point(me, point) (
-static inline KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point) {
-    
-    return (KmzPoint) {.x=kmz__clamp(me->pos.x + (point.x - me->hsize), 0, me->image_dimen.w - 1), .y=kmz__clamp(me->pos.y + (point.y - me->hsize), 0, me->image_dimen.h - 1)};
-}
+#define _KmzMatrix__clamp_point(me, point, dimen) \
+(kmz_point(kmz__clamp(me->pos.x + (point.x - me->hsize), 0, dimen.w - 1), kmz__clamp(me->pos.y + (point.y - me->hsize), 0, dimen.h - 1)))
 
 kmz_color_32 KmzMatrix__get_argb_at(KmzMatrix * me, KmzPoint point) {
-    return KmzImageLike__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point));
+    return KmzImageLike__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen));
 }
 
 void KmzMatrix__set_argb_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color) {
-    KmzImageLike__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point), color);
+    KmzImageLike__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen), color);
 }
 
 KmzMatrix * KmzMatrix__new_from_image_like(KmzImageLike image, KmzPoint point, size_t size) {
@@ -81,18 +78,45 @@ KmzMatrix * KmzMatrix__new_from_image_like(KmzImageLike image, KmzPoint point, s
     me->hsize = me->size / 2;
     return me;
 }
+
 // endregion;
 
 // region Filtering:
-void KmzImage__apply_filter(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size) {
+kmz_color_32 KmzImageMatrix__get_argb_at(KmzImageMatrix * me, KmzPoint point) {
+    return KmzImage__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen));
+}
+
+void KmzImageMatrix__set_argb_at(KmzImageMatrix * me, KmzPoint point, kmz_color_32 color) {
+    KmzImage__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen), color);
+}
+
+KmzImageMatrix * KmzImageMatrix__new_from_image(KmzImage * image, KmzPoint point, size_t size) {
+    KmzImageMatrix * me = malloc(sizeof(KmzImageMatrix));
+    me->image = image;
+    me->pos = point;
+    me->size = size;
+    me->hsize = me->size / 2;
+    return me;
+}
+
+void KmzImage__apply_filter(KmzImage * me, size_t argc, void * argv, KmzImageFilter filter, KmzRectangle area, size_t m_size) {
     KmzImage__apply_buffered_filter(me, argc, argv, filter, area, m_size, me);
 }
 
-void KmzImage__apply_buffered_filter(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
+void KmzImage__apply_buffered_filter(KmzImage * me, size_t argc, void * argv, KmzImageFilter filter, KmzRectangle area, size_t m_size,
                                                   KmzImage * buffer) {
-    KmzImageLike _me = KmzImage__to_image_like(me);
-    KmzImageLike _buffer = KmzImage__to_image_like(buffer);
-    KmzImageLike__apply_buffered_filter(_me, argc, argv, filter, area, m_size, _buffer);
+    size_t x = kmz__clamp(area.pos.x, 0, me->dimen.w),
+           y = kmz__clamp(area.pos.y, 0, me->dimen.h),
+           max_x = kmz__clamp(area.size.w + x, x, me->dimen.w),
+           max_y = kmz__clamp(area.size.h + y, y, me->dimen.h);
+    
+    KmzImageMatrix * matrix = KmzImage__get_matrix_at(me, KmzPoint__ZERO, m_size);
+    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
+        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
+            KmzImage__set_argb_at(buffer, matrix->pos, filter(argc, argv, matrix));
+        }
+    }
+    free(matrix);
 }
 // endregion;
 

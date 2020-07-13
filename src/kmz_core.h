@@ -60,6 +60,23 @@ struct kmz_image_t {
 };
 typedef struct kmz_image_t KmzImage;
 
+struct kmz_image_matrix_t {
+    /**
+     * @const
+     */
+    size_t size;
+    /**
+     * @const
+     */
+    size_t hsize;
+    KmzPoint pos;
+    /**
+     * @const
+     */
+    KmzImage * image;
+};
+typedef struct kmz_image_matrix_t KmzImageMatrix;
+
 struct kmz_matrix_t {
     /**
      * @const
@@ -82,6 +99,8 @@ struct kmz_matrix_t {
 typedef struct kmz_matrix_t KmzMatrix;
 
 typedef kmz_color_32 (*KmzFilter)(size_t, kmz_arg_ptr, KmzMatrix *);
+
+typedef kmz_color_32 (*KmzImageFilter)(size_t, kmz_arg_ptr, KmzImageMatrix *);
 // endregion;
 
 // region Functions:
@@ -132,19 +151,34 @@ kmz_color_32 KmzMatrix__get_argb_at(KmzMatrix * me, KmzPoint point);
 void KmzMatrix__set_argb_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color);
 
 /**
+ * Creates a new KmzMatrix for the given image.
+ */
+KmzImageMatrix * KmzImageMatrix__new_from_image(KmzImage * image, KmzPoint point, size_t size);
+
+/**
+ * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
+ */
+kmz_color_32 KmzImageMatrix__get_argb_at(KmzImageMatrix * me, KmzPoint point);
+
+/**
+ * Sets a color in the image referenced by the given matrix relative to the matrix's current position.
+ */
+void KmzImageMatrix__set_argb_at(KmzImageMatrix * me, KmzPoint point, kmz_color_32 color);
+
+/**
  * Creates a new matrix of the given size.
  */
-KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size);
+KmzImageMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size);
 
 /**
  * Applies a matrix filter function to the image referenced.
  */
-void KmzImage__apply_filter(KmzImage * me, size_t argc, kmz_arg_ptr argv, KmzFilter filter, KmzRectangle area, size_t m_size);
+void KmzImage__apply_filter(KmzImage * me, size_t argc, kmz_arg_ptr argv, KmzImageFilter filter, KmzRectangle area, size_t m_size);
 
 /**
  * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
  */
-void KmzImage__apply_buffered_filter(KmzImage * me, size_t argc, kmz_arg_ptr argv, KmzFilter filter, KmzRectangle area, size_t m_size,
+void KmzImage__apply_buffered_filter(KmzImage * me, size_t argc, kmz_arg_ptr argv, KmzImageFilter filter, KmzRectangle area, size_t m_size,
                                      KmzImage * buffer);
 
 /**
@@ -199,6 +233,10 @@ void KmzImageLike__apply_buffered_filter(KmzImageLike me, size_t argc, kmz_arg_p
 #define KmzMatrix__get_argb_at_x_y(me, x, y) KmzMatrix__get_argb_at(me, kmz_point(x, y), c)
 
 #define KmzMatrix__set_argb_at_x_y(me, x, y, color) KmzMatrix__set_argb_at(me, kmz_point(x, y), c)
+
+#define KmzImageMatrix__get_argb_at_x_y(me, x, y) KmzImageMatrix__get_argb_at(me, kmz_point(x, y), c)
+
+#define KmzImageMatrix__set_argb_at_x_y(me, x, y, color) KmzImageMatrix__set_argb_at(me, kmz_point(x, y), c)
 
 #define KmzImage__get_matrix_at_x_y(me, x, y) KmzImage__get_matrix_at(me, kmz_point(x, y))
 

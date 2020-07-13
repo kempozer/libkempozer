@@ -13,22 +13,26 @@
 #define kmzexp__get_argb_at(me, point) _Generic((me), \
 KmzImage *: KmzImage__get_argb_at, \
 KmzImageLike: KmzImageLike__get_argb_at, \
-KmzMatrix *: KmzMatrix__get_argb_at)(me, point)
-
-#define kmzexp__set_argb_at_x_y(me, x, y) _Generic((me), \
-KmzImage *: KmzImage__get_argb_at_x_y, \
-KmzImageLike: KmzImageLike__get_argb_at_x_y, \
-KmzMatrix *: KmzMatrix__get_argb_at_x_y)(me, x, y, color)
+KmzMatrix *: KmzMatrix__get_argb_at, \
+KmzImageMatrix *: KmzImageMatrix__get_argb_at)(me, point)
 
 #define kmzexp__get_argb_at_x_y(me, x, y) _Generic((me), \
 KmzImage *: KmzImage__get_argb_at_x_y, \
 KmzImageLike: KmzImageLike__get_argb_at_x_y, \
-KmzMatrix *: KmzMatrix__get_argb_at_x_y)(me, x, y)
+KmzMatrix *: KmzMatrix__get_argb_at_x_y, \
+KmzImageMatrix *: KmzImageMatrix__get_argb_at_x_y)(me, x, y)
 
 #define kmzexp__set_argb_at(me, point, color) _Generic((me), \
 KmzImage *: KmzImage__set_argb_at, \
 KmzImageLike: KmzImageLike__set_argb_at, \
-KmzMatrix *: KmzMatrix__set_argb_at)(me, point, color)
+KmzMatrix *: KmzMatrix__set_argb_at, \
+KmzImageMatrix *: KmzImageMatrix__set_argb_at)(me, point, color)
+
+#define kmzexp__set_argb_at_x_y(me, x, y, color) _Generic((me), \
+KmzImage *: KmzImage__set_argb_at_x_y, \
+KmzImageLike: KmzImageLike__set_argb_at_x_y, \
+KmzMatrix *: KmzMatrix__set_argb_at_x_y, \
+KmzImageMatrix *: KmzImageMatrix__set_argb_at_x_y)(me, x, y, color)
 
 #define kmzexp__is_valid(me, point) _Generic((me), \
 KmzImage *: KmzImage__is_valid, \
