@@ -46,12 +46,12 @@
 typedef uint32_t kmz_color_32;
 
 struct kmz_argb_color_t {
-    kmz_channel a : 7, r, g, b;
+    kmz_channel a, r, g, b;
 };
 typedef struct kmz_argb_color_t KmzArgbColor;
 
 struct kmz_ahsl_color_t {
-    kmz_channel a : 7;
+    kmz_channel a;
     kmz_percent h, s, l;
 };
 typedef struct kmz_ahsl_color_t KmzAhslColor;
@@ -76,7 +76,7 @@ KmzArgbColor KmzArgbColor__from_ahsl_color(const KmzAhslColor color);
 /**
  * Creates a new ARGB color from the provided value.
  */
-KmzArgbColor KmzArgbColor__from_hex(const char * color);
+KmzArgbColor KmzArgbColor__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided ARGB colors are equal.
@@ -101,7 +101,7 @@ KmzAhslColor KmzAhslColor__from_argb_color(const KmzArgbColor color);
 /**
  * Creates a new AHSL color from the provided value.
  */
-KmzAhslColor KmzAhslColor__from_hex(const char * color);
+KmzAhslColor KmzAhslColor__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided AHSL colors are equal.
@@ -121,7 +121,7 @@ const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
 /**
  * Creates a new color 32 color from the provided value.
  */
-const kmz_color_32 kmz_color_32__from_hex(const char * color);
+const kmz_color_32 kmz_color_32__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided color 32 colors are equal.

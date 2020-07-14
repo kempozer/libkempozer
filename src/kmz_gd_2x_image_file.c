@@ -33,14 +33,14 @@
 #include "kmz_gd_2x_image_file.h"
 // region Helpers:
 
-const int _kmz_read_byte(FILE * const restrict f, uint8_t * const restrict r) {
+static const int _kmz_read_byte(FILE * const restrict f, uint8_t * const restrict r) {
     if (1 == fread(r, sizeof(uint8_t), 1, f)) {
         return 0;
     }
     return ferror(f);
 }
 
-const int _kmz_read_byte_buffer(FILE * const restrict f, uint8_t * const restrict r, const size_t s) {
+static const int _kmz_read_byte_buffer(FILE * const restrict f, uint8_t * const restrict r, const size_t s) {
     size_t total = 0, remainder = s;
     while (remainder > 8192 && !feof(f)) {
         total += fread(r + total, sizeof(uint8_t), 8192, f);
@@ -55,14 +55,14 @@ const int _kmz_read_byte_buffer(FILE * const restrict f, uint8_t * const restric
     return ferror(f);
 }
 
-const int _kmz_write_byte(FILE * const restrict f, const uint8_t v) {
+static const int _kmz_write_byte(FILE * const restrict f, const uint8_t v) {
     if (1 == fwrite(&v, sizeof(uint8_t), 1, f)) {
         return 0;
     }
     return ferror(f);
 }
 
-const int _kmz_write_byte_buffer(FILE * const restrict f, const uint8_t * const restrict r, const size_t s) {
+static const int _kmz_write_byte_buffer(FILE * const restrict f, const uint8_t * const restrict r, const size_t s) {
     size_t total = 0, remainder = s;
     while (remainder > 8192 && !feof(f)) {
         total += fwrite(r + total, sizeof(uint8_t), 8192, f);
@@ -74,7 +74,7 @@ const int _kmz_write_byte_buffer(FILE * const restrict f, const uint8_t * const 
     return s == total ? 0 : ferror(f);
 }
 
-const int _kmz_read_short(FILE * const restrict f, uint16_t * r) {
+static const int _kmz_read_short(FILE * const restrict f, uint16_t * const restrict r) {
     if (1 == fread(r, sizeof(uint16_t), 1, f)) {
         *r = ntohs(*r);
         return 0;
@@ -82,7 +82,7 @@ const int _kmz_read_short(FILE * const restrict f, uint16_t * r) {
     return ferror(f);
 }
 
-const int _kmz_write_short(FILE * const restrict f, uint16_t v) {
+static const int _kmz_write_short(FILE * const restrict f, uint16_t v) {
     v = htons(v);
     if (1 == fwrite(&v, sizeof(uint16_t), 1, f)) {
         return 0;
@@ -90,7 +90,7 @@ const int _kmz_write_short(FILE * const restrict f, uint16_t v) {
     return ferror(f);
 }
 
-const int _kmz_read_int_buffer(FILE * const restrict f, uint32_t * const restrict r, const size_t s) {
+static const int _kmz_read_int_buffer(FILE * const restrict f, uint32_t * const restrict r, const size_t s) {
     size_t total = 0, remainder = s;
     while (remainder > 8192 && !feof(f)) {
         total += fread(r + total, sizeof(uint32_t), 8192, f);
@@ -108,7 +108,7 @@ const int _kmz_read_int_buffer(FILE * const restrict f, uint32_t * const restric
     return ferror(f);
 }
 
-const int _kmz_write_int_buffer(FILE * const restrict f, uint32_t * const restrict r, const size_t s) {
+static const int _kmz_write_int_buffer(FILE * const restrict f, uint32_t * const restrict r, const size_t s) {
     for (size_t i = 0; i < s; ++i) {
         r[i] = htonl(r[i]);
     }
@@ -123,14 +123,14 @@ const int _kmz_write_int_buffer(FILE * const restrict f, uint32_t * const restri
     return s == total ? 0 : ferror(f);
 }
 
-const int _kmz_read_int(FILE * const restrict f, uint32_t * const restrict r) {
+static const int _kmz_read_int(FILE * const restrict f, uint32_t * const restrict r) {
     if (1 == fread(r, sizeof(uint32_t), 1, f)) {
         return 0;
     }
     return ferror(f);
 }
 
-const int _kmz_write_int(FILE * const restrict f, uint32_t v) {
+static const int _kmz_write_int(FILE * const restrict f, uint32_t v) {
     if (1 == fwrite(&v, sizeof(uint32_t), 1, f)) {
         return 0;
     }
@@ -179,7 +179,7 @@ const kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * const restric
     }
     
     const size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
-    const size_t is_truecolor = o->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
+    const uint8_t is_truecolor = o->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
     o->header.color.is_truecolor = is_truecolor;
     
     if (is_truecolor) {
