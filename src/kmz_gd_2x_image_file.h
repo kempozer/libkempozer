@@ -1,3 +1,35 @@
+/*-
+ BSD 3-Clause License
+
+ Copyright (c) 2020, Kempozer
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 #ifndef kmz_gd_image_file_h
 #define kmz_gd_image_file_h
 
@@ -67,7 +99,7 @@ typedef struct kmz_gd_2x_image_file_header_t KmzGd2xImageFileHeader;
  */
 struct kmz_gd_2x_image_file_t {
     KmzGd2xImageFileHeader header;
-    kmz_color_32 * pixels;
+    kmz_color_32 * restrict pixels;
 };
 typedef struct kmz_gd_2x_image_file_t KmzGd2xImageFile;
 
@@ -104,22 +136,22 @@ typedef enum kmz_gd_2x_image_file_status_e kmz_gd_2x_image_file_status;
 /**
  * Reads a GD file with a 2x header from the given file pointer.
  */
-kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * f, KmzGd2xImageFile * o);
+const kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o);
 
 /**
  * Writes a GD file with a 2x header to the given file pointer.
  */
-kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * f, KmzGd2xImageFile * i);
+const kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i);
 
 /**
  * Returns a plain-english message for the given file status.
  */
-const char * kmz_status_msg(kmz_gd_2x_image_file_status status);
+const char * kmz_status_msg(const kmz_gd_2x_image_file_status status);
 
 /**
  * Returns a plain-english message for the given file status with the given file error appended to it.
  */
-const char * kmz_status_msg_with_err_code(kmz_gd_2x_image_file_status status, int error);
+const char * kmz_status_msg_with_err_code(const kmz_gd_2x_image_file_status status, const int error);
 // endregion;
 
 #endif /* kmz_gd_image_file_h */
