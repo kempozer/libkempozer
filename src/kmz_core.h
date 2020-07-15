@@ -65,7 +65,7 @@ struct kmz_image_like_vtab_t {
 typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
 
 struct kmz_image_like_t {
-    const KmzImageLikeVTab * restrict _vt;
+    const KmzImageLikeVTab * _vt;
     kmz_image_ptr _me;
 };
 typedef struct kmz_image_like_t KmzImageLike;
@@ -82,7 +82,7 @@ struct kmz_image_t {
     /**
      * @const
      */
-    kmz_color_32 * restrict pixels;
+    kmz_color_32 * pixels;
 };
 typedef struct kmz_image_t KmzImage;
 
@@ -99,7 +99,7 @@ struct kmz_image_matrix_t {
     /**
      * @const
      */
-    KmzImage * restrict image;
+    KmzImage * image;
 };
 typedef struct kmz_image_matrix_t KmzImageMatrix;
 
@@ -134,12 +134,12 @@ typedef const kmz_color_32 (*KmzImageFilter)(kmz_arg_ptr, KmzImageMatrix * const
 /**
  * Creates a new KmzImage using the given GD 2x image file.
  */
-KmzImage * const restrict KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
+KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
 
 /**
  * Creates a new KmzImage using the given color buffer.
  */
-KmzImage * const restrict KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels);
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels);
 
 /**
  * Creates a new image-like for the given image.
@@ -164,7 +164,7 @@ const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPo
 /**
  * Creates a new KmzMatrix for the given image.
  */
-KmzMatrix * const restrict KmzMatrix__new_from_image_like(const KmzImageLike image, const KmzPoint point, const size_t size);
+KmzMatrix * const KmzMatrix__new_from_image_like(const KmzImageLike image, const KmzPoint point, const size_t size);
 
 /**
  * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
@@ -179,7 +179,7 @@ void KmzMatrix__set_argb_at(KmzMatrix * const restrict me, const KmzPoint point,
 /**
  * Creates a new KmzMatrix for the given image.
  */
-KmzImageMatrix * const restrict KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size);
+KmzImageMatrix * const KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size);
 
 /**
  * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
@@ -194,7 +194,7 @@ void KmzImageMatrix__set_argb_at(KmzImageMatrix * const restrict me, const KmzPo
 /**
  * Creates a new matrix of the given size.
  */
-KmzImageMatrix * const restrict KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size);
+KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size);
 
 /**
  * Applies a matrix filter function to the image referenced.
@@ -211,7 +211,7 @@ void KmzImage__apply_buffered_filter(KmzImage * const restrict me, const kmz_arg
 /**
  * Produces a new KmzImageLike wrapper for the given virtual table and image reference.
  */
-const KmzImageLike KmzImageLike__wrap(const KmzImageLikeVTab * vt_ref, const kmz_image_ptr ref);
+const KmzImageLike KmzImageLike__wrap(const KmzImageLikeVTab * const vt_ref, const kmz_image_ptr ref);
 
 /**
  * Gets the dimensions of the image..
@@ -236,7 +236,7 @@ const KmzBool KmzImageLike__is_valid(const KmzImageLike me, const KmzPoint point
 /**
  * Creates a new matrix of the given size.
  */
-KmzMatrix * const restrict KmzImageLike__get_matrix_at(const KmzImageLike me, const KmzPoint point, const size_t size);
+KmzMatrix * const KmzImageLike__get_matrix_at(const KmzImageLike me, const KmzPoint point, const size_t size);
 
 /**
  * Applies a matrix filter function to the image referenced.
