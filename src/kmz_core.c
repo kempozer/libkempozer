@@ -1,128 +1,111 @@
+/*-
+ BSD 3-Clause License
+
+ Copyright (c) 2020, Kempozer
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
 #include "kmz_core.h"
 
 // region Helpers:
-
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
-#define _KmzImage__between(val, in_min, ex_max) val >= in_min && val < ex_max
-#define _kmz__clamp(val, min, max) val < min ? min : (val > max ? max : val)
-
 // endregion;
 
 // region Image:
-
-kmz_color_32 KmzImage__get_argb_at(KmzImage * me, KmzPoint point) {
-    const ssize_t i = _KmzImage__get_index(me, point);
-    return me->pixels[i];
+extern inline const KmzSize _KmzImage__get_dimen(const KmzImage * const restrict me) {
+    return me->dimen;
 }
 
-kmz_color_32 KmzImage__get_argb_at_x_y(KmzImage * me, size_t x, size_t y) {
-    const KmzPoint point = {.x=x, .y=y};
-    return KmzImage__get_argb_at(me, point);
+const KmzImageLike KmzImage__to_image_like(KmzImage * const restrict me) {
+    static const KmzImageLikeVTab vt = {
+        .get_dimen=(const KmzSize (*)(const kmz_image_ptr))&_KmzImage__get_dimen,
+        .get_argb_at=(const kmz_color_32 (*)(const kmz_image_ptr, const KmzPoint))&KmzImage__get_argb_at,
+        .set_argb_at=(void (*)(kmz_image_ptr, const KmzPoint, const kmz_color_32))&KmzImage__set_argb_at,
+        .is_valid=(const KmzBool (*)(const kmz_image_ptr, const KmzPoint))&KmzImage__is_valid
+    };
+    return KmzImageLike__wrap(&vt, me);
 }
 
-void KmzImage__set_argb_at(KmzImage * me, KmzPoint point, kmz_color_32 color) {
-    const ssize_t i = _KmzImage__get_index(me, point);
-    me->pixels[i] = color;
+extern inline const kmz_color_32 KmzImage__get_argb_at(const KmzImage * const restrict me, const KmzPoint point) {
+    return me->pixels[_KmzImage__get_index(me, point)];
 }
 
-void KmzImage__set_argb_at_x_y(KmzImage * me, size_t x, size_t y, kmz_color_32 color) {
-    const KmzPoint point = {.x=x, .y=y};
-    KmzImage__set_argb_at(me, point, color);
+extern inline void KmzImage__set_argb_at(KmzImage * const restrict me, const KmzPoint point, const kmz_color_32 color) {
+    me->pixels[_KmzImage__get_index(me, point)] = color;
 }
 
-KmzMatrix * KmzImage__get_matrix(KmzImage * me, size_t size) {
-    return KmzMatrix__new_from_image_and_pos(me, KmzPoint__ZERO, size);
+extern inline KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size) {
+    return KmzImageMatrix__new_from_image(me, point, size);
 }
 
-KmzMatrix * KmzImage__get_matrix_at(KmzImage * me, KmzPoint point, size_t size) {
-    return KmzMatrix__new_from_image_and_pos(me, point, size);
+extern inline const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point) {
+    return (me->dimen.w > point.x && point.x > -1 && me->dimen.h > point.y && point.y > -1);
 }
 
-KmzMatrix * KmzImage__get_matrix_at_x_y(KmzImage * me, size_t x, size_t y, size_t size) {
-    const KmzPoint point = {.x=x, .y=y};
-    return KmzMatrix__new_from_image_and_pos(me, point, size);
-}
-
-size_t KmzImage__is_valid(KmzImage * me, KmzPoint point) {
-    return (me->dimen.w > point.x && point.x > -1 &&
-            me->dimen.h > point.y && point.y > -1);
-}
-
-size_t KmzImage__is_valid_x_y(KmzImage * me, size_t x, size_t y) {
-    const KmzPoint point = {.x=x, .y=y};
-    return KmzImage__is_valid(me, point);
-}
-
-void _KmzImage__populate_from_gd_2x(KmzImage * me, KmzGd2xImageFile * image) {
+static inline void _KmzImage__populate_from_gd_2x(KmzImage * const restrict me, const KmzGd2xImageFile * const restrict image) {
     me->dimen = image->header.signature.dimen;
     me->len = me->dimen.h * me->dimen.w;
     me->pixels = calloc(me->len, sizeof(kmz_color_32));
-    
-    if (image->header.color.is_truecolor) {
-        memcpy(me->pixels, image->pixels, me->len * sizeof(kmz_color_32));
-    } else {
-        for (size_t i = 0; i < me->len; ++i) {
-            me->pixels[i] = image->header.color.value.palette.colors[image->pixels[i]];
-        }
-    }
+    memcpy(me->pixels, image->pixels, me->len * sizeof(kmz_color_32));
 }
 
-KmzImage * KmzImage__new_from_gd_2x(KmzGd2xImageFile * image) {
-    KmzImage * me = malloc(sizeof(KmzImage));
+KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
+    KmzImage * const restrict me = malloc(sizeof(KmzImage));
     _KmzImage__populate_from_gd_2x(me, image);
     return me;
 }
 
-KmzImage * KmzImage__new_from_buffer(KmzSize dimen, kmz_color_32 * pixels) {
-    KmzImage * me = malloc(sizeof(KmzImage));
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels) {
+    KmzImage * const restrict me = malloc(sizeof(KmzImage));
     me->dimen = dimen;
     me->len = dimen.h * dimen.w;
     me->pixels = calloc(me->len, sizeof(kmz_color_32));
     memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
     return me;
 }
-
 // endregion;
 
 // region Matrix:
+#define _KmzMatrix__clamp_point(me, point, dimen) \
+(kmz_point(kmz__clamp(me->pos.x + (point.x - (ssize_t)me->hsize), 0, dimen.w - 1), \
+           kmz__clamp(me->pos.y + (point.y - (ssize_t)me->hsize), 0, dimen.h - 1)))
 
-KmzPoint _KmzMatrix__clamp_point(KmzMatrix * me, KmzPoint point) {
-    const ssize_t x = me->pos.x + (point.x - me->hsize),
-                  y = me->pos.y + (point.y - me->hsize),
-                  max_x = me->image->dimen.w - 1,
-                  max_y = me->image->dimen.h - 1;
-    
-    const KmzPoint p = {
-        .x=_kmz__clamp(x, 0, max_x),
-        .y=_kmz__clamp(y, 0, max_y)
-    };
-    return p;
+extern inline const kmz_color_32 KmzMatrix__get_argb_at(const KmzMatrix * const restrict me, const KmzPoint point) {
+    return KmzImageLike__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen));
 }
 
-kmz_color_32 KmzMatrix__get_color_at(KmzMatrix * me, KmzPoint point) {
-    return KmzImage__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point));
+extern inline void KmzMatrix__set_argb_at(KmzMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color) {
+    KmzImageLike__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image_dimen), color);
 }
 
-kmz_color_32 KmzMatrix__get_color_at_x_y(KmzMatrix * me, size_t x, size_t y) {
-    const KmzPoint point = {.x=x, .y=y};
-    return KmzMatrix__get_color_at(me, point);
-}
-
-void KmzMatrix__set_color_at(KmzMatrix * me, KmzPoint point, kmz_color_32 color) {
-    KmzImage__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point), color);
-}
-
-void KmzMatrix__set_color_at_x_y(KmzMatrix * me, size_t x, size_t y, kmz_color_32 color) {
-    const KmzPoint point = {.x=x, .y=y};
-    KmzMatrix__set_color_at(me, point, color);
-}
-
-KmzMatrix * KmzMatrix__new_from_image(KmzImage * image, size_t size) {
-    return KmzMatrix__new_from_image_and_pos(image, KmzPoint__ZERO, size);
-}
-
-KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, KmzPoint point, size_t size) {
-    KmzMatrix * me = malloc(sizeof(KmzMatrix));
+KmzMatrix * const KmzMatrix__new_from_image_like(const KmzImageLike image, const KmzPoint point, const size_t size) {
+    KmzMatrix * const me = malloc(sizeof(KmzMatrix));
     me->image = image;
     me->pos = point;
     me->size = size;
@@ -133,53 +116,101 @@ KmzMatrix * KmzMatrix__new_from_image_and_pos(KmzImage * image, KmzPoint point, 
 // endregion;
 
 // region Filtering:
-
-void KmzImage__apply_filter(KmzImage * me, KmzFilter filter, size_t m_size) {
-    KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
+extern inline const kmz_color_32 KmzImageMatrix__get_argb_at(const KmzImageMatrix * const restrict me, const KmzPoint point) {
+    return KmzImage__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen));
 }
 
-void KmzImage__apply_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size) {
-    KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
+extern inline void KmzImageMatrix__set_argb_at(KmzImageMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color) {
+    KmzImage__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen), color);
 }
 
-void KmzImage__apply_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size) {
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
+KmzImageMatrix * const KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size) {
+    KmzImageMatrix * const restrict me = malloc(sizeof(KmzImageMatrix));
+    me->image = image;
+    me->pos = point;
+    me->size = size;
+    me->hsize = me->size / 2;
+    return me;
 }
 
-void KmzImage__apply_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size) {
-    KmzImage__apply_buffered_filter_with_args_to(me, argc, argv, filter, area, m_size, me);
-}
-
-void KmzImage__apply_buffered_filter(KmzImage * me, KmzFilter filter, size_t m_size, KmzImage * buffer) {
-    KmzRectangle area = {.pos={.x=0, .y=0}, .size=me->dimen};
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, buffer);
-}
-
-void KmzImage__apply_buffered_filter_at(KmzImage * me, KmzFilter filter, KmzPoint pos, size_t m_size, KmzImage * buffer) {
-    KmzRectangle area = {.pos=pos, .size={.w=me->dimen.w - pos.x, .h=me->dimen.h - pos.y}};
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, buffer);
-}
-
-void KmzImage__apply_buffered_filter_to(KmzImage * me, KmzFilter filter, KmzRectangle area, size_t m_size, KmzImage * buffer) {
-    KmzImage__apply_buffered_filter_with_args_to(me, 0, NULL, filter, area, m_size, me);
-}
-
-void KmzImage__apply_buffered_filter_with_args_to(KmzImage * me, size_t argc, void * argv, KmzFilter filter, KmzRectangle area, size_t m_size,
-                                                  KmzImage * buffer) {
-    size_t x = _kmz__clamp(area.pos.x, 0, me->dimen.w),
-           y = _kmz__clamp(area.pos.y, 0, me->dimen.h),
-           max_x = _kmz__clamp(area.size.w + x, x, me->dimen.w),
-           max_y = _kmz__clamp(area.size.h + y, y, me->dimen.h);
+void KmzImage__apply_filter(KmzImage * const restrict me, kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
+                            const size_t m_size) {
+    const ssize_t x = kmz__clamp(area.pos.x, 0, me->dimen.w),
+                  y = kmz__clamp(area.pos.y, 0, me->dimen.h),
+                  max_x = kmz__clamp(area.size.w + x, x, me->dimen.w),
+                  max_y = kmz__clamp(area.size.h + y, y, me->dimen.h);
     
-    KmzMatrix * matrix = KmzImage__get_matrix(me, m_size);
+    KmzImageMatrix * const restrict matrix = KmzImage__get_matrix_at(me, KmzPoint__ZERO, m_size);
     for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
         for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
-            KmzImage__set_argb_at(buffer, matrix->pos, filter(argc, argv, matrix));
+            KmzImage__set_argb_at(me, matrix->pos, filter(argv, matrix));
         }
     }
     free(matrix);
 }
 
+void KmzImage__apply_buffered_filter(KmzImage * const restrict me, kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
+                                     const size_t m_size, KmzImage * const restrict buffer) {
+    const ssize_t x = kmz__clamp(area.pos.x, 0, me->dimen.w),
+                  y = kmz__clamp(area.pos.y, 0, me->dimen.h),
+                  max_x = kmz__clamp(area.size.w + x, x, me->dimen.w),
+                  max_y = kmz__clamp(area.size.h + y, y, me->dimen.h);
+    
+    KmzImageMatrix * const restrict matrix = KmzImage__get_matrix_at(me, KmzPoint__ZERO, m_size);
+    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
+        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
+            KmzImage__set_argb_at(buffer, matrix->pos, filter(argv, matrix));
+        }
+    }
+    free(matrix);
+}
+// endregion;
+
+// region Imagelike:
+extern inline const KmzImageLike KmzImageLike__wrap(const KmzImageLikeVTab * const restrict vt_ref, const kmz_image_ptr ref) {
+    return (KmzImageLike) {._vt = vt_ref, ._me = ref};
+}
+
+extern inline const KmzSize KmzImageLike__get_dimen(const KmzImageLike me) {
+    return me._vt->get_dimen(me._me);
+}
+
+extern inline const kmz_color_32 KmzImageLike__get_argb_at(const KmzImageLike me, const KmzPoint point) {
+    return me._vt->get_argb_at(me._me, point);
+}
+
+extern inline void KmzImageLike__set_argb_at(const KmzImageLike me, const KmzPoint point, const kmz_color_32 color) {
+    me._vt->set_argb_at(me._me, point, color);
+}
+
+extern inline const KmzBool KmzImageLike__is_valid(const KmzImageLike me, const KmzPoint point) {
+    return me._vt->is_valid(me._me, point);
+}
+
+extern inline KmzMatrix * const KmzImageLike__get_matrix_at(const KmzImageLike me, const KmzPoint point, const size_t size) {
+    return KmzMatrix__new_from_image_like(me, point, size);
+}
+
+extern inline void KKmzImageLike__apply_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+                                               const size_t m_size) {
+    KmzImageLike__apply_buffered_filter(me, argv, filter, area, m_size, me);
+}
+
+void KmzImageLike__apply_buffered_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+                                         const size_t m_size, const KmzImageLike buffer) {
+    const KmzSize dimen = KmzImageLike__get_dimen(me);
+    const ssize_t x = kmz__clamp(area.pos.x, 0, dimen.w),
+                  y = kmz__clamp(area.pos.y, 0, dimen.h),
+                  max_x = kmz__clamp(area.size.w + x, x, dimen.w),
+                  max_y = kmz__clamp(area.size.h + y, y, dimen.h);
+    
+    KmzMatrix * const restrict matrix = KmzImageLike__get_matrix_at(me, KmzPoint__ZERO, m_size);
+    matrix->image_dimen = dimen;
+    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
+        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
+            KmzImageLike__set_argb_at(buffer, matrix->pos, filter(argv, matrix));
+        }
+    }
+    free(matrix);
+}
 // endregion;

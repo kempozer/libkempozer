@@ -1,3 +1,36 @@
+/*-
+ BSD 3-Clause License
+
+ Copyright (c) 2020, Kempozer
+ All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are met:
+
+ 1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+ 2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+ 3. Neither the name of the copyright holder nor the names of its
+    contributors may be used to endorse or promote products derived from
+    this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
 #ifndef kmz_color_h
 #define kmz_color_h
 
@@ -13,12 +46,12 @@
 typedef uint32_t kmz_color_32;
 
 struct kmz_argb_color_t {
-    kmz_channel a : 7, r, g, b;
+    kmz_channel a, r, g, b;
 };
 typedef struct kmz_argb_color_t KmzArgbColor;
 
 struct kmz_ahsl_color_t {
-    kmz_channel a : 7;
+    kmz_channel a;
     kmz_percent h, s, l;
 };
 typedef struct kmz_ahsl_color_t KmzAhslColor;
@@ -28,72 +61,72 @@ typedef struct kmz_ahsl_color_t KmzAhslColor;
 /**
  * Creates a new ARGB color from the provided value.
  */
-KmzArgbColor KmzArgbColor__from_color_32(kmz_color_32 color);
+KmzArgbColor KmzArgbColor__from_color_32(const kmz_color_32 color);
 
 /**
  * Creates a new ARGB color from the provided values.
  */
-KmzArgbColor KmzArgbColor__from_channels(kmz_channel a, kmz_channel r, kmz_channel g, kmz_channel b);
+KmzArgbColor KmzArgbColor__from_channels(const kmz_channel a, const kmz_channel r, const kmz_channel g, const kmz_channel b);
 
 /**
  * Creates a new ARGB color from the provided value.
  */
-KmzArgbColor KmzArgbColor__from_ahsl_color(KmzAhslColor color);
+KmzArgbColor KmzArgbColor__from_ahsl_color(const KmzAhslColor color);
 
 /**
  * Creates a new ARGB color from the provided value.
  */
-KmzArgbColor KmzArgbColor__from_hex(const char * color);
+KmzArgbColor KmzArgbColor__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided ARGB colors are equal.
  */
-KmzBool KmzArgbColor__equal_to(KmzArgbColor me, KmzArgbColor other);
+const KmzBool KmzArgbColor__equal_to(const KmzArgbColor me, const KmzArgbColor other);
 
 /**
  * Creates a new AHSL color from the provided value.
  */
-KmzAhslColor KmzAhslColor__from_color_32(kmz_color_32 color);
+KmzAhslColor KmzAhslColor__from_color_32(const kmz_color_32 color);
 
 /**
  * Creates a new AHSL color from the provided value.
  */
-KmzAhslColor KmzAhslColor__from_channels(kmz_channel a, kmz_percent h, kmz_percent s, kmz_percent l);
+KmzAhslColor KmzAhslColor__from_channels(const kmz_channel a, const kmz_percent h, const kmz_percent s, const kmz_percent l);
 
 /**
  * Creates a new AHSL color from the provided value.
  */
-KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color);
+KmzAhslColor KmzAhslColor__from_argb_color(const KmzArgbColor color);
 
 /**
  * Creates a new AHSL color from the provided value.
  */
-KmzAhslColor KmzAhslColor__from_hex(const char * color);
+KmzAhslColor KmzAhslColor__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided AHSL colors are equal.
  */
-KmzBool KmzAhslColor__equal_to(KmzAhslColor me, KmzAhslColor other);
+const KmzBool KmzAhslColor__equal_to(const KmzAhslColor me, const KmzAhslColor other);
 
 /**
  * Creates a new color 32 color from the provided value.
  */
-kmz_color_32 kmz_color_32__from_argb_color(KmzArgbColor color);
+const kmz_color_32 kmz_color_32__from_argb_color(const KmzArgbColor color);
 
 /**
  * Creates a new color 32 color from the provided value.
  */
-kmz_color_32 kmz_color_32__from_ahsl_color(KmzAhslColor color);
+const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
 
 /**
  * Creates a new color 32 color from the provided value.
  */
-kmz_color_32 kmz_color_32__from_hex(const char * color);
+const kmz_color_32 kmz_color_32__from_hex(const char * const restrict color);
 
 /**
  * Determines if the provided color 32 colors are equal.
  */
-KmzBool kmz_color_32__equal_to(kmz_color_32 me, kmz_color_32 other);
+const KmzBool kmz_color_32__equal_to(const kmz_color_32 me, const kmz_color_32 other);
 // endregion;
 
 // region Constants:
