@@ -164,7 +164,7 @@ KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color) {
         } else {
             h = 0.f;
         }
-                          
+
         if (h < 0.f) {
             h = (1.f - fmodf(-h, 1.f));
         } else if (h > 1.f) {
