@@ -121,10 +121,6 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restri
     return PIXEL_OP_OK;
 }
 
-extern inline KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size) {
-    return KmzImageMatrix__new_from_image(me, point, size);
-}
-
 extern inline const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point) {
     return (me->dimen.w > point.x && point.x > -1 && me->dimen.h > point.y && point.y > -1);
 }
