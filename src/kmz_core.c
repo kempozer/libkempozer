@@ -147,7 +147,7 @@ static inline KmzPixelOperationStatus _KmzImageLike__populate_buffer(const KmzIm
     i_area.size.h = 1;
     
     // Copy the image into the buffer.
-    for (; b_p.y < buffer_size.h; ++b_p.y, ++i_area.pos.y) {
+    for (; b_p.y < buffer_size.h; ++b_p.y) {
         in_y_border = (b_p.y < hsize || b_p.y >= h_buffer_size.h);
         for (b_p.x = 0; b_p.x < buffer_size.w; ++b_p.x) {
             in_x_border = (b_p.x < hsize || b_p.x >= h_buffer_size.w);
@@ -162,6 +162,9 @@ static inline KmzPixelOperationStatus _KmzImageLike__populate_buffer(const KmzIm
                 b_p.x += w_m_o;
                 b_o += w;
             }
+        }
+        if (!in_y_border) {
+            ++i_area.pos.y;
         }
     }
     return PIXEL_OP_OK;
