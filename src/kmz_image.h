@@ -69,7 +69,7 @@ KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restric
 /**
  * Creates a new KmzImage using the given color buffer.
  */
-KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels);
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict pixels, const KmzBool copy_source);
 
 /**
  * Creates a new image-like for the given image.

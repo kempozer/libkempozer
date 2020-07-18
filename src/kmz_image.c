@@ -121,25 +121,28 @@ extern inline const KmzBool KmzImage__is_valid(const KmzImage * const restrict m
     return (me->dimen.w > point.x && point.x > -1 && me->dimen.h > point.y && point.y > -1);
 }
 
-static inline void _KmzImage__populate_from_gd_2x(KmzImage * const restrict me, const KmzGd2xImageFile * const restrict image) {
-    me->dimen = image->header.signature.dimen;
-    me->len = me->dimen.h * me->dimen.w;
-    me->pixels = calloc(me->len, sizeof(kmz_color_32));
-    memcpy(me->pixels, image->pixels, me->len * sizeof(kmz_color_32));
-}
-
 KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
-    KmzImage * const restrict me = malloc(sizeof(KmzImage));
-    _KmzImage__populate_from_gd_2x(me, image);
-    return me;
+    return KmzImage__new_from_buffer(image->header.signature.dimen, image->pixels, KMZ_TRUE);
 }
 
-KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels) {
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict pixels, const KmzBool copy_source) {
     KmzImage * const restrict me = malloc(sizeof(KmzImage));
-    me->dimen = dimen;
-    me->len = dimen.h * dimen.w;
-    me->pixels = calloc(me->len, sizeof(kmz_color_32));
-    memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
+    
+    if (NULL != me) {
+        me->dimen = dimen;
+        me->len = dimen.h * dimen.w;
+        if (copy_source) {
+            me->pixels = calloc(me->len, sizeof(kmz_color_32));
+            if (NULL == me->pixels) {
+                free(me);
+                return NULL;
+            }
+            memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
+        } else {
+            me->pixels = pixels;
+        }
+    }
+    
     return me;
 }
 // endregion;
