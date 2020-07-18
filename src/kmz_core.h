@@ -66,6 +66,7 @@ enum kmz_pixel_operation_status_e {
     ERR_PIXEL_OP_WRITE_INVALID_POS = -4,
     ERR_PIXEL_OP_WRITE_INVALID_SIZE = -5,
     ERR_PIXEL_OP_WRITE_INVALID_PTR = -6,
+    ERR_PIXEL_OP_OUT_OF_MEMORY = -7,
     // Custom operation statuses MUST have a value lower than ERR_PIXEL_OP_USER_ERR.
     ERR_PIXEL_OP_USER_ERR = -1024
 };
@@ -87,6 +88,7 @@ struct kmz_image_like_vtab_t {
     const KmzPixelOperationStatus (* const read_argb_block)(const kmz_image_ptr_const, const KmzRectangle, kmz_color_32 * const);
     const KmzPixelOperationStatus (* const write_argb_block)(kmz_image_ptr_const, const KmzRectangle, const kmz_color_32 * const);
     // endregion;
+    
 };
 typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
 
@@ -115,11 +117,11 @@ struct kmz_matrix_t {
     /**
      * @const
      */
-    KmzImageLike image;
+    KmzSize image_dimen;
     /**
      * @const
      */
-    KmzSize image_dimen;
+    kmz_color_32 * pixels;
 };
 typedef struct kmz_matrix_t KmzMatrix;
 
@@ -131,7 +133,7 @@ typedef const kmz_color_32 (*KmzFilter)(kmz_arg_ptr, KmzMatrix * const restrict)
 /**
  * Creates a new KmzMatrix for the given image.
  */
-KmzMatrix * const KmzMatrix__new_from_image_like(const KmzImageLike image, const KmzPoint point, const size_t size);
+KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffer, const KmzSize image_dimen, const KmzPoint pos, const size_t size);
 
 /**
  * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
@@ -179,20 +181,16 @@ const KmzPixelOperationStatus KmzImageLike__write_argb_block(const KmzImageLike 
 const KmzBool KmzImageLike__is_valid(const KmzImageLike me, const KmzPoint point);
 
 /**
- * Creates a new matrix of the given size.
- */
-KmzMatrix * const KmzImageLike__get_matrix_at(const KmzImageLike me, const KmzPoint point, const size_t size);
-
-/**
  * Applies a matrix filter function to the image referenced.
  */
-void KKmzImageLike__apply_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area, const size_t m_size);
+KmzPixelOperationStatus KmzImageLike__apply_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+                                                   const size_t m_size);
 
 /**
  * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
  */
-void KmzImageLike__apply_buffered_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area, const size_t m_size,
-                                         const KmzImageLike buffer);
+KmzPixelOperationStatus KmzImageLike__apply_buffered_filter(const KmzImageLike me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+                                                            const size_t m_size, const KmzImageLike buffer);
 // endregion;
 
 // region Helpers:

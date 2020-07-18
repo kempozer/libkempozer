@@ -57,28 +57,6 @@ struct kmz_image_t {
     kmz_color_32 * pixels;
 };
 typedef struct kmz_image_t KmzImage;
-
-/**
- * Defines the structure of an image-based matrix object.
- */
-struct kmz_image_matrix_t {
-    /**
-     * @const
-     */
-    size_t size;
-    /**
-     * @const
-     */
-    size_t hsize;
-    KmzPoint pos;
-    /**
-     * @const
-     */
-    KmzImage * image;
-};
-typedef struct kmz_image_matrix_t KmzImageMatrix;
-
-typedef const kmz_color_32 (*KmzImageFilter)(kmz_arg_ptr, KmzImageMatrix * const restrict);
 // endregion;
 
 // region Functions:
@@ -123,38 +101,6 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restri
  */
 const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point);
 
-/**
- * Creates a new KmzMatrix for the given image.
- */
-KmzImageMatrix * const KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size);
-
-/**
- * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
- */
-const kmz_color_32 KmzImageMatrix__get_argb_at(const KmzImageMatrix * const restrict me, const KmzPoint point);
-
-/**
- * Sets a color in the image referenced by the given matrix relative to the matrix's current position.
- */
-void KmzImageMatrix__set_argb_at(KmzImageMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color);
-
-/**
- * Creates a new matrix of the given size.
- */
-KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size);
-
-/**
- * Applies a matrix filter function to the image referenced.
- */
-void KmzImage__apply_filter(KmzImage * const restrict me, const kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                            const size_t m_size);
-
-/**
- * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
- */
-void KmzImage__apply_buffered_filter(KmzImage * const restrict me, const kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                                     const size_t m_size, KmzImage * const restrict buffer);
-
 // endregion;
 
 // region Helpers:
@@ -164,10 +110,6 @@ void KmzImage__apply_buffered_filter(KmzImage * const restrict me, const kmz_arg
 #define KmzImage__set_argb_at_x_y(me, x, y, color) KmzImage__set_argb_at(me, kmz_point(x, y), c)
 
 #define KmzImage__is_valid_x_y(me, x, y) KmzImage__is_valid(me, kmz_point(x, y))
-
-#define KmzImageMatrix__get_argb_at_x_y(me, x, y) KmzImageMatrix__get_argb_at(me, kmz_point(x, y), c)
-
-#define KmzImageMatrix__set_argb_at_x_y(me, x, y, color) KmzImageMatrix__set_argb_at(me, kmz_point(x, y), c)
 
 #define KmzImage__get_matrix_at_x_y(me, x, y) KmzImage__get_matrix_at(me, kmz_point(x, y))
 

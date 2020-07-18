@@ -75,22 +75,12 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const r
         return ERR_PIXEL_OP_READ_INVALID_PTR;
     }
     
-    size_t src_len = 0, src_offset = 0;
-    if (0 == src_area.pos.x) {
-        if (0 == src_area.pos.y && src_area.size.h == me->dimen.h && src_area.size.w == me->dimen.w) {
-            src_len = me->len;
-        } else if (src_area.size.w == me->dimen.w) {
-            src_len = _KmzImage__get_len(src_area.pos, src_area.size);
-            src_offset = _KmzImage__get_offset(src_area.pos, src_area.size);
-        }
-    }
-    
-    if (src_len) {
-        memcpy(dst, me->pixels + src_offset, src_len * sizeof(kmz_color_32));
+    if (0 == src_area.pos.x && 0 == src_area.pos.y && src_area.size.w == me->dimen.w && src_area.size.h == me->dimen.h) {
+        memcpy(dst, me->pixels, me->len * sizeof(kmz_color_32));
     } else {
-        src_len = src_area.size.w * sizeof(kmz_color_32);
-        src_offset = _KmzImage__get_offset(src_area.pos, me->dimen);
-        
+        size_t src_len = src_area.size.w * sizeof(kmz_color_32),
+               src_offset = _KmzImage__get_offset(src_area.pos, me->dimen);
+            
         size_t src_line = (size_t)src_area.pos.y, src_end = (size_t)src_area.pos.y + src_area.size.h, dst_offset = 0;
         while (src_line < src_end) {
             memcpy(dst + dst_offset, me->pixels + src_offset, src_len);
@@ -113,22 +103,12 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restri
         return ERR_PIXEL_OP_READ_INVALID_PTR;
     }
     
-    size_t dst_len = 0, dst_offset = 0;
-    if (0 == dst_area.pos.x) {
-        if (0 == dst_area.pos.y && dst_area.size.h == me->dimen.h && dst_area.size.w == me->dimen.w) {
-            dst_len = me->len;
-        } else if (dst_area.size.w == me->dimen.w) {
-            dst_len = _KmzImage__get_len(dst_area.pos, dst_area.size);
-            dst_offset = _KmzImage__get_offset(dst_area.pos, dst_area.size);
-        }
-    }
-    
-    if (dst_len) {
-        memcpy(me->pixels + dst_offset, src, dst_len * sizeof(kmz_color_32));
+    if (0 == dst_area.pos.x && 0 == dst_area.pos.y && dst_area.size.w == me->dimen.w && dst_area.size.h == me->dimen.h) {
+        memcpy(me->pixels, src, me->len * sizeof(kmz_color_32));
     } else {
-        dst_len = dst_area.size.w * sizeof(kmz_color_32);
-        dst_offset = _KmzImage__get_offset(dst_area.pos, me->dimen);
-        
+        size_t dst_len = dst_area.size.w * sizeof(kmz_color_32),
+               dst_offset = _KmzImage__get_offset(dst_area.pos, me->dimen);
+            
         size_t dst_line = (size_t)dst_area.pos.y, dst_end = (size_t)dst_area.pos.y + dst_area.size.h, src_offset = 0;
         while (dst_line < dst_end) {
             memcpy(me->pixels + dst_offset, src + src_offset, dst_len);
@@ -169,56 +149,5 @@ KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_
     me->pixels = calloc(me->len, sizeof(kmz_color_32));
     memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
     return me;
-}
-// endregion;
-
-// region Filtering:
-extern inline const kmz_color_32 KmzImageMatrix__get_argb_at(const KmzImageMatrix * const restrict me, const KmzPoint point) {
-    return KmzImage__get_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen));
-}
-
-extern inline void KmzImageMatrix__set_argb_at(KmzImageMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color) {
-    KmzImage__set_argb_at(me->image, _KmzMatrix__clamp_point(me, point, me->image->dimen), color);
-}
-
-KmzImageMatrix * const KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size) {
-    KmzImageMatrix * const restrict me = malloc(sizeof(KmzImageMatrix));
-    me->image = image;
-    me->pos = point;
-    me->size = size;
-    me->hsize = me->size / 2;
-    return me;
-}
-
-void KmzImage__apply_filter(KmzImage * const restrict me, kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                            const size_t m_size) {
-    const ssize_t x = kmz__clamp(area.pos.x, 0, me->dimen.w),
-                  y = kmz__clamp(area.pos.y, 0, me->dimen.h),
-                  max_x = kmz__clamp(area.size.w + x, x, me->dimen.w),
-                  max_y = kmz__clamp(area.size.h + y, y, me->dimen.h);
-    
-    KmzImageMatrix * const restrict matrix = KmzImage__get_matrix_at(me, KmzPoint__ZERO, m_size);
-    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
-        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
-            KmzImage__set_argb_at(me, matrix->pos, filter(argv, matrix));
-        }
-    }
-    free(matrix);
-}
-
-void KmzImage__apply_buffered_filter(KmzImage * const restrict me, kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                                     const size_t m_size, KmzImage * const restrict buffer) {
-    const ssize_t x = kmz__clamp(area.pos.x, 0, me->dimen.w),
-                  y = kmz__clamp(area.pos.y, 0, me->dimen.h),
-                  max_x = kmz__clamp(area.size.w + x, x, me->dimen.w),
-                  max_y = kmz__clamp(area.size.h + y, y, me->dimen.h);
-    
-    KmzImageMatrix * const restrict matrix = KmzImage__get_matrix_at(me, KmzPoint__ZERO, m_size);
-    for (matrix->pos.y = y; matrix->pos.y < max_y; ++matrix->pos.y) {
-        for (matrix->pos.x = x; matrix->pos.x < max_x; ++matrix->pos.x) {
-            KmzImage__set_argb_at(buffer, matrix->pos, filter(argv, matrix));
-        }
-    }
-    free(matrix);
 }
 // endregion;
