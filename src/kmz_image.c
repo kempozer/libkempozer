@@ -35,10 +35,6 @@
 // region Image:
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
 
-#define _KmzMatrix__clamp_point(me, point, dimen) \
-(kmz_point(kmz__clamp(me->pos.x + (point.x - (ssize_t)me->hsize), 0, dimen.w - 1), \
-           kmz__clamp(me->pos.y + (point.y - (ssize_t)me->hsize), 0, dimen.h - 1)))
-
 extern inline const KmzSize _KmzImage__get_dimen(const KmzImage * const restrict me) {
     return me->dimen;
 }
