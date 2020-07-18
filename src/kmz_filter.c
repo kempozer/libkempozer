@@ -33,6 +33,7 @@
 #define  D_PI (M_PI * 2)
 
 #include "kmz_filter.h"
+#include "kmz_image.h"
 
 struct kmz_hue_argv_t {
     const kmz_percent a;

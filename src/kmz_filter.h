@@ -38,6 +38,7 @@
 #include "kmz_geometry.h"
 #include "kmz_color.h"
 #include "kmz_core.h"
+#include "kmz_image.h"
 
 // region Types:
 struct kmz_gaussian_distribution_t {

@@ -39,11 +39,26 @@
 #include "kmz_geometry.h"
 
 // region Types:
-typedef void * const restrict const_kmz_image_ptr;
+/**
+ * Defines a constant pointer to a generic image.
+ */
+typedef void * const restrict kmz_image_ptr_const;
+
+/**
+ * Defines a pointer to a generic image.
+ */
 typedef void * restrict kmz_image_ptr;
+
+/**
+ * Defines a pointer to a generic argument.
+ */
 typedef const void * const restrict kmz_arg_ptr;
 
+/**
+ * Defines the standard pixel operation status codes as returned by block pixel operations.
+ */
 enum kmz_pixel_operation_status_e {
+    // Standard statuses
     PIXEL_OP_OK = 0,
     ERR_PIXEL_OP_READ_INVALID_POS = -1,
     ERR_PIXEL_OP_READ_INVALID_SIZE = -2,
@@ -51,62 +66,42 @@ enum kmz_pixel_operation_status_e {
     ERR_PIXEL_OP_WRITE_INVALID_POS = -4,
     ERR_PIXEL_OP_WRITE_INVALID_SIZE = -5,
     ERR_PIXEL_OP_WRITE_INVALID_PTR = -6,
-    // Anything returned that is beyond ERR_PIXEL_OP_USER_ERR is implementation-specific errors.
+    // Custom operation statuses MUST have a value lower than ERR_PIXEL_OP_USER_ERR.
     ERR_PIXEL_OP_USER_ERR = -1024
 };
 typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
 
 struct kmz_matrix_t;
 
+/**
+ * Defines the structure of a virtual table for image-like objects.
+ */
 struct kmz_image_like_vtab_t {
-    const KmzSize (* const get_dimen)(const const_kmz_image_ptr);
-    const kmz_color_32 (* const get_argb_at)(const const_kmz_image_ptr, const KmzPoint);
-    void (* const set_argb_at)(const_kmz_image_ptr, const KmzPoint, const kmz_color_32);
-    const KmzPixelOperationStatus (* const read_argb_block)(const const_kmz_image_ptr, const KmzRectangle, kmz_color_32 * const);
-    const KmzPixelOperationStatus (* const write_argb_block)(const_kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const);
-    const KmzBool (* const is_valid)(const const_kmz_image_ptr, const KmzPoint);
+    // region Fully Virtual Methods:
+    const KmzSize (* const get_dimen)(const kmz_image_ptr_const);
+    const kmz_color_32 (* const get_argb_at)(const kmz_image_ptr_const, const KmzPoint);
+    void (* const set_argb_at)(kmz_image_ptr_const, const KmzPoint, const kmz_color_32);
+    const KmzBool (* const is_valid)(const kmz_image_ptr_const, const KmzPoint);
+    // endregion;
+    // region Virtual Methods:
+    const KmzPixelOperationStatus (* const read_argb_block)(const kmz_image_ptr_const, const KmzRectangle, kmz_color_32 * const);
+    const KmzPixelOperationStatus (* const write_argb_block)(kmz_image_ptr_const, const KmzRectangle, const kmz_color_32 * const);
+    // endregion;
 };
 typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
 
+/**
+ * Defines the structure of an image-like object reference, including its virtual table and me (this) pointer.
+ */
 struct kmz_image_like_t {
     const KmzImageLikeVTab * _vt;
     kmz_image_ptr _me;
 };
 typedef struct kmz_image_like_t KmzImageLike;
 
-struct kmz_image_t {
-    /**
-     * @const
-     */
-    KmzSize dimen;
-    /**
-     * @const
-     */
-    size_t len;
-    /**
-     * @const
-     */
-    kmz_color_32 * pixels;
-};
-typedef struct kmz_image_t KmzImage;
-
-struct kmz_image_matrix_t {
-    /**
-     * @const
-     */
-    size_t size;
-    /**
-     * @const
-     */
-    size_t hsize;
-    KmzPoint pos;
-    /**
-     * @const
-     */
-    KmzImage * image;
-};
-typedef struct kmz_image_matrix_t KmzImageMatrix;
-
+/**
+ * Defines the structure of an image-like-based matrix object.
+ */
 struct kmz_matrix_t {
     /**
      * @const
@@ -129,51 +124,9 @@ struct kmz_matrix_t {
 typedef struct kmz_matrix_t KmzMatrix;
 
 typedef const kmz_color_32 (*KmzFilter)(kmz_arg_ptr, KmzMatrix * const restrict);
-
-typedef const kmz_color_32 (*KmzImageFilter)(kmz_arg_ptr, KmzImageMatrix * const restrict);
 // endregion;
 
 // region Functions:
-
-/**
- * Creates a new KmzImage using the given GD 2x image file.
- */
-KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
-
-/**
- * Creates a new KmzImage using the given color buffer.
- */
-KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, const kmz_color_32 * const restrict pixels);
-
-/**
- * Creates a new image-like for the given image.
- */
-const KmzImageLike KmzImage__to_image_like(KmzImage * const restrict me);
-
-/**
- * Gets a color from within the image.
- */
-const kmz_color_32 KmzImage__get_argb_at(const KmzImage * const restrict me, const KmzPoint point);
-
-/**
- * Sets a color within the image.
- */
-void KmzImage__set_argb_at(KmzImage * const restrict me, const KmzPoint point, const kmz_color_32 color);
-
-/**
- * Reads a block of colors within the image.
- */
-const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const restrict me, const KmzRectangle area, kmz_color_32 * const restrict buffer);
-
-/**
- * Writes a block of colors to the image.
- */
-const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restrict me, const KmzRectangle area, const kmz_color_32 * const restrict buffer);
-
-/**
- * Determines if the point is a valid coordinate within the image.
- */
-const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point);
 
 /**
  * Creates a new KmzMatrix for the given image.
@@ -189,38 +142,6 @@ const kmz_color_32 KmzMatrix__get_argb_at(const KmzMatrix * const restrict me, c
  * Sets a color in the image referenced by the given matrix relative to the matrix's current position.
  */
 void KmzMatrix__set_argb_at(KmzMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color);
-
-/**
- * Creates a new KmzMatrix for the given image.
- */
-KmzImageMatrix * const KmzImageMatrix__new_from_image(KmzImage * const restrict image, const KmzPoint point, const size_t size);
-
-/**
- * Gets a color from the image referenced by the given matrix relative to the matrix's current position.
- */
-const kmz_color_32 KmzImageMatrix__get_argb_at(const KmzImageMatrix * const restrict me, const KmzPoint point);
-
-/**
- * Sets a color in the image referenced by the given matrix relative to the matrix's current position.
- */
-void KmzImageMatrix__set_argb_at(KmzImageMatrix * const restrict me, const KmzPoint point, const kmz_color_32 color);
-
-/**
- * Creates a new matrix of the given size.
- */
-KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size);
-
-/**
- * Applies a matrix filter function to the image referenced.
- */
-void KmzImage__apply_filter(KmzImage * const restrict me, const kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                            const size_t m_size);
-
-/**
- * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
- */
-void KmzImage__apply_buffered_filter(KmzImage * const restrict me, const kmz_arg_ptr argv, const KmzImageFilter filter, const KmzRectangle area,
-                                     const size_t m_size, KmzImage * const restrict buffer);
 
 /**
  * Produces a new KmzImageLike wrapper for the given virtual table and image reference.
@@ -275,21 +196,10 @@ void KmzImageLike__apply_buffered_filter(const KmzImageLike me, const kmz_arg_pt
 // endregion;
 
 // region Helpers:
-#define KmzImage__get_argb_at_x_y(me, x, y) KmzImage__get_argb_at(me, kmz_point(x, y))
-
-#define KmzImage__set_argb_at_x_y(me, x, y, color) KmzImage__set_argb_at(me, kmz_point(x, y), c)
-
-#define KmzImage__is_valid_x_y(me, x, y) KmzImage__is_valid(me, kmz_point(x, y))
 
 #define KmzMatrix__get_argb_at_x_y(me, x, y) KmzMatrix__get_argb_at(me, kmz_point(x, y), c)
 
 #define KmzMatrix__set_argb_at_x_y(me, x, y, color) KmzMatrix__set_argb_at(me, kmz_point(x, y), c)
-
-#define KmzImageMatrix__get_argb_at_x_y(me, x, y) KmzImageMatrix__get_argb_at(me, kmz_point(x, y), c)
-
-#define KmzImageMatrix__set_argb_at_x_y(me, x, y, color) KmzImageMatrix__set_argb_at(me, kmz_point(x, y), c)
-
-#define KmzImage__get_matrix_at_x_y(me, x, y) KmzImage__get_matrix_at(me, kmz_point(x, y))
 
 #define KmzImageLike__get_argb_at_x_y(me, x, y) KmzImageLike__get_argb_at(me, kmz_point(x, y))
 
