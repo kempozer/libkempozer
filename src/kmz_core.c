@@ -35,7 +35,6 @@
 
 // region Helpers:
 #define _kmz__get_index(dimen, point) ((dimen.w * point.y) + point.x)
-#define _KmzImage__get_index(me, point) _kmz__get_index(me->dimen, point)
 // endregion;
 
 // region Matrix:
