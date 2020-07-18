@@ -122,7 +122,7 @@ extern inline const KmzBool KmzImage__is_valid(const KmzImage * const restrict m
 }
 
 KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
-    return KmzImage__new_from_buffer(image->header.signature.dimen, image->pixels, KMZ_TRUE);
+    return KmzImage__new_from_buffer(image->header.signature.dimen, image->pixels.truecolor, KMZ_TRUE);
 }
 
 KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict pixels, const KmzBool copy_source) {

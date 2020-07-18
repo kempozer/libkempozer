@@ -99,7 +99,10 @@ typedef struct kmz_gd_2x_image_file_header_t KmzGd2xImageFileHeader;
  */
 struct kmz_gd_2x_image_file_t {
     KmzGd2xImageFileHeader header;
-    kmz_color_32 * restrict pixels;
+    union {
+        kmz_color_32 * restrict truecolor;
+        uint8_t * restrict palette;
+    } pixels;
 };
 typedef struct kmz_gd_2x_image_file_t KmzGd2xImageFile;
 
@@ -125,33 +128,34 @@ enum kmz_gd_2x_image_file_status_e {
     ERR_WRITE_PIXELS = -18,
     ERR_INVALID_FILE_PTR = -19,
     ERR_INVALID_IMAGE_PTR = -20,
-    ERR_UNSUPPORTED_OPERATION = -64,
+    ERR_UNSUPPORTED_OPERATION = -63,
+    ERR_OUT_OF_MEMORY = -64,
     ERR_UNKNOWN = -1000
     
 };
-typedef enum kmz_gd_2x_image_file_status_e kmz_gd_2x_image_file_status;
+typedef enum kmz_gd_2x_image_file_status_e KmzGd2xImageFileStatus;
 // endregion;
 
 // region Functions:
 /**
  * Reads a GD file with a 2x header from the given file pointer.
  */
-const kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o);
+const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o);
 
 /**
  * Writes a GD file with a 2x header to the given file pointer.
  */
-const kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i);
+const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i);
 
 /**
  * Returns a plain-english message for the given file status.
  */
-const char * kmz_status_msg(const kmz_gd_2x_image_file_status status);
+const char * kmz_status_msg(const KmzGd2xImageFileStatus status);
 
 /**
  * Returns a plain-english message for the given file status with the given file error appended to it.
  */
-const char * kmz_status_msg_with_err_code(const kmz_gd_2x_image_file_status status, const int error);
+const char * kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, const int error);
 // endregion;
 
 #endif /* kmz_gd_image_file_h */

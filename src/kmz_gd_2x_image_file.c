@@ -140,7 +140,7 @@ static const int _kmz_write_int(FILE * const restrict f, uint32_t v) {
 
 // region Functions:
 
-const kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o) {
+const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o) {
     if (NULL == f) {
         return ERR_INVALID_FILE_PTR;
     } else if (NULL == o) {
@@ -183,28 +183,28 @@ const kmz_gd_2x_image_file_status kmz_read_gd_2x_image_file(FILE * const restric
     o->header.color.is_truecolor = is_truecolor;
     
     if (is_truecolor) {
-        o->pixels = calloc(len, sizeof(kmz_color_32));
-        if (0 != _kmz_read_int_buffer(f, o->pixels, len)) {
+        o->pixels.truecolor = calloc(len, sizeof(kmz_color_32));
+        if (NULL == o->pixels.truecolor) {
+            return ERR_OUT_OF_MEMORY;
+        }
+        if (0 != _kmz_read_int_buffer(f, o->pixels.truecolor, len)) {
             return ERR_READ_PIXELS;
         }
     } else {
-        o->pixels = calloc(len, sizeof(kmz_color_32));
-        uint8_t * buffer = calloc(len, sizeof(uint8_t));
-        if (0 != _kmz_read_byte_buffer(f, buffer, len)) {
-            free(buffer);
+        o->pixels.palette = calloc(len, sizeof(uint8_t));
+        if (NULL == o->pixels.palette) {
+            return ERR_OUT_OF_MEMORY;
+        }
+        if (0 != _kmz_read_byte_buffer(f, o->pixels.palette, len)) {
             return ERR_READ_PIXELS;
         }
-        for (size_t i = 0; i < len; ++i) {
-            o->pixels[i] = o->header.color.value.palette.colors[buffer[i]];
-        }
-        free(buffer);
     }
     
     return OK;
 }
 
 
-const kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i) {
+const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i) {
     if (NULL == f) {
         return ERR_INVALID_FILE_PTR;
     } else if (NULL == i) {
@@ -239,17 +239,18 @@ const kmz_gd_2x_image_file_status kmz_write_gd_2x_image_file(FILE * const restri
     const size_t is_truecolor = i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
     
     if (is_truecolor) {
-        if (0 != _kmz_write_int_buffer(f, i->pixels, len)) {
+        if (0 != _kmz_write_int_buffer(f, i->pixels.truecolor, len)) {
             return ERR_WRITE_PIXELS;
         }
     } else {
-        // TODO: Implement palette image writing
-        return ERR_UNSUPPORTED_OPERATION;
+        if (0 != _kmz_write_byte_buffer(f, i->pixels.palette, len)) {
+            return ERR_WRITE_PIXELS;
+        }
     }
     return OK;
 }
 
-const char * kmz_status_msg(const kmz_gd_2x_image_file_status status) {
+const char * kmz_status_msg(const KmzGd2xImageFileStatus status) {
     switch (status) {
         case OK:
             return NULL;
@@ -295,12 +296,14 @@ const char * kmz_status_msg(const kmz_gd_2x_image_file_status status) {
             return "An error has occurred while writing the GD 2x pixels";
         case ERR_UNSUPPORTED_OPERATION:
             return "An unsupported operation has been encountered";
+        case ERR_OUT_OF_MEMORY:
+            return "System is out of memory";
         case ERR_UNKNOWN:
             return "An unknown error has occurred";
     }
 }
 
-const char * kmz_status_msg_with_err_code(const kmz_gd_2x_image_file_status status, const int error) {
+const char * kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, const int error) {
     const char * msg = kmz_status_msg(status);
     char * o = calloc(strlen(msg) + 24, sizeof(char));
     sprintf(o, "%s: %d", msg, error);
