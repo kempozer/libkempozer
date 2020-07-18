@@ -30,6 +30,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define  D_PI (M_PI * 2)
+#ifndef kmz_draw_h
+#define kmz_draw_h
 
-#include "kmz_filter.h"
+#include <stdio.h>
+
+#endif /* kmz_draw_h */

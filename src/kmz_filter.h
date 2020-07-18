@@ -38,6 +38,7 @@
 #include "kmz_geometry.h"
 #include "kmz_color.h"
 #include "kmz_core.h"
+#include "kmz_image.h"
 
 // region Types:
 struct kmz_gaussian_distribution_t {
@@ -51,10 +52,7 @@ typedef struct kmz_gaussian_distribution_t KmzGaussianDistribution;
 // endregion;
 
 // region Functions:
-/**
- * Shifts the hue of the image by the given percentage.
- */
-void KmzImage__change_hue(KmzImage * const restrict me, const kmz_percent amount);
+
 // endregion;
 
 #endif /* kmz_filter_h */

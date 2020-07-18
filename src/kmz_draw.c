@@ -30,6 +30,4 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define  D_PI (M_PI * 2)
-
-#include "kmz_filter.h"
+#include "kmz_draw.h"
