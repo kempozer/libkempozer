@@ -34,26 +34,3 @@
 
 #include "kmz_filter.h"
 #include "kmz_image.h"
-
-struct kmz_hue_argv_t {
-    const kmz_percent a;
-};
-
-/*
-static const kmz_color_32 _KmzImage__calculate_hue(const void * const restrict argv, KmzImageMatrix * const restrict m) {
-    const struct kmz_hue_argv_t * const restrict a = argv;
-    KmzAhslColor c = KmzAhslColor__from_color_32(KmzImageMatrix__get_argb_at(m, kmz_point(0, 0)));
-    c.h += a->a;
-    if (c.h < 0.f) {
-        c.h = (1.f - fmodf(-c.h, 1.f));
-    } else if (c.h > 1.f) {
-        c.h = fmodf(c.h, 1.f);
-    }
-    return kmz_color_32__from_ahsl_color(c);
-}
-
-void KmzImage__change_hue(KmzImage * const restrict me, const kmz_percent amount) {
-    const struct kmz_hue_argv_t v = {amount};
-    KmzImage__apply_filter(me, &v, _KmzImage__calculate_hue, kmz_rectangle(kmz_point(0, 0), me->dimen), 1);
-}
- */
