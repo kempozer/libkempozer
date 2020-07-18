@@ -39,28 +39,32 @@
 #include "kmz_geometry.h"
 
 // region Types:
+typedef void * const restrict const_kmz_image_ptr;
 typedef void * restrict kmz_image_ptr;
 typedef const void * const restrict kmz_arg_ptr;
+
+enum kmz_pixel_operation_status_e {
+    PIXEL_OP_OK = 0,
+    ERR_PIXEL_OP_READ_INVALID_POS = -1,
+    ERR_PIXEL_OP_READ_INVALID_SIZE = -2,
+    ERR_PIXEL_OP_READ_INVALID_PTR = -3,
+    ERR_PIXEL_OP_WRITE_INVALID_POS = -4,
+    ERR_PIXEL_OP_WRITE_INVALID_SIZE = -5,
+    ERR_PIXEL_OP_WRITE_INVALID_PTR = -6,
+    // Anything returned that is beyond ERR_PIXEL_OP_USER_ERR is implementation-specific errors.
+    ERR_PIXEL_OP_USER_ERR = -1024
+};
+typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
 
 struct kmz_matrix_t;
 
 struct kmz_image_like_vtab_t {
-    /**
-     * @const
-     */
-    const KmzSize (* const get_dimen)(const kmz_image_ptr);
-    /**
-     * @const
-     */
-    const kmz_color_32 (* const get_argb_at)(const kmz_image_ptr, const KmzPoint);
-    /**
-     * @const
-     */
-    void (* const set_argb_at)(kmz_image_ptr, const KmzPoint, const kmz_color_32);
-    /**
-     * @const
-     */
-    const KmzBool (* const is_valid)(const kmz_image_ptr, const KmzPoint);
+    const KmzSize (* const get_dimen)(const const_kmz_image_ptr);
+    const kmz_color_32 (* const get_argb_at)(const const_kmz_image_ptr, const KmzPoint);
+    void (* const set_argb_at)(const_kmz_image_ptr, const KmzPoint, const kmz_color_32);
+    const KmzPixelOperationStatus (* const read_argb_block)(const const_kmz_image_ptr, const KmzRectangle, kmz_color_32 * const);
+    const KmzPixelOperationStatus (* const write_argb_block)(const_kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const);
+    const KmzBool (* const is_valid)(const const_kmz_image_ptr, const KmzPoint);
 };
 typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
 
@@ -157,6 +161,16 @@ const kmz_color_32 KmzImage__get_argb_at(const KmzImage * const restrict me, con
 void KmzImage__set_argb_at(KmzImage * const restrict me, const KmzPoint point, const kmz_color_32 color);
 
 /**
+ * Reads a block of colors within the image.
+ */
+const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const restrict me, const KmzRectangle area, kmz_color_32 * const restrict buffer);
+
+/**
+ * Writes a block of colors to the image.
+ */
+const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restrict me, const KmzRectangle area, const kmz_color_32 * const restrict buffer);
+
+/**
  * Determines if the point is a valid coordinate within the image.
  */
 const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point);
@@ -227,6 +241,16 @@ const kmz_color_32 KmzImageLike__get_argb_at(const KmzImageLike me, const KmzPoi
  * Sets a color within the image.
  */
 void KmzImageLike__set_argb_at(const KmzImageLike me, const KmzPoint point, const kmz_color_32 color);
+
+/**
+ * Reads a block of colors within the image.
+ */
+const KmzPixelOperationStatus KmzImageLike__read_argb_block(const KmzImageLike me, const KmzRectangle area, kmz_color_32 * const restrict buffer);
+
+/**
+ * Writes a block of colors to the image.
+ */
+const KmzPixelOperationStatus KmzImageLike__write_argb_block(const KmzImageLike me, const KmzRectangle area, const kmz_color_32 * const restrict buffer);
 
 /**
  * Determines if the point is a valid coordinate within the image.

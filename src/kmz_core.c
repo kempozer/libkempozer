@@ -47,7 +47,9 @@ const KmzImageLike KmzImage__to_image_like(KmzImage * const restrict me) {
         .get_dimen=(const KmzSize (*)(const kmz_image_ptr))&_KmzImage__get_dimen,
         .get_argb_at=(const kmz_color_32 (*)(const kmz_image_ptr, const KmzPoint))&KmzImage__get_argb_at,
         .set_argb_at=(void (*)(kmz_image_ptr, const KmzPoint, const kmz_color_32))&KmzImage__set_argb_at,
-        .is_valid=(const KmzBool (*)(const kmz_image_ptr, const KmzPoint))&KmzImage__is_valid
+        .is_valid=(const KmzBool (*)(const kmz_image_ptr, const KmzPoint))&KmzImage__is_valid,
+        .read_argb_block=(const KmzPixelOperationStatus (*)(const kmz_image_ptr, const KmzRectangle, kmz_color_32 * const restrict))&KmzImage__read_argb_block,
+        .write_argb_block=(const KmzPixelOperationStatus (*)(kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const restrict))&KmzImage__write_argb_block
     };
     return KmzImageLike__wrap(&vt, me);
 }
@@ -58,6 +60,84 @@ extern inline const kmz_color_32 KmzImage__get_argb_at(const KmzImage * const re
 
 extern inline void KmzImage__set_argb_at(KmzImage * const restrict me, const KmzPoint point, const kmz_color_32 color) {
     me->pixels[_KmzImage__get_index(me, point)] = color;
+}
+
+#define _KmzImage__get_offset(p, s) ((size_t)((p.y * s.w) + p.x))
+#define _KmzImage__get_len(p, s) ((size_t)((s.h - p.y) * s.w))
+
+const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const restrict me, const KmzRectangle src_area, kmz_color_32 * const restrict dst) {
+    if (src_area.pos.x < 0 || src_area.pos.x >= me->dimen.w || src_area.pos.y < 0 || src_area.pos.y >= me->dimen.h) {
+        return ERR_PIXEL_OP_READ_INVALID_POS;
+    } else if ((src_area.size.w + src_area.pos.x) > me->dimen.w || (src_area.size.h + src_area.pos.y) > me->dimen.h) {
+        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+    } else if (NULL == dst) {
+        return ERR_PIXEL_OP_READ_INVALID_PTR;
+    }
+    
+    size_t src_len = 0, src_offset = 0;
+    if (0 == src_area.pos.x) {
+        if (0 == src_area.pos.y && src_area.size.h == me->dimen.h && src_area.size.w == me->dimen.w) {
+            src_len = me->len;
+        } else if (src_area.size.w == me->dimen.w) {
+            src_len = _KmzImage__get_len(src_area.pos, src_area.size);
+            src_offset = _KmzImage__get_offset(src_area.pos, src_area.size);
+        }
+    }
+    
+    if (src_len) {
+        memcpy(dst, me->pixels + src_offset, src_len * sizeof(kmz_color_32));
+    } else {
+        src_len = src_area.size.w * sizeof(kmz_color_32);
+        src_offset = _KmzImage__get_offset(src_area.pos, me->dimen);
+        
+        size_t src_line = (size_t)src_area.pos.y, src_end = (size_t)src_area.pos.y + src_area.size.h, dst_offset = 0;
+        while (src_line < src_end) {
+            memcpy(dst + dst_offset, me->pixels + src_offset, src_len);
+            src_offset += me->dimen.w;
+            dst_offset += src_area.size.w;
+            ++src_line;
+        }
+    }
+    
+    return PIXEL_OP_OK;
+}
+
+const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restrict me, const KmzRectangle dst_area,
+                                                         const kmz_color_32 * const restrict src) {
+    if (dst_area.pos.x < 0 || dst_area.pos.x >= me->dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= me->dimen.h) {
+        return ERR_PIXEL_OP_READ_INVALID_POS;
+    } else if ((dst_area.size.w + dst_area.pos.x) > me->dimen.w || (dst_area.size.h + dst_area.pos.y) > me->dimen.h) {
+        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+    } else if (NULL == src) {
+        return ERR_PIXEL_OP_READ_INVALID_PTR;
+    }
+    
+    size_t dst_len = 0, dst_offset = 0;
+    if (0 == dst_area.pos.x) {
+        if (0 == dst_area.pos.y && dst_area.size.h == me->dimen.h && dst_area.size.w == me->dimen.w) {
+            dst_len = me->len;
+        } else if (dst_area.size.w == me->dimen.w) {
+            dst_len = _KmzImage__get_len(dst_area.pos, dst_area.size);
+            dst_offset = _KmzImage__get_offset(dst_area.pos, dst_area.size);
+        }
+    }
+    
+    if (dst_len) {
+        memcpy(me->pixels + dst_offset, src, dst_len * sizeof(kmz_color_32));
+    } else {
+        dst_len = dst_area.size.w * sizeof(kmz_color_32);
+        dst_offset = _KmzImage__get_offset(dst_area.pos, me->dimen);
+        
+        size_t dst_line = (size_t)dst_area.pos.y, dst_end = (size_t)dst_area.pos.y + dst_area.size.h, src_offset = 0;
+        while (dst_line < dst_end) {
+            memcpy(me->pixels + dst_offset, src + src_offset, dst_len);
+            dst_offset += me->dimen.w;
+            src_offset += dst_area.size.w;
+            ++dst_line;
+        }
+    }
+    
+    return PIXEL_OP_OK;
 }
 
 extern inline KmzImageMatrix * const KmzImage__get_matrix_at(KmzImage * const restrict me, const KmzPoint point, const size_t size) {
@@ -181,6 +261,14 @@ extern inline const kmz_color_32 KmzImageLike__get_argb_at(const KmzImageLike me
 
 extern inline void KmzImageLike__set_argb_at(const KmzImageLike me, const KmzPoint point, const kmz_color_32 color) {
     me._vt->set_argb_at(me._me, point, color);
+}
+
+const KmzPixelOperationStatus KmzImageLike__read_argb_block(const KmzImageLike me, const KmzRectangle area, kmz_color_32 * const restrict buffer) {
+    return PIXEL_OP_OK;
+}
+
+const KmzPixelOperationStatus KmzImageLike__write_argb_block(const KmzImageLike me, const KmzRectangle area, const kmz_color_32 * const restrict buffer) {
+    return PIXEL_OP_OK;
 }
 
 extern inline const KmzBool KmzImageLike__is_valid(const KmzImageLike me, const KmzPoint point) {
