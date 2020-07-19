@@ -63,3 +63,27 @@ const KmzBool KmzLine__equal_to(const KmzLine me, const KmzLine other) {
 const KmzBool KmzLineF__equal_to(const KmzLineF me, const KmzLineF other) {
     return KmzPointF__equal_to(me.start, other.start) && KmzPointF__equal_to(me.end, other.end);
 }
+
+const KmzBool KmzPolygonF__equal_to(const KmzPolygonF me, const KmzPolygonF other) {
+    if (me.count == other.count) {
+        for (size_t i = 0; i < me.count; ++i) {
+            if (!KmzPointF__equal_to(me.points[i], other.points[i])) {
+                return KMZ_FALSE;
+            }
+        }
+        return KMZ_TRUE;
+    }
+    return KMZ_FALSE;
+}
+
+const KmzBool KmzPolygon__equal_to(const KmzPolygon me, const KmzPolygon other) {
+    if (me.count == other.count) {
+        for (size_t i = 0; i < me.count; ++i) {
+            if (!KmzPoint__equal_to(me.points[i], other.points[i])) {
+                return KMZ_FALSE;
+            }
+        }
+        return KMZ_TRUE;
+    }
+    return KMZ_FALSE;
+}

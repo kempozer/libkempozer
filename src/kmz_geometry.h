@@ -81,6 +81,18 @@ struct kmz_line_f_t {
     KmzPointF end;
 };
 typedef struct kmz_line_f_t KmzLineF;
+
+struct kmz_polygon_t {
+    size_t count;
+    KmzPoint * points;
+};
+typedef struct kmz_polygon_t KmzPolygon;
+
+struct kmz_polygon_f_t {
+    size_t count;
+    KmzPointF * points;
+};
+typedef struct kmz_polygon_f_t KmzPolygonF;
 // endregion;
 
 // region Functions:
@@ -123,6 +135,16 @@ const KmzBool KmzPointF__equal_to(const KmzPointF me, const KmzPointF other);
  * Determines if the provided shapes are equal.
  */
 const KmzBool KmzLine__equal_to(const KmzLine me, const KmzLine other);
+
+/**
+ * Determines if the provided shapes are equal.
+ */
+const KmzBool KmzPolygonF__equal_to(const KmzPolygonF me, const KmzPolygonF other);
+
+/**
+ * Determines if the provided shapes are equal.
+ */
+const KmzBool KmzPolygon__equal_to(const KmzPolygon me, const KmzPolygon other);
 // endregion;
 
 // region Constants:
@@ -134,6 +156,8 @@ static const KmzRectangle KmzRectangle__ZERO = {.pos={.x=0, .y=0}, .size={.w=0, 
 static const KmzRectangleF KmzRectangleF__ZERO = {.pos={.x=0., .y=0.}, .size={.w=0., .h=0.}};
 static const KmzLine KmzLine__ZERO = {.start={.x=0, .y=0}, .end={.x=0, .y=0}};
 static const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0.}};
+static const KmzPolygon KmzPolygon__ZERO = {.count=0, .points=NULL};
+static const KmzPolygonF KmzPolygonF__ZERO = {.count=0, .points=NULL};
 // endregion;
 
 // region Helpers:
@@ -152,6 +176,10 @@ static const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0
 #define kmz_line(start, end) ((KmzLine){start,end})
 
 #define kmz_linef(start, end) ((KmzLineF){start,end})
+
+#define kmz_polygon(count, points) ((KmzPolygon){count,points})
+
+#define kmz_polygonf(count, points) ((KmzPolygonF){count,points})
 // endregion;
 
 #endif /* kmz_geometry_h */
