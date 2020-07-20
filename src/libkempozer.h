@@ -358,8 +358,8 @@ typedef struct kmz_image_type_t KmzImageType;
 /**
  * Defines the structure of an image-like object reference, including its virtual table and me (this) pointer.
  */
-struct kmz_image_like_t;
-typedef struct kmz_image_like_t * const restrict KmzImagePtr;
+struct kmz_image_t;
+typedef struct kmz_image_t KmzImage, * const restrict KmzImagePtr;
 
 /**
  * Defines the structure of an image-like-based matrix object.
@@ -564,7 +564,7 @@ KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const 
 /**
  * Provides a general purpose ARGB-based image.
  */
-extern const KmzImageType KmzImage;
+extern const KmzImageType kmz_image;
 // endregion;
 
 // region Drawing:

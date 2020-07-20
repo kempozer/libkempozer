@@ -36,7 +36,7 @@
 
 #define _kmz__get_index(dimen, point) ((dimen.w * point.y) + point.x)
 
-struct kmz_image_like_t {
+struct kmz_image_t {
     const KmzImageType * _type;
     kmz_image_ptr _me;
 };
@@ -88,7 +88,7 @@ KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffe
 }
 
 const KmzImagePtr KmzImage__new(const KmzImageType * const restrict type, kmz_arg_ptr argv) {
-    KmzImagePtr ptr = malloc(sizeof(struct kmz_image_like_t));
+    KmzImagePtr ptr = malloc(sizeof(struct kmz_image_t));
     if (NULL == ptr) {
         return NULL;
     }
