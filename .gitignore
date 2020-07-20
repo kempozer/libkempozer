@@ -53,3 +53,6 @@ dkms.conf
 
 # Mac OS
 .DS_Store
+
+# Cmake generated files
+src/kmz_config.h

@@ -1,8 +1,7 @@
 #ifndef kmz_config_h
 #define kmz_config_h
 
-#define libkempozer_VERSION_MAJOR @libkempozer_VERSION_MAJOR@
-#define libkempozer_VERSION_MINOR @libkempozer_VERSION_MINOR@
-#define SUPPORT_GD_2X_IMAGE_FILE @SUPPORT_GD_2X_IMAGE_FILE@
+#define KMZ_VERSION_MAJOR @kempozer_VERSION_MAJOR@
+#define KMZ_VERSION_MINOR @kempozer_VERSION_MINOR@
 
 #endif /* kmz_config_h */
