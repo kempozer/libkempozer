@@ -1,0 +1,7 @@
+#ifndef kmz_config_h
+#define kmz_config_h
+
+#define KMZ_VERSION_MAJOR @kempozer_VERSION_MAJOR@
+#define KMZ_VERSION_MINOR @kempozer_VERSION_MINOR@
+
+#endif /* kmz_config_h */

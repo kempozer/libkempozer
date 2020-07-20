@@ -63,3 +63,38 @@ const KmzBool KmzLine__equal_to(const KmzLine me, const KmzLine other) {
 const KmzBool KmzLineF__equal_to(const KmzLineF me, const KmzLineF other) {
     return KmzPointF__equal_to(me.start, other.start) && KmzPointF__equal_to(me.end, other.end);
 }
+
+const KmzBool KmzPolygonF__equal_to(const KmzPolygonF me, const KmzPolygonF other) {
+    if (me.count == other.count) {
+        for (size_t i = 0; i < me.count; ++i) {
+            if (!KmzPointF__equal_to(me.points[i], other.points[i])) {
+                return KMZ_FALSE;
+            }
+        }
+        return KMZ_TRUE;
+    }
+    return KMZ_FALSE;
+}
+
+const KmzBool KmzPolygon__equal_to(const KmzPolygon me, const KmzPolygon other) {
+    if (me.count == other.count) {
+        for (size_t i = 0; i < me.count; ++i) {
+            if (!KmzPoint__equal_to(me.points[i], other.points[i])) {
+                return KMZ_FALSE;
+            }
+        }
+        return KMZ_TRUE;
+    }
+    return KMZ_FALSE;
+}
+
+const KmzSize KmzSize__ZERO = {.w=0, .h=0};
+const KmzSizeF KmzSizeF__ZERO = {.w=0., .h=0.};
+const KmzPoint KmzPoint__ZERO = {.x=0, .y=0};
+const KmzPointF KmzPointF__ZERO = {.x=0., .y=0.};
+const KmzRectangle KmzRectangle__ZERO = {.pos={.x=0, .y=0}, .size={.w=0, .h=0}};
+const KmzRectangleF KmzRectangleF__ZERO = {.pos={.x=0., .y=0.}, .size={.w=0., .h=0.}};
+const KmzLine KmzLine__ZERO = {.start={.x=0, .y=0}, .end={.x=0, .y=0}};
+const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0.}};
+const KmzPolygon KmzPolygon__ZERO = {.count=0, .points=NULL};
+const KmzPolygonF KmzPolygonF__ZERO = {.count=0, .points=NULL};

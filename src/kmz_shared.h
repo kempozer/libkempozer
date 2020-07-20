@@ -30,31 +30,43 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef kmz_image_h
-#define kmz_image_h
+#ifndef kmz_shared_h
+#define kmz_shared_h
 
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
 
 #include "kmz_config.h"
-#include "kmz_shared.h"
-#include "kmz_color.h"
-#include "kmz_gd_2x_image_file.h"
-#include "kmz_core.h"
 
-/**
- * Returns a new image from the given GD 2x file.
- */
-KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
+typedef float kmz_percent;
+typedef uint8_t kmz_channel;
 
-/**
- * Returns a new image from the given buffer.
- */
-KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source);
+enum kmz_bool_e {
+    KMZ_FALSE = 0,
+    KMZ_TRUE = 1,
+};
+typedef enum kmz_bool_e KmzBool;
 
-/**
- * Provides a general purpose ARGB-based image.
- */
-extern const KmzImageType kmz_image;
+#define kmz_clamp(val, min, max) (val < min ? min : (val > max ? max : val))
 
-#endif /* kmz_image_h */
+#define kmz_size(w, h) ((KmzSize){w,h})
+
+#define kmz_sizef(w, h) ((KmzSizeF){w,h})
+
+#define kmz_point(x, y) ((KmzPoint){x,y})
+
+#define kmz_pointf(x, y) ((KmzPointF){x,y})
+
+#define kmz_rectangle(pos, size) ((KmzRectangle){pos,size})
+
+#define kmz_rectanglef(pos, size) ((KmzRectangleF){pos,size})
+
+#define kmz_line(start, end) ((KmzLine){start,end})
+
+#define kmz_linef(start, end) ((KmzLineF){start,end})
+
+#define kmz_polygon(count, points) ((KmzPolygon){count,points})
+
+#define kmz_polygonf(count, points) ((KmzPolygonF){count,points})
+
+#endif /* kmz_shared_h */
