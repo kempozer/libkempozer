@@ -65,16 +65,16 @@ KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffe
 // endregion;
 
 // region Imagelike:
-extern inline const KmzImageLike KmzImageLike__wrap(const KmzImageLikeVTab * const restrict vt_ref, const kmz_image_ptr ref) {
+extern inline const KmzImageLike KmzImageLike__wrap(const KmzImageType * const restrict vt_ref, const kmz_image_ptr ref) {
     return (KmzImageLike) {vt_ref, ref};
 }
 
 extern inline const KmzSize KmzImageLike__get_dimen(const KmzImageLike me) {
-    return me._vt->get_dimen(me._me);
+    return me._vt->dimen(me._me);
 }
 
 extern inline const kmz_color_32 KmzImageLike__get_argb_at(const KmzImageLike me, const KmzPoint point) {
-    return me._vt->get_argb_at(me._me, point);
+    return me._vt->argb_at(me._me, point);
 }
 
 extern inline void KmzImageLike__set_argb_at(const KmzImageLike me, const KmzPoint point, const kmz_color_32 color) {

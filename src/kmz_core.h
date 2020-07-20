@@ -75,28 +75,60 @@ typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
 struct kmz_matrix_t;
 
 /**
- * Defines the structure of a virtual table for image-like objects.
+ * Defines the structure of a type for image-like objects.
  */
-struct kmz_image_like_vtab_t {
-    // region Fully Virtual Methods:
-    const KmzSize (* const get_dimen)(const kmz_image_ptr_const);
-    const kmz_color_32 (* const get_argb_at)(const kmz_image_ptr_const, const KmzPoint);
+struct kmz_image_type_t {
+    /**
+     * Allocates an uninitialized image of this type.
+     */
+    void const * (* const _new)(void);
+    /**
+     * Initializes an uninitialized image of this type.
+     */
+    void (* const _ctor)(kmz_image_ptr_const, kmz_arg_ptr);
+    /**
+     * Destroys an initialized image of this type.
+     */
+    void (* const _dtor)(kmz_image_ptr_const);
+    /**
+     * Gets a reference to this type.
+     */
+    const struct kmz_image_type_t * const (* const type)(void);
+    /**
+     * Gets the dimensions of this image.
+     */
+    const KmzSize (* const dimen)(const kmz_image_ptr_const);
+    /**
+     * Gets an ARGB value at the given coordinates from this image.
+     */
+    const kmz_color_32 (* const argb_at)(const kmz_image_ptr_const, const KmzPoint);
+    /**
+     * Sets an ARGB value at the given coordinates in this image.
+     */
     void (* const set_argb_at)(kmz_image_ptr_const, const KmzPoint, const kmz_color_32);
+    /**
+     * Gets whether or not the coordinates fall within this image.
+     */
     const KmzBool (* const is_valid)(const kmz_image_ptr_const, const KmzPoint);
-    // endregion;
-    // region Virtual Methods:
+    
+    // region Virtuals:
+    /**
+     * Reads a block of ARGB values from this image.
+     */
     const KmzPixelOperationStatus (* const read_argb_block)(const kmz_image_ptr_const, const KmzRectangle, kmz_color_32 * const);
+    /**
+     * Writes a block of ARGB values to this image.
+     */
     const KmzPixelOperationStatus (* const write_argb_block)(kmz_image_ptr_const, const KmzRectangle, const kmz_color_32 * const);
     // endregion;
-    
 };
-typedef struct kmz_image_like_vtab_t KmzImageLikeVTab;
+typedef struct kmz_image_type_t KmzImageType;
 
 /**
  * Defines the structure of an image-like object reference, including its virtual table and me (this) pointer.
  */
 struct kmz_image_like_t {
-    const KmzImageLikeVTab * _vt;
+    const KmzImageType * _vt;
     kmz_image_ptr _me;
 };
 typedef struct kmz_image_like_t KmzImageLike;
@@ -148,7 +180,7 @@ void KmzMatrix__set_argb_at(KmzMatrix * const restrict me, const KmzPoint point,
 /**
  * Produces a new KmzImageLike wrapper for the given virtual table and image reference.
  */
-const KmzImageLike KmzImageLike__wrap(const KmzImageLikeVTab * const vt_ref, const kmz_image_ptr ref);
+const KmzImageLike KmzImageLike__wrap(const KmzImageType * const vt_ref, const kmz_image_ptr ref);
 
 /**
  * Gets the dimensions of the image..
