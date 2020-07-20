@@ -30,8 +30,13 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "kmz_gd_2x_image_file.h"
-// region Helpers:
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
+#include <arpa/inet.h>
+#include "kmz_config.h"
+#include "libkempozer.h"
 
 static const int _kmz_read_byte(FILE * const restrict f, uint8_t * const restrict r) {
     if (1 == fread(r, sizeof(uint8_t), 1, f)) {
@@ -136,9 +141,6 @@ static const int _kmz_write_int(FILE * const restrict f, uint32_t v) {
     }
     return ferror(f);
 }
-// endregion;
-
-// region Functions:
 
 const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o) {
     if (NULL == f) {
@@ -309,5 +311,3 @@ const char * kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, c
     sprintf(o, "%s: %d", msg, error);
     return o;
 }
-
-// endregion;

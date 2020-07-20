@@ -30,41 +30,91 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "kmz_image.h"
+#include <stdio.h>
+#include <string.h>
+#include "kmz_config.h"
+#include "libkempozer.h"
 
-// region Image:
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
 #define _KmzImage__get_offset(p, s) ((size_t)((p.y * s.w) + p.x))
 #define _KmzImage__get_len(p, s) ((size_t)((s.h - p.y) * s.w))
 
 struct _kmz_image_t {
-    /**
-     * @const
-     */
     KmzSize dimen;
-    /**
-     * @const
-     */
     size_t len;
-    /**
-     * @const
-     */
+    KmzBool owns_buffer;
     kmz_color_32 * pixels;
 };
 
-extern inline const KmzSize _KmzImage__dimen(const struct _kmz_image_t * const restrict me) {
+struct _kmz_image_argv_t {
+    KmzSize dimen;
+    kmz_color_32 * pixels;
+    KmzBool copy_source;
+};
+
+KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
+    if (image->header.color.is_truecolor) {
+        struct _kmz_image_argv_t argv = {image->header.signature.dimen, image->pixels.truecolor, KMZ_TRUE};
+        return KmzImage__new(&KmzImage, &argv);
+    }
+    return NULL;
+}
+
+KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
+    struct _kmz_image_argv_t argv = {dimen, buffer, copy_source};
+    return KmzImage__new(&KmzImage, &argv);
+}
+
+static struct _kmz_image_t * const _KmzImage__new(void) {
+    struct _kmz_image_t * const restrict me = malloc(sizeof(struct _kmz_image_t));
+    
+    if (NULL != me) {
+        me->dimen = KmzSize__ZERO;
+        me->len = 0;
+        me->pixels = NULL;
+    }
+    
+    return me;
+}
+
+static void _KmzImage__ctor(struct _kmz_image_t * const restrict me, const struct _kmz_image_argv_t * const restrict args) {
+    me->dimen = args->dimen;
+    me->len = args->dimen.h * args->dimen.w;
+    if (args->copy_source) {
+        me->owns_buffer = KMZ_TRUE;
+        me->pixels = calloc(me->len, sizeof(kmz_color_32));
+        if (NULL == me->pixels) {
+            // TODO: Add error state
+            return;
+        }
+        memcpy(me->pixels, args->pixels, me->len * sizeof(kmz_color_32));
+    } else {
+        me->owns_buffer = KMZ_FALSE;
+        me->pixels = args->pixels;
+    }
+}
+
+static void _KmzImage__dtor(struct _kmz_image_t * const restrict me) {
+    if (me->owns_buffer) {
+        free(me->pixels);
+    }
+    free(me);
+}
+
+static const KmzSize _KmzImage__dimen(const struct _kmz_image_t * const restrict me) {
     return me->dimen;
 }
 
-extern inline const kmz_color_32 _KmzImage__argb_at(const struct _kmz_image_t * const restrict me, const KmzPoint point) {
+static const kmz_color_32 _KmzImage__argb_at(const struct _kmz_image_t * const restrict me, const KmzPoint point) {
     return me->pixels[_KmzImage__get_index(me, point)];
 }
 
-extern inline void _KmzImage__set_argb_at(struct _kmz_image_t * const restrict me, const KmzPoint point, const kmz_color_32 color) {
+static void _KmzImage__set_argb_at(struct _kmz_image_t * const restrict me, const KmzPoint point, const kmz_color_32 color) {
     me->pixels[_KmzImage__get_index(me, point)] = color;
 }
 
-const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _kmz_image_t * const restrict me, const KmzRectangle src_area, kmz_color_32 * const restrict dst) {
+static const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _kmz_image_t * const restrict me, const KmzRectangle src_area,
+                                                                kmz_color_32 * const restrict dst) {
     if (src_area.pos.x < 0 || src_area.pos.x >= me->dimen.w || src_area.pos.y < 0 || src_area.pos.y >= me->dimen.h) {
         return ERR_PIXEL_OP_READ_INVALID_POS;
     } else if ((src_area.size.w + src_area.pos.x) > me->dimen.w || (src_area.size.h + src_area.pos.y) > me->dimen.h) {
@@ -91,8 +141,8 @@ const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _kmz_image
     return PIXEL_OP_OK;
 }
 
-const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_image_t * const restrict me, const KmzRectangle dst_area,
-                                                         const kmz_color_32 * const restrict src) {
+static const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_image_t * const restrict me, const KmzRectangle dst_area,
+                                                                const kmz_color_32 * const restrict src) {
     if (dst_area.pos.x < 0 || dst_area.pos.x >= me->dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= me->dimen.h) {
         return ERR_PIXEL_OP_READ_INVALID_POS;
     } else if ((dst_area.size.w + dst_area.pos.x) > me->dimen.w || (dst_area.size.h + dst_area.pos.y) > me->dimen.h) {
@@ -119,40 +169,14 @@ const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_image_t * 
     return PIXEL_OP_OK;
 }
 
-extern inline const KmzBool _KmzImage__is_valid(const struct _kmz_image_t * const restrict me, const KmzPoint point) {
+static const KmzBool _KmzImage__is_valid(const struct _kmz_image_t * const restrict me, const KmzPoint point) {
     return (me->dimen.w > point.x && point.x > -1 && me->dimen.h > point.y && point.y > -1);
 }
 
-struct _kmz_image_t * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
-    if (image->header.color.is_truecolor) {
-        return KmzImage__new_from_buffer(image->header.signature.dimen, image->pixels.truecolor, KMZ_TRUE);
-    }
-    // TODO: Add an error flag to KmzImage.
-    return NULL;
-}
-
-struct _kmz_image_t * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict pixels, const KmzBool copy_source) {
-    struct _kmz_image_t * const restrict me = malloc(sizeof(struct _kmz_image_t));
-    
-    if (NULL != me) {
-        me->dimen = dimen;
-        me->len = dimen.h * dimen.w;
-        if (copy_source) {
-            me->pixels = calloc(me->len, sizeof(kmz_color_32));
-            if (NULL == me->pixels) {
-                free(me);
-                return NULL;
-            }
-            memcpy(me->pixels, pixels, me->len * sizeof(kmz_color_32));
-        } else {
-            me->pixels = pixels;
-        }
-    }
-    
-    return me;
-}
-
 const KmzImageType KmzImage = {
+    ._new=(void * const (*)(void))&_KmzImage__new,
+    ._ctor=(void (*)(void * const restrict, const void * const restrict))&_KmzImage__ctor,
+    ._dtor=(void (*)(void * const restrict))&_KmzImage__dtor,
     .dimen=(const KmzSize (*)(const kmz_image_ptr))&_KmzImage__dimen,
     .argb_at=(const kmz_color_32 (*)(const kmz_image_ptr, const KmzPoint))&_KmzImage__argb_at,
     .set_argb_at=(void (*)(kmz_image_ptr, const KmzPoint, const kmz_color_32))&_KmzImage__set_argb_at,
@@ -160,4 +184,3 @@ const KmzImageType KmzImage = {
     .read_argb_block=(const KmzPixelOperationStatus (*)(const kmz_image_ptr, const KmzRectangle, kmz_color_32 * const restrict))&_KmzImage__read_argb_block,
     .write_argb_block=(const KmzPixelOperationStatus (*)(kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const restrict))&_KmzImage__write_argb_block
 };
-// endregion;

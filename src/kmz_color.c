@@ -30,9 +30,14 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "kmz_color.h"
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+#include "kmz_config.h"
+#include "libkempozer.h"
 
-// region Helpers:
 static const kmz_percent _KMZ_ONE_THIRD = (1.f / 3.f),
                          _KMZ_TWO_THIRDS = (2.f / 3.f);
 
@@ -58,10 +63,7 @@ static inline const kmz_percent _kmz_rgb2delta(const kmz_percent max, const kmz_
                                                const kmz_percent half_max_delta) {
     return ((((max - channel) / 6.f) + half_max_delta) / max_delta);
 }
-    
-// endregion;
 
-// region Funcions:
 KmzArgbColor KmzArgbColor__from_hex(const char * const restrict color) {
     return KmzArgbColor__from_color_32(kmz_color_32__from_hex(color));
 }
@@ -208,4 +210,3 @@ const kmz_color_32 kmz_color_32__from_hex(const char * const restrict color) {
 const KmzBool kmz_color_32__equal_to(const kmz_color_32 me, const kmz_color_32 other) {
     return me == other;
 }
-// endregion;

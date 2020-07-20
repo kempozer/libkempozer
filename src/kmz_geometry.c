@@ -30,7 +30,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "kmz_geometry.h"
+#include <stdio.h>
+#include <stdint.h>
+#include "kmz_config.h"
+#include "libkempozer.h"
 
 const KmzBool KmzSize__equal_to(const KmzSize me, const KmzSize other) {
     return me.h == other.h && me.w == other.w;

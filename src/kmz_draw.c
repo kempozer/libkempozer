@@ -30,9 +30,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "kmz_draw.h"
+#include <stdio.h>
+#include "kmz_config.h"
+#include "libkempozer.h"
 
-// region Painter:
 struct _kmz_painter_layer_t {
     KmzRectangle _area;
     size_t _len;
@@ -131,4 +132,3 @@ static inline KmzBool _KmzPainter__pop_layer(_KmzPainter * const restrict me, _K
     *layer = me->_layers[--me->_count];
     return KMZ_TRUE;
 }
-// endregion;
