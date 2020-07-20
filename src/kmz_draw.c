@@ -30,9 +30,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include "kmz_config.h"
-#include "libkempozer.h"
+#include "kmz_draw.h"
 
 struct _kmz_painter_layer_t {
     KmzRectangle _area;
@@ -132,3 +130,7 @@ static inline KmzBool _KmzPainter__pop_layer(_KmzPainter * const restrict me, _K
     *layer = me->_layers[--me->_count];
     return KMZ_TRUE;
 }
+
+const KmzBrush KmzBrush__TRANSPARENT = {.color=0x7F000000};
+const KmzPen KmzPen__TRANSPARENT = {.color=0x7F000000};
+const KmzPenF KmzPenF__TRANSPARENT = {.color=0x7F000000};

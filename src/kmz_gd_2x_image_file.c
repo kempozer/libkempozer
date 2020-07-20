@@ -30,13 +30,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include "kmz_config.h"
-#include "libkempozer.h"
+#include "kmz_gd_2x_image_file.h"
 
 static const int _kmz_read_byte(FILE * const restrict f, uint8_t * const restrict r) {
     if (1 == fread(r, sizeof(uint8_t), 1, f)) {

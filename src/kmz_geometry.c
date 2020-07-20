@@ -30,10 +30,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <stdint.h>
-#include "kmz_config.h"
-#include "libkempozer.h"
+#include "kmz_geometry.h"
 
 const KmzBool KmzSize__equal_to(const KmzSize me, const KmzSize other) {
     return me.h == other.h && me.w == other.w;
@@ -90,3 +87,14 @@ const KmzBool KmzPolygon__equal_to(const KmzPolygon me, const KmzPolygon other) 
     }
     return KMZ_FALSE;
 }
+
+const KmzSize KmzSize__ZERO = {.w=0, .h=0};
+const KmzSizeF KmzSizeF__ZERO = {.w=0., .h=0.};
+const KmzPoint KmzPoint__ZERO = {.x=0, .y=0};
+const KmzPointF KmzPointF__ZERO = {.x=0., .y=0.};
+const KmzRectangle KmzRectangle__ZERO = {.pos={.x=0, .y=0}, .size={.w=0, .h=0}};
+const KmzRectangleF KmzRectangleF__ZERO = {.pos={.x=0., .y=0.}, .size={.w=0., .h=0.}};
+const KmzLine KmzLine__ZERO = {.start={.x=0, .y=0}, .end={.x=0, .y=0}};
+const KmzLineF KmzLineF__ZERO = {.start={.x=0., .y=0.}, .end={.x=0., .y=0.}};
+const KmzPolygon KmzPolygon__ZERO = {.count=0, .points=NULL};
+const KmzPolygonF KmzPolygonF__ZERO = {.count=0, .points=NULL};

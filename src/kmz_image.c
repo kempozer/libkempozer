@@ -30,10 +30,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <string.h>
-#include "kmz_config.h"
-#include "libkempozer.h"
+#include "kmz_image.h"
 
 #define _KmzImage__get_index(me, point) ((me->dimen.w * point.y) + point.x)
 #define _KmzImage__get_offset(p, s) ((size_t)((p.y * s.w) + p.x))

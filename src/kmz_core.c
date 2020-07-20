@@ -30,9 +30,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include "kmz_config.h"
-#include "libkempozer.h"
+#include "kmz_core.h"
 
 #define _kmz__get_index(dimen, point) ((dimen.w * point.y) + point.x)
 
@@ -186,9 +184,9 @@ const KmzBool KmzImage__is_valid(const KmzImagePtr me, const KmzPoint point) {
     return me->_type->is_valid(me->_me, point);
 }
 
-static inline KmzPixelOperationStatus _KmzImageLike__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
-                                                                     const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
-                                                                     const size_t w) {
+static inline KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
+                                                                 const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
+                                                                 const size_t w) {
     const size_t w_m_o = w - 1;
     KmzPixelOperationStatus status = PIXEL_OP_OK;
     KmzPoint b_p = KmzPoint__ZERO;
@@ -252,7 +250,7 @@ KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, co
         return ERR_PIXEL_OP_OUT_OF_MEMORY;
     }
     
-    KmzPixelOperationStatus status = _KmzImageLike__populate_buffer(me, buffer, area, kmz_size(b_w, b_h), kmz_size(h_w, h_h), hsize, w);
+    KmzPixelOperationStatus status = _KmzImage__populate_buffer(me, buffer, area, kmz_size(b_w, b_h), kmz_size(h_w, h_h), hsize, w);
     if (status != PIXEL_OP_OK) {
         free(buffer);
         free(o_buffer);
