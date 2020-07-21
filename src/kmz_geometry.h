@@ -83,12 +83,14 @@ struct kmz_line_f_t {
 typedef struct kmz_line_f_t KmzLineF;
 
 struct kmz_polygon_t {
+    KmzBool closed;
     size_t count;
     KmzPoint * points;
 };
 typedef struct kmz_polygon_t KmzPolygon;
 
 struct kmz_polygon_f_t {
+    KmzBool closed;
     size_t count;
     KmzPointF * points;
 };

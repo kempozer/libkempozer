@@ -139,11 +139,11 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, co
     const ssize_t max_y = src_area.size.h + src_area.pos.y, max_x = src_area.size.w + src_area.pos.x;
     
     if (src_area.pos.x < 0 || src_area.pos.x >= dimen.w || src_area.pos.y < 0 || src_area.pos.y >= dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_POS;
     } else if (max_x > dimen.w || max_y > dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_SIZE;
     } else if (NULL == dst) {
-        return ERR_PIXEL_OP_READ_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_PTR;
     }
     KmzPoint p = src_area.pos;
     for (size_t o = 0; p.y < max_y; ++p.y) {
@@ -152,7 +152,7 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, co
         }
     }
     
-    return PIXEL_OP_OK;
+    return KMZ_PIXEL_OP_OK;
 }
 
 const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, const KmzRectangle dst_area, const kmz_color_32 * const restrict src) {
@@ -164,11 +164,11 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, c
     const ssize_t max_y = dst_area.size.h + dst_area.pos.y, max_x = dst_area.size.w + dst_area.pos.x;
     
     if (dst_area.pos.x < 0 || dst_area.pos.x >= dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= dimen.h) {
-        return ERR_PIXEL_OP_WRITE_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS;
     } else if (max_x > dimen.w || max_y > dimen.h) {
-        return ERR_PIXEL_OP_WRITE_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_SIZE;
     } else if (NULL == src) {
-        return ERR_PIXEL_OP_WRITE_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_PTR;
     }
     KmzPoint p = dst_area.pos;
     for (size_t o = 0; p.y < max_y; ++p.y) {
@@ -177,18 +177,18 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, c
         }
     }
     
-    return PIXEL_OP_OK;
+    return KMZ_PIXEL_OP_OK;
 }
 
 const KmzBool KmzImage__is_valid(const KmzImagePtr me, const KmzPoint point) {
     return me->_type->is_valid(me->_me, point);
 }
 
-static inline KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
+static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
                                                                  const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
                                                                  const size_t w) {
     const size_t w_m_o = w - 1;
-    KmzPixelOperationStatus status = PIXEL_OP_OK;
+    KmzPixelOperationStatus status = KMZ_PIXEL_OP_OK;
     KmzPoint b_p = KmzPoint__ZERO;
     KmzBool in_y_border = KMZ_FALSE, in_x_border = KMZ_FALSE;
     size_t b_o = 0;
@@ -204,7 +204,7 @@ static inline KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImageP
                 buffer[b_o++] = 0x00000000;
             } else {
                 status = KmzImage__read_argb_block(me, i_area, buffer + b_o);
-                if (status != PIXEL_OP_OK) {
+                if (status != KMZ_PIXEL_OP_OK) {
                     return status;
                 }
                 b_p.x += w_m_o;
@@ -215,15 +215,15 @@ static inline KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImageP
             ++i_area.pos.y;
         }
     }
-    return PIXEL_OP_OK;
+    return status;
 }
 
-extern inline KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter,
+const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter,
                                                                  const KmzRectangle area, const size_t m_size) {
     return KmzImage__apply_buffered_filter(me, argv, filter, area, m_size, me);
 }
 
-KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
                                                         const size_t m_size, const KmzImagePtr output) {
     const KmzSize dimen = KmzImage__dimen(me);
     const size_t hsize = m_size / 2;
@@ -242,16 +242,16 @@ KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, co
     
     kmz_color_32 * const restrict buffer = calloc(b_w * b_h, sizeof(kmz_color_32));
     if (NULL == buffer) {
-        return ERR_PIXEL_OP_OUT_OF_MEMORY;
+        return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
     }
     kmz_color_32 * const restrict o_buffer = calloc(w * h, sizeof(kmz_color_32));
     if (NULL == o_buffer) {
         free(buffer);
-        return ERR_PIXEL_OP_OUT_OF_MEMORY;
+        return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
     }
     
     KmzPixelOperationStatus status = _KmzImage__populate_buffer(me, buffer, area, kmz_size(b_w, b_h), kmz_size(h_w, h_h), hsize, w);
-    if (status != PIXEL_OP_OK) {
+    if (status != KMZ_PIXEL_OP_OK) {
         free(buffer);
         free(o_buffer);
         return status;
@@ -264,7 +264,7 @@ KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, co
     if (NULL == m) {
         free(buffer);
         free(o_buffer);
-        return ERR_PIXEL_OP_OUT_OF_MEMORY;
+        return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
     }
     
     for (; p.y < h; ++p.y) {
@@ -281,5 +281,5 @@ KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, co
     free(buffer);
     free(o_buffer);
     
-    return PIXEL_OP_OK;
+    return KMZ_PIXEL_OP_OK;
 }

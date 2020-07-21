@@ -30,104 +30,16 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef kmz_color_h
-#define kmz_color_h
+#ifndef colors_h
+#define colors_h
 
-#include <stdint.h>
-#include <stdlib.h>
-#include <math.h>
-#include <string.h>
-#include <arpa/inet.h>
+#include <libkempozer.h>
+#include <libkempozer/color.h>
 
-#include "kmz_config.h"
-#include "kmz_shared.h"
+// TODO: Document color values
 
-typedef uint32_t kmz_color_32;
-
-typedef char * const restrict kmz_hex_string;
-
-struct kmz_argb_color_t {
-    kmz_channel a, r, g, b;
-};
-typedef struct kmz_argb_color_t KmzArgbColor;
-
-struct kmz_ahsl_color_t {
-    kmz_channel a;
-    kmz_percent h, s, l;
-};
-typedef struct kmz_ahsl_color_t KmzAhslColor;
-
-/**
- * Creates a new ARGB color from the provided value.
- */
-KmzArgbColor KmzArgbColor__from_color_32(const kmz_color_32 color);
-
-/**
- * Creates a new ARGB color from the provided values.
- */
-KmzArgbColor KmzArgbColor__from_channels(const kmz_channel a, const kmz_channel r, const kmz_channel g, const kmz_channel b);
-
-/**
- * Creates a new ARGB color from the provided value.
- */
-KmzArgbColor KmzArgbColor__from_ahsl_color(const KmzAhslColor color);
-
-/**
- * Creates a new ARGB color from the provided value.
- */
-KmzArgbColor KmzArgbColor__from_hex(const kmz_hex_string color);
-
-/**
- * Determines if the provided ARGB colors are equal.
- */
-const KmzBool KmzArgbColor__equal_to(const KmzArgbColor me, const KmzArgbColor other);
-
-/**
- * Creates a new AHSL color from the provided value.
- */
-KmzAhslColor KmzAhslColor__from_color_32(const kmz_color_32 color);
-
-/**
- * Creates a new AHSL color from the provided value.
- */
-KmzAhslColor KmzAhslColor__from_channels(const kmz_channel a, const kmz_percent h, const kmz_percent s, const kmz_percent l);
-
-/**
- * Creates a new AHSL color from the provided value.
- */
-KmzAhslColor KmzAhslColor__from_argb_color(const KmzArgbColor color);
-
-/**
- * Creates a new AHSL color from the provided value.
- */
-KmzAhslColor KmzAhslColor__from_hex(const kmz_hex_string color);
-
-/**
- * Determines if the provided AHSL colors are equal.
- */
-const KmzBool KmzAhslColor__equal_to(const KmzAhslColor me, const KmzAhslColor other);
-
-/**
- * Creates a new color 32 color from the provided value.
- */
-const kmz_color_32 kmz_color_32__from_argb_color(const KmzArgbColor color);
-
-/**
- * Creates a new color 32 color from the provided value.
- */
-const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
-
-/**
- * Creates a new color 32 color from the provided value.
- */
-const kmz_color_32 kmz_color_32__from_hex(const kmz_hex_string color);
-
-/**
- * Determines if the provided color 32 colors are equal.
- */
-const KmzBool kmz_color_32__equal_to(const kmz_color_32 me, const kmz_color_32 other);
-
-extern const KmzArgbColor KmzArgbColor__ALICE_BLUE,
+extern const KmzArgbColor
+KmzArgbColor__ALICE_BLUE,
 KmzArgbColor__ANTIQUE_WHITE,
 KmzArgbColor__AQUA,
 KmzArgbColor__AQUAMARINE,
@@ -268,4 +180,4 @@ KmzArgbColor__WHITE_SMOKE,
 KmzArgbColor__YELLOW,
 KmzArgbColor__YELLOW_GREEN;
 
-#endif /* kmz_color_h */
+#endif /* colors_h */

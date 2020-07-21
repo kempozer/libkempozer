@@ -113,11 +113,11 @@ static void _KmzImage__set_argb_at(struct _kmz_image_t * const restrict me, cons
 static const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _kmz_image_t * const restrict me, const KmzRectangle src_area,
                                                                 kmz_color_32 * const restrict dst) {
     if (src_area.pos.x < 0 || src_area.pos.x >= me->dimen.w || src_area.pos.y < 0 || src_area.pos.y >= me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_POS;
     } else if ((src_area.size.w + src_area.pos.x) > me->dimen.w || (src_area.size.h + src_area.pos.y) > me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_SIZE;
     } else if (NULL == dst) {
-        return ERR_PIXEL_OP_READ_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_PTR;
     }
     
     if (0 == src_area.pos.x && 0 == src_area.pos.y && src_area.size.w == me->dimen.w && src_area.size.h == me->dimen.h) {
@@ -135,17 +135,17 @@ static const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _km
         }
     }
     
-    return PIXEL_OP_OK;
+    return KMZ_PIXEL_OP_OK;
 }
 
 static const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_image_t * const restrict me, const KmzRectangle dst_area,
                                                                 const kmz_color_32 * const restrict src) {
     if (dst_area.pos.x < 0 || dst_area.pos.x >= me->dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS;
     } else if ((dst_area.size.w + dst_area.pos.x) > me->dimen.w || (dst_area.size.h + dst_area.pos.y) > me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_SIZE;
     } else if (NULL == src) {
-        return ERR_PIXEL_OP_READ_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_PTR;
     }
     
     if (0 == dst_area.pos.x && 0 == dst_area.pos.y && dst_area.size.w == me->dimen.w && dst_area.size.h == me->dimen.h) {
@@ -163,7 +163,7 @@ static const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_ima
         }
     }
     
-    return PIXEL_OP_OK;
+    return KMZ_PIXEL_OP_OK;
 }
 
 static const KmzBool _KmzImage__is_valid(const struct _kmz_image_t * const restrict me, const KmzPoint point) {

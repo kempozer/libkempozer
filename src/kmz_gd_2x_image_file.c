@@ -138,39 +138,39 @@ static const int _kmz_write_int(FILE * const restrict f, uint32_t v) {
 
 const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, KmzGd2xImageFile * const restrict o) {
     if (NULL == f) {
-        return ERR_INVALID_FILE_PTR;
+        return KMZ_GD_ERR_INVALID_FILE_PTR;
     } else if (NULL == o) {
-        return ERR_INVALID_IMAGE_PTR;
+        return KMZ_GD_ERR_INVALID_IMAGE_PTR;
     }
     
     if (0 != _kmz_read_short(f, &o->header.signature.type)) {
-        return ERR_READ_SIGNATURE;
+        return KMZ_GD_ERR_READ_SIGNATURE;
     }
     if (0 != _kmz_read_short(f, &o->header.signature.dimen.w)) {
-        return ERR_READ_WIDTH;
+        return KMZ_GD_ERR_READ_WIDTH;
     }
     if (0 != _kmz_read_short(f, &o->header.signature.dimen.h)) {
-        return ERR_READ_HEIGHT;
+        return KMZ_GD_ERR_READ_HEIGHT;
     }
     if (0 != _kmz_read_byte(f, &o->header.color.is_truecolor)) {
-        return ERR_READ_IS_TRUECOLOR;
+        return KMZ_GD_ERR_READ_IS_TRUECOLOR;
     }
     
     switch (o->header.signature.type) {
         case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_read_int(f, &o->header.color.value.truecolor.transparent)) {
-                return ERR_READ_TRUECOLOR_TRANSPARENT;
+                return KMZ_GD_ERR_READ_TRUECOLOR_TRANSPARENT;
             }
             break;
         case KMZ_GD_2x_IMAGE_FILE_PALETTE:
             if (0 != _kmz_read_short(f, &o->header.color.value.palette.count)) {
-                return ERR_READ_PALETTE_COUNT;
+                return KMZ_GD_ERR_READ_PALETTE_COUNT;
             }
             if (0 != _kmz_read_int(f, &o->header.color.value.palette.transparent)) {
-                return ERR_READ_PALETTE_TRANSPARENT;
+                return KMZ_GD_ERR_READ_PALETTE_TRANSPARENT;
             }
             if (0 != _kmz_read_int_buffer(f, o->header.color.value.palette.colors, 256)) {
-                return ERR_READ_PALETTE_COLORS;
+                return KMZ_GD_ERR_READ_PALETTE_COLORS;
             }
     }
     
@@ -181,54 +181,54 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
     if (is_truecolor) {
         o->pixels.truecolor = calloc(len, sizeof(kmz_color_32));
         if (NULL == o->pixels.truecolor) {
-            return ERR_OUT_OF_MEMORY;
+            return KMZ_GD_ERR_OUT_OF_MEMORY;
         }
         if (0 != _kmz_read_int_buffer(f, o->pixels.truecolor, len)) {
-            return ERR_READ_PIXELS;
+            return KMZ_GD_ERR_READ_PIXELS;
         }
     } else {
         o->pixels.palette = calloc(len, sizeof(uint8_t));
         if (NULL == o->pixels.palette) {
-            return ERR_OUT_OF_MEMORY;
+            return KMZ_GD_ERR_OUT_OF_MEMORY;
         }
         if (0 != _kmz_read_byte_buffer(f, o->pixels.palette, len)) {
-            return ERR_READ_PIXELS;
+            return KMZ_GD_ERR_READ_PIXELS;
         }
     }
     
-    return OK;
+    return KMZ_GD_OK;
 }
 
 
 const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f, const KmzGd2xImageFile * const restrict i) {
     if (NULL == f) {
-        return ERR_INVALID_FILE_PTR;
+        return KMZ_GD_ERR_INVALID_FILE_PTR;
     } else if (NULL == i) {
-        return ERR_INVALID_IMAGE_PTR;
+        return KMZ_GD_ERR_INVALID_IMAGE_PTR;
     }
     
     if (0 != _kmz_write_short(f, i->header.signature.type)) {
-        return ERR_WRITE_SIGNATURE;
+        return KMZ_GD_ERR_WRITE_SIGNATURE;
     }
     if (0 != _kmz_write_short(f, i->header.signature.dimen.w)) {
-        return ERR_WRITE_WIDTH;
+        return KMZ_GD_ERR_WRITE_WIDTH;
     }
     if (0 != _kmz_write_short(f, i->header.signature.dimen.h)) {
-        return ERR_WRITE_HEIGHT;
+        return KMZ_GD_ERR_WRITE_HEIGHT;
     }
     if (0 != _kmz_write_byte(f, i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR)) {
-        return ERR_WRITE_IS_TRUECOLOR;
+        return KMZ_GD_ERR_WRITE_IS_TRUECOLOR;
     }
     
     switch (i->header.signature.type) {
         case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_write_int(f, i->header.color.value.truecolor.transparent)) {
-                return ERR_WRITE_TRUECOLOR_TRANSPARENT;
+                return KMZ_GD_ERR_WRITE_TRUECOLOR_TRANSPARENT;
             }
             break;
         case KMZ_GD_2x_IMAGE_FILE_PALETTE:
             // TODO: Implement palette image writing
-            return ERR_UNSUPPORTED_OPERATION;
+            return KMZ_GD_ERR_UNSUPPORTED_OPERATION;
     }
     
     const size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
@@ -236,70 +236,70 @@ const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
     
     if (is_truecolor) {
         if (0 != _kmz_write_int_buffer(f, i->pixels.truecolor, len)) {
-            return ERR_WRITE_PIXELS;
+            return KMZ_GD_ERR_WRITE_PIXELS;
         }
     } else {
         if (0 != _kmz_write_byte_buffer(f, i->pixels.palette, len)) {
-            return ERR_WRITE_PIXELS;
+            return KMZ_GD_ERR_WRITE_PIXELS;
         }
     }
-    return OK;
+    return KMZ_GD_OK;
 }
 
-const char * kmz_status_msg(const KmzGd2xImageFileStatus status) {
+const char * const kmz_status_msg(const KmzGd2xImageFileStatus status) {
     switch (status) {
-        case OK:
+        case KMZ_GD_OK:
             return NULL;
-        case ERR_INVALID_FILE_PTR:
+        case KMZ_GD_ERR_INVALID_FILE_PTR:
             return "An invalid file pointer has been provided";
-        case ERR_INVALID_IMAGE_PTR:
+        case KMZ_GD_ERR_INVALID_IMAGE_PTR:
             return "An invalid image pointer has been provided";
-        case ERR_READ_SIGNATURE:
+        case KMZ_GD_ERR_READ_SIGNATURE:
             return "An error has occurred while reading the GD 2x header signature";
-        case ERR_WRITE_SIGNATURE:
+        case KMZ_GD_ERR_WRITE_SIGNATURE:
             return "An error has occurred while writing the GD 2x header signature";
-        case ERR_READ_WIDTH:
+        case KMZ_GD_ERR_READ_WIDTH:
             return "An error has occurred while reading the GD 2x header width";
-        case ERR_READ_HEIGHT:
+        case KMZ_GD_ERR_READ_HEIGHT:
             return "An error has occurred while reading the GD 2x header height";
-        case ERR_WRITE_WIDTH:
+        case KMZ_GD_ERR_WRITE_WIDTH:
             return "An error has occurred while writing the GD 2x header width";
-        case ERR_WRITE_HEIGHT:
+        case KMZ_GD_ERR_WRITE_HEIGHT:
             return "An error has occurred while writing the GD 2x header height";
-        case ERR_READ_IS_TRUECOLOR:
+        case KMZ_GD_ERR_READ_IS_TRUECOLOR:
             return "An error has occurred while reading the GD 2x header truecolor flag";
-        case ERR_WRITE_IS_TRUECOLOR:
+        case KMZ_GD_ERR_WRITE_IS_TRUECOLOR:
             return "An error has occurred while writing the GD 2x header truecolor flag";
-        case ERR_READ_TRUECOLOR_TRANSPARENT:
+        case KMZ_GD_ERR_READ_TRUECOLOR_TRANSPARENT:
             return "An error has occurred while reading the GD 2x header truecolor transparent color";
-        case ERR_WRITE_TRUECOLOR_TRANSPARENT:
+        case KMZ_GD_ERR_WRITE_TRUECOLOR_TRANSPARENT:
             return "An error has occurred while writing the GD 2x header truecolor transparent color";
-        case ERR_READ_PALETTE_COUNT:
+        case KMZ_GD_ERR_READ_PALETTE_COUNT:
             return "An error has occurred while reading the GD 2x header palette count";
-        case ERR_WRITE_PALETTE_COUNT:
+        case KMZ_GD_ERR_WRITE_PALETTE_COUNT:
             return "An error has occurred while writing the GD 2x header palette count";
-        case ERR_READ_PALETTE_TRANSPARENT:
+        case KMZ_GD_ERR_READ_PALETTE_TRANSPARENT:
             return "An error has occurred while reading the GD 2x header palette transparent color";
-        case ERR_WRITE_PALETTE_TRANSPARENT:
+        case KMZ_GD_ERR_WRITE_PALETTE_TRANSPARENT:
             return "An error has occurred while writing the GD 2x header palette transparent color";
-        case ERR_READ_PALETTE_COLORS:
+        case KMZ_GD_ERR_READ_PALETTE_COLORS:
             return "An error has occurred while reading the GD 2x header palette colors";
-        case ERR_WRITE_PALETTE_COLORS:
+        case KMZ_GD_ERR_WRITE_PALETTE_COLORS:
             return "An error has occurred while writing the GD 2x header palette colors";
-        case ERR_READ_PIXELS:
+        case KMZ_GD_ERR_READ_PIXELS:
             return "An error has occurred while reading the GD 2x pixels";
-        case ERR_WRITE_PIXELS:
+        case KMZ_GD_ERR_WRITE_PIXELS:
             return "An error has occurred while writing the GD 2x pixels";
-        case ERR_UNSUPPORTED_OPERATION:
+        case KMZ_GD_ERR_UNSUPPORTED_OPERATION:
             return "An unsupported operation has been encountered";
-        case ERR_OUT_OF_MEMORY:
+        case KMZ_GD_ERR_OUT_OF_MEMORY:
             return "System is out of memory";
-        case ERR_UNKNOWN:
+        case KMZ_GD_ERR_UNKNOWN:
             return "An unknown error has occurred";
     }
 }
 
-const char * kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, const int error) {
+const char * const kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, const int error) {
     const char * msg = kmz_status_msg(status);
     char * o = calloc(strlen(msg) + 24, sizeof(char));
     sprintf(o, "%s: %d", msg, error);

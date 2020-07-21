@@ -44,17 +44,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * Defines the standard pixel operation status codes as returned by block pixel operations.
  */
 enum kmz_pixel_operation_status_e {
-    // Standard statuses
-    PIXEL_OP_OK = 0,
-    ERR_PIXEL_OP_READ_INVALID_POS = -1,
-    ERR_PIXEL_OP_READ_INVALID_SIZE = -2,
-    ERR_PIXEL_OP_READ_INVALID_PTR = -3,
-    ERR_PIXEL_OP_WRITE_INVALID_POS = -4,
-    ERR_PIXEL_OP_WRITE_INVALID_SIZE = -5,
-    ERR_PIXEL_OP_WRITE_INVALID_PTR = -6,
-    ERR_PIXEL_OP_OUT_OF_MEMORY = -7,
+    KMZ_PIXEL_OP_OK = 0,
+    KMZ_PIXEL_OP_ERR_READ_INVALID_POS = -1,
+    KMZ_PIXEL_OP_ERR_READ_INVALID_SIZE = -2,
+    KMZ_PIXEL_OP_ERR_READ_INVALID_PTR = -3,
+    KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS = -4,
+    KMZ_PIXEL_OP_ERR_WRITE_INVALID_SIZE = -5,
+    KMZ_PIXEL_OP_ERR_WRITE_INVALID_PTR = -6,
+    KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY = -7,
     // Custom operation statuses MUST have a value lower than ERR_PIXEL_OP_USER_ERR.
-    ERR_PIXEL_OP_USER_ERR = -1024
+    KMZ_PIXEL_OP_ERR_USER_ERR = -1024
 };
 typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
 
@@ -115,7 +114,7 @@ struct kmz_image_type_t {
     /**
      * Reads a block of ARGB values from this image.
      */
-    const KmzPixelOperationStatus (* const read_argb_block)(const kmz_image_ptr_const, const KmzRectangle, kmz_color_32 * const);
+    const KmzPixelOperationStatus (* const read_argb_block)(const kmz_image_ptr_const, const KmzRectangle, kmz_color_32 * const restrict);
     /**
      * Writes a block of ARGB values to this image.
      */
@@ -221,13 +220,13 @@ const KmzBool KmzImage__is_valid(const KmzImagePtr me, const KmzPoint point);
 /**
  * Applies a matrix filter function to the image referenced.
  */
-KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
                                                const size_t m_size);
 
 /**
  * Applies a matrix filter function to the image referenced and outputs the change to the buffer referenced.
  */
-KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
+const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
                                                         const size_t m_size, const KmzImagePtr buffer);
 
 #endif /* kmz_core_h */
