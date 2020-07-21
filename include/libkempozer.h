@@ -205,6 +205,46 @@ struct kmz_polygon_f_t {
 };
 typedef struct kmz_polygon_f_t KmzPolygonF;
 
+extern const KmzSize KmzSize__ZERO;
+
+extern const KmzSizeF KmzSizeF__ZERO;
+
+extern const KmzPoint KmzPoint__ZERO;
+
+extern const KmzPointF KmzPointF__ZERO;
+
+extern const KmzRectangle KmzRectangle__ZERO;
+
+extern const KmzRectangleF KmzRectangleF__ZERO;
+
+extern const KmzLine KmzLine__ZERO;
+
+extern const KmzLineF KmzLineF__ZERO;
+
+extern const KmzPolygon KmzPolygon__ZERO;
+
+extern const KmzPolygonF KmzPolygonF__ZERO;
+
+#define kmz_size(w, h) ((KmzSize){w,h})
+
+#define kmz_sizef(w, h) ((KmzSizeF){w,h})
+
+#define kmz_point(x, y) ((KmzPoint){x,y})
+
+#define kmz_pointf(x, y) ((KmzPointF){x,y})
+
+#define kmz_rectangle(pos, size) ((KmzRectangle){pos,size})
+
+#define kmz_rectanglef(pos, size) ((KmzRectangleF){pos,size})
+
+#define kmz_line(start, end) ((KmzLine){start,end})
+
+#define kmz_linef(start, end) ((KmzLineF){start,end})
+
+#define kmz_polygon(count, points) ((KmzPolygon){count,points})
+
+#define kmz_polygonf(count, points) ((KmzPolygonF){count,points})
+
 // endregion;
 
 #endif /* libkempozer_h */

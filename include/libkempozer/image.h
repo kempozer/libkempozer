@@ -236,7 +236,7 @@ const KmzPoint KmzMatrix__pos(const KmzMatrix * const restrict me);
  * @param me The target of this invocation
  * @param pos The new position of the targeted {@link KmzMatrix}.
  */
-void KmzMatrix__set_pos(KmzMatrix * const restrict me, cont KmzPoint pos);
+void KmzMatrix__set_pos(KmzMatrix * const restrict me, const KmzPoint pos);
 
 /**
  * @par Gets a pixel color from the targeted {@link KmzMatrix} at the given offset from its current position.

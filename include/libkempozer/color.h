@@ -124,7 +124,7 @@ KmzArgbColor KmzArgbColor__from_hex(const kmz_hex_string color);
  * @param color A color stored as 4 8-bit channels in the format of ARGB.
  * @return A {@link KmzAhslColor} structure that represents the provided ARGB value.
  */
-KmzAhslColor KmzArgbColor__from_color_32(const kmz_color_32 color);
+KmzAhslColor KmzAhslColor__from_color_32(const kmz_color_32 color);
 
 /**
  * Creates an AHSL structure from the provided AHSL channels.
@@ -180,6 +180,6 @@ const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
  * @param color A color stored as a null terminated string containing a hex color formatted as 0xXXXXXX, #XXXXXX, 0xXXXXXXXX, or #XXXXXXXX.
  * @return A single {@link kmz_color_32} value that represents the provided {@link kmz_hex_string}.
  */
-const kmz_color_32 kmz_color_32_from_hex(const kmz_hex_string color);
+const kmz_color_32 kmz_color_32__from_hex(const kmz_hex_string color);
 
 #endif /* color_h */
