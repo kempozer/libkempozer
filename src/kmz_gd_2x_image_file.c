@@ -1,34 +1,34 @@
 /*-
- BSD 3-Clause License
+  BSD 3-Clause License
 
- Copyright (c) 2020, Kempozer
- All rights reserved.
+  Copyright (c) 2020, Kempozer
+  All rights reserved.
 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
- 1. Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
 
- 2. Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
 
- 3. Neither the name of the copyright holder nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
+  3. Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
 
 #include "kmz_gd_2x_image_file.h"
 
@@ -142,7 +142,7 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
     } else if (NULL == o) {
         return KMZ_GD_ERR_INVALID_IMAGE_PTR;
     }
-    
+
     if (0 != _kmz_read_short(f, &o->header.signature.type)) {
         return KMZ_GD_ERR_READ_SIGNATURE;
     }
@@ -155,7 +155,7 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
     if (0 != _kmz_read_byte(f, &o->header.color.is_truecolor)) {
         return KMZ_GD_ERR_READ_IS_TRUECOLOR;
     }
-    
+
     switch (o->header.signature.type) {
         case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_read_int(f, &o->header.color.value.truecolor.transparent)) {
@@ -173,11 +173,11 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
                 return KMZ_GD_ERR_READ_PALETTE_COLORS;
             }
     }
-    
+
     const size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
     const uint8_t is_truecolor = o->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
     o->header.color.is_truecolor = is_truecolor;
-    
+
     if (is_truecolor) {
         o->pixels.truecolor = calloc(len, sizeof(kmz_color_32));
         if (NULL == o->pixels.truecolor) {
@@ -195,7 +195,7 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
             return KMZ_GD_ERR_READ_PIXELS;
         }
     }
-    
+
     return KMZ_GD_OK;
 }
 
@@ -206,7 +206,7 @@ const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
     } else if (NULL == i) {
         return KMZ_GD_ERR_INVALID_IMAGE_PTR;
     }
-    
+
     if (0 != _kmz_write_short(f, i->header.signature.type)) {
         return KMZ_GD_ERR_WRITE_SIGNATURE;
     }
@@ -219,7 +219,7 @@ const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
     if (0 != _kmz_write_byte(f, i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR)) {
         return KMZ_GD_ERR_WRITE_IS_TRUECOLOR;
     }
-    
+
     switch (i->header.signature.type) {
         case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_write_int(f, i->header.color.value.truecolor.transparent)) {
@@ -230,10 +230,10 @@ const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
             // TODO: Implement palette image writing
             return KMZ_GD_ERR_UNSUPPORTED_OPERATION;
     }
-    
+
     const size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
     const size_t is_truecolor = i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
-    
+
     if (is_truecolor) {
         if (0 != _kmz_write_int_buffer(f, i->pixels.truecolor, len)) {
             return KMZ_GD_ERR_WRITE_PIXELS;

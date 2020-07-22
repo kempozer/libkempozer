@@ -1,34 +1,34 @@
 /*-
- BSD 3-Clause License
+  BSD 3-Clause License
 
- Copyright (c) 2020, Kempozer
- All rights reserved.
+  Copyright (c) 2020, Kempozer
+  All rights reserved.
 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
- 1. Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
 
- 2. Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
 
- 3. Neither the name of the copyright holder nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
+  3. Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
 
 #include "kmz_core.h"
 
@@ -90,18 +90,18 @@ const KmzImagePtr KmzImage__new(const KmzImageType * const restrict type, kmz_ar
     if (NULL == ptr) {
         return NULL;
     }
-    
+
     ptr->_type = type;
     ptr->_me = ptr->_type->_new();
     if (NULL == ptr->_me) {
         free(ptr);
         return NULL;
     }
-    
+
     if (ptr->_type->_ctor) {
         ptr->_type->_ctor(ptr->_me, argv);
     }
-    
+
     return ptr;
 }
 
@@ -134,10 +134,10 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, co
     if (me->_type->read_argb_block) {
         return me->_type->read_argb_block(me->_me, src_area, dst);
     }
-    
+
     const KmzSize dimen = KmzImage__dimen(me);
     const ssize_t max_y = src_area.size.h + src_area.pos.y, max_x = src_area.size.w + src_area.pos.x;
-    
+
     if (src_area.pos.x < 0 || src_area.pos.x >= dimen.w || src_area.pos.y < 0 || src_area.pos.y >= dimen.h) {
         return KMZ_PIXEL_OP_ERR_READ_INVALID_POS;
     } else if (max_x > dimen.w || max_y > dimen.h) {
@@ -151,7 +151,7 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, co
             dst[o++] = KmzImage__argb_at(me, p);
         }
     }
-    
+
     return KMZ_PIXEL_OP_OK;
 }
 
@@ -159,10 +159,10 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, c
     if (me->_type->write_argb_block) {
         return me->_type->write_argb_block(me->_me, dst_area, src);
     }
-    
+
     const KmzSize dimen = KmzImage__dimen(me);
     const ssize_t max_y = dst_area.size.h + dst_area.pos.y, max_x = dst_area.size.w + dst_area.pos.x;
-    
+
     if (dst_area.pos.x < 0 || dst_area.pos.x >= dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= dimen.h) {
         return KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS;
     } else if (max_x > dimen.w || max_y > dimen.h) {
@@ -176,7 +176,7 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, c
             KmzImage__set_argb_at(me, p, src[o++]);
         }
     }
-    
+
     return KMZ_PIXEL_OP_OK;
 }
 
@@ -185,21 +185,20 @@ const KmzBool KmzImage__is_valid(const KmzImagePtr me, const KmzPoint point) {
 }
 
 static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
-                                                                 const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
-                                                                 const size_t w) {
+        const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
+        const size_t w) {
     const size_t w_m_o = w - 1;
     KmzPixelOperationStatus status = KMZ_PIXEL_OP_OK;
     KmzPoint b_p = KmzPoint__ZERO;
     KmzBool in_y_border = KMZ_FALSE, in_x_border = KMZ_FALSE;
     size_t b_o = 0;
     i_area.size.h = 1;
-    
-    // Copy the image into the buffer.
+
     for (; b_p.y < buffer_size.h; ++b_p.y) {
         in_y_border = (b_p.y < hsize || b_p.y >= h_buffer_size.h);
         for (b_p.x = 0; b_p.x < buffer_size.w; ++b_p.x) {
             in_x_border = (b_p.x < hsize || b_p.x >= h_buffer_size.w);
-            
+
             if (in_y_border || in_x_border) {
                 buffer[b_o++] = 0x00000000;
             } else {
@@ -215,31 +214,32 @@ static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const Kmz
             ++i_area.pos.y;
         }
     }
+
     return status;
 }
 
 const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter,
-                                                                 const KmzRectangle area, const size_t m_size) {
+        const KmzRectangle area, const size_t m_size) {
     return KmzImage__apply_buffered_filter(me, argv, filter, area, m_size, me);
 }
 
 const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
-                                                        const size_t m_size, const KmzImagePtr output) {
+        const size_t m_size, const KmzImagePtr output) {
     const KmzSize dimen = KmzImage__dimen(me);
     const size_t hsize = m_size / 2;
     const ssize_t x = kmz_clamp(area.pos.x, 0, dimen.w),
-                  y = kmz_clamp(area.pos.y, 0, dimen.h),
-                  max_x = kmz_clamp(area.size.w + x, x, dimen.w),
-                  max_y = kmz_clamp(area.size.h + y, y, dimen.h);
-    
+          y = kmz_clamp(area.pos.y, 0, dimen.h),
+          max_x = kmz_clamp(area.size.w + x, x, dimen.w),
+          max_y = kmz_clamp(area.size.h + y, y, dimen.h);
+
     const size_t w = (size_t)(max_x - x),
-                 h = (size_t)(max_y - y);
-    
+          h = (size_t)(max_y - y);
+
     const uint16_t h_w = (uint16_t)(w + hsize),
-                   h_h = (uint16_t)(h + hsize),
-                   b_w = (uint16_t)(h_w + hsize),
-                   b_h = (uint16_t)(h_h + hsize);
-    
+          h_h = (uint16_t)(h + hsize),
+          b_w = (uint16_t)(h_w + hsize),
+          b_h = (uint16_t)(h_h + hsize);
+
     kmz_color_32 * const restrict buffer = calloc(b_w * b_h, sizeof(kmz_color_32));
     if (NULL == buffer) {
         return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
@@ -249,37 +249,36 @@ const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr 
         free(buffer);
         return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
     }
-    
+
     KmzPixelOperationStatus status = _KmzImage__populate_buffer(me, buffer, area, kmz_size(b_w, b_h), kmz_size(h_w, h_h), hsize, w);
     if (status != KMZ_PIXEL_OP_OK) {
         free(buffer);
         free(o_buffer);
         return status;
     }
-    
+
     KmzMatrix * m = KmzMatrix__new_from_buffer(buffer, kmz_size((uint16_t)b_w, (uint16_t)b_h), kmz_point(0, 0), m_size);
     KmzPoint p = KmzPoint__ZERO;
     size_t o = 0;
-    
+
     if (NULL == m) {
         free(buffer);
         free(o_buffer);
         return KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY;
     }
-    
+
     for (; p.y < h; ++p.y) {
         for (p.x = 0; p.x < w; ++p.x) {
             m->_pos = p;
             o_buffer[o++] = filter(argv, m);
         }
     }
-    
+
     KmzImage__write_argb_block(output, area, o_buffer);
-    
-    // Free the resources.
+
     free(m);
     free(buffer);
     free(o_buffer);
-    
+
     return KMZ_PIXEL_OP_OK;
 }

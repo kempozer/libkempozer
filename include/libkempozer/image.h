@@ -1,34 +1,34 @@
 /*-
-BSD 3-Clause License
+  BSD 3-Clause License
 
-Copyright (c) 2020, Kempozer
-All rights reserved.
+  Copyright (c) 2020, Kempozer
+  All rights reserved.
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
+  3. Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
 
 #ifndef image_h
 #define image_h
@@ -42,7 +42,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 struct kmz_image_type_t {
     // region Version 1 methods:
-    
+
     /**
      * @par Allocates an uninitialized image represented by this {@link KmzImageType}.
      *
@@ -54,7 +54,7 @@ struct kmz_image_type_t {
      * @return A pointer to a memory location that contains an uninitialized image represented by this {@link KmzImageType}, or {@link NULL} if there isn't enough memory to allocate the image.
      */
     void * const (* const _new)(void);
-    
+
     /**
      * @par Initializes an uninitialized image represented by this {@link KmzImageType}.
      *
@@ -72,7 +72,7 @@ struct kmz_image_type_t {
      * @param argv A pointer to the arguments used to initialize the uninitialized image, or {@link NULL} if no arguments are to be used.
      */
     void (* const _ctor)(void * const restrict, const void * const restrict);
-    
+
     /**
      * @par Deallocates an initialized image represented by this {@link KmzImageType}.
      *
@@ -86,7 +86,7 @@ struct kmz_image_type_t {
      * @param me A pointer to an initialized image represented by this {@link KmzImageType}.
      */
     void (* const _dtor)(void * const restrict);
-    
+
     /**
      * @par Returns the dimensions of the image represented by this {@link KmzImageType}.
      *
@@ -99,7 +99,7 @@ struct kmz_image_type_t {
      * @return A {@link KmzSize} structure that represents the dimensions of the image represented by this {@link KmzImageType}.
      */
     const KmzSize (* const dimen)(const void * const restrict);
-    
+
     /**
      * @par Returns a single ARGB value at the given coordinates from the image represented by this {@link KmzImageType}.
      *
@@ -113,7 +113,7 @@ struct kmz_image_type_t {
      * @return A single {@link kmz_color_32} value that represents the color of the given position of the image represented by this {@link KmzImageType}.
      */
     const kmz_color_32 (* const argb_at)(const void * const restrict, const KmzPoint);
-    
+
     /**
      * @parSets a single ARGB value at the given coordinates in the image represented by this {@link KmzImageType}.
      *
@@ -127,7 +127,7 @@ struct kmz_image_type_t {
      * @param color A single {@link kmz_color_32} value that represents the color of the given position of the image represented by this {@link KmzImageType}.
      */
     void (* const set_argb_at)(void * const restrict, const KmzPoint, const kmz_color_32);
-    
+
     /**
      * @par Reads a block of ARGB values at the given coordinates and of the given dimensions in the image represented by this {@link KmzImageType}.
      *
@@ -143,9 +143,9 @@ struct kmz_image_type_t {
      * @return {@link KMZ_PIXEL_OP_OK} if the block of ARGB values was successfully read, otherwise an appropriate value from {@link KmzPixelOperationStatus}.
      */
     const KmzPixelOperationStatus (* const read_argb_block)(const void * const restrict,
-                                                            const KmzRectangle,
-                                                            kmz_color_32 * const restrict);
-    
+            const KmzRectangle,
+            kmz_color_32 * const restrict);
+
     /**
      * @par Writes a block of ARGB values at the given coordinates and of the given dimensions to the image represented by this {@link KmzImageType}.
      *
@@ -161,8 +161,8 @@ struct kmz_image_type_t {
      * @return {@link KMZ_PIXEL_OP_OK} if the block of ARGB values was successfully written, otherwise an appropriate value from {@link KmzPixelOperationStatus}.
      */
     const KmzPixelOperationStatus (* const write_argb_block)(void * const restrict,
-                                                             const KmzRectangle,
-                                                             const kmz_color_32 * const restrict);
+            const KmzRectangle,
+            const kmz_color_32 * const restrict);
     // endregion;
 };
 typedef struct kmz_image_type_t KmzImageType;
@@ -200,9 +200,9 @@ typedef const kmz_color_32 (* KmzFilter)(const void * const restrict, KmzMatrix 
  * @return A pointer to the {@link KmzMatrix} represented by the given parameters, or {@link NULL} if there isn't enough memory to allocate the matrix.
  */
 KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffer,
-                                             const KmzSize image_dimen,
-                                             const KmzPoint pos,
-                                             const size_t size);
+        const KmzSize image_dimen,
+        const KmzPoint pos,
+        const size_t size);
 
 /**
  * Gets the size of the targeted {@link KmzMatrix}.
@@ -248,7 +248,7 @@ void KmzMatrix__set_pos(KmzMatrix * const restrict me, const KmzPoint pos);
  * @return A single ARGB value representing the color of the pixel.
  */
 const kmz_color_32 KmzMatrix__argb_at(const KmzMatrix * const restrict me,
-                                      const KmzPoint point);
+        const KmzPoint point);
 
 /**
  * @par Sets a pixel color in the targeted {@link KmzMatrix} at the given offset from its current position.
@@ -260,8 +260,8 @@ const kmz_color_32 KmzMatrix__argb_at(const KmzMatrix * const restrict me,
  * @param color A single ARGB value representing the new color of the pixel.
  */
 void KmzMatrix__set_argb_at(KmzMatrix * const restrict me,
-                            const KmzPoint point,
-                            const kmz_color_32 color);
+        const KmzPoint point,
+        const kmz_color_32 color);
 
 /**
  * @par Attempts to allocate a new image of the given {@link KmzImageType} using the given `argv` pointer.
@@ -278,7 +278,7 @@ void KmzMatrix__set_argb_at(KmzMatrix * const restrict me,
  * @see KmzImageType#_ctor
  */
 const KmzImage * const KmzImage__new(const KmzImageType * const restrict type,
-                                     const void * const restrict argv);
+        const void * const restrict argv);
 
 /**
  * @par Deallocates the memory used by this {@link KmzImage}.
@@ -319,7 +319,7 @@ const KmzSize KmzImage__dimen(const KmzImage * const restrict me);
  * @see KmzImageType#argb_at
  */
 const kmz_color_32 KmzImage__argb_at(const KmzImage * const restrict me,
-                                     const KmzPoint point);
+        const KmzPoint point);
 
 /**
  * Sets a color in the targeted {@link KmzImage} at the given coordinate.
@@ -331,8 +331,8 @@ const kmz_color_32 KmzImage__argb_at(const KmzImage * const restrict me,
  * @see KmzImageType#set_argb_at
  */
 void KmzImage__set_argb_at(const KmzImage * const restrict me,
-                           const KmzPoint point,
-                           const kmz_color_32 color);
+        const KmzPoint point,
+        const kmz_color_32 color);
 
 /**
  * @par Reads a block of ARGB colors within the target {@link KmzImage} into the provided buffer.
@@ -347,8 +347,8 @@ void KmzImage__set_argb_at(const KmzImage * const restrict me,
  * @see KmzImageType#read_argb_block
  */
 const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const restrict me,
-                                                        const KmzRectangle area,
-                                                        kmz_color_32 * const restrict buffer);
+        const KmzRectangle area,
+        kmz_color_32 * const restrict buffer);
 
 /**
  * @par Writes a block of ARGB colors to the target {@link KmzImage} from the provided buffer.
@@ -363,8 +363,8 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const r
  * @see KmzImageType#write_argb_block
  */
 const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImage * const restrict me,
-                                                         const KmzRectangle area,
-                                                         const kmz_color_32 * const restrict buffer);
+        const KmzRectangle area,
+        const kmz_color_32 * const restrict buffer);
 
 /**
  * Determines if the provided {@link KmzPoint} is within the target {@link KmzImage}.
@@ -376,7 +376,7 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImage * const 
  * @see KmzImageType#is_valid
  */
 const KmzBool KmzImage__is_valid(const KmzImage * const restrict me,
-                                 const KmzPoint point);
+        const KmzPoint point);
 
 /**
  * Applies a filter operation to the target {@link KmzImage} with the given `argv` and {@link KmzFilter} using a matrix the size of `m_size` at the area of `area`.
@@ -391,10 +391,10 @@ const KmzBool KmzImage__is_valid(const KmzImage * const restrict me,
  * @see KmzImage__apply_buffered_filter()
  */
 const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImage * const restrict me,
-                                                     const void * const restrict argv,
-                                                     const KmzFilter filter,
-                                                     const KmzRectangle area,
-                                                     const size_t m_size);
+        const void * const restrict argv,
+        const KmzFilter filter,
+        const KmzRectangle area,
+        const size_t m_size);
 
 /**
  * Applies a filter operation to the target {@link KmzImage} with the given `argv` and {@link KmzFilter} using a matrix the size of `m_size` at the area of `area`.
@@ -408,11 +408,11 @@ const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImage * const rest
  * @return {@link KMZ_PIXEL_OP_OK} if `filter` is applied to the image, otherwise an appropriate {@link KmzPixelOperationStatus}.
  */
 const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImage * const restrict me,
-                                                              const void * const restrict argv,
-                                                              const KmzFilter filter,
-                                                              const KmzRectangle area,
-                                                              const size_t m_size,
-                                                              const KmzImage * const restrict buffer);
+        const void * const restrict argv,
+        const KmzFilter filter,
+        const KmzRectangle area,
+        const size_t m_size,
+        const KmzImage * const restrict buffer);
 
 /**
  * Creates a new GD-based image.
@@ -430,8 +430,8 @@ KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restric
  * @param copy_source {@link KMZ_TRUE} if `buffer` should be copied, otherwise {@link KMZ_FALSE}.
  */
 KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen,
-                                           kmz_color_32 * const restrict buffer,
-                                           const KmzBool copy_source);
+        kmz_color_32 * const restrict buffer,
+        const KmzBool copy_source);
 
 /**
  * @par The standard {@link KmzImageType} as implemented by kempozer.
