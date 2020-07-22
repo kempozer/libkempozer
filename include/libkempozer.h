@@ -97,11 +97,22 @@ enum kmz_pixel_operation_status_e {
     KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS = -4,
     KMZ_PIXEL_OP_ERR_WRITE_INVALID_SIZE = -5,
     KMZ_PIXEL_OP_ERR_WRITE_INVALID_PTR = -6,
-    KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY = -7,
-    // Custom operation statuses MUST have a value lower than ERR_PIXEL_OP_USER_ERR.
+    KMZ_PIXEL_OP_ERR_OUT_OF_MEMORY = -64,
+    KMZ_PIXEL_OP_ERR_UNKNOWN = -1000,
     KMZ_PIXEL_OP_ERR_USER_ERR = -1024,
 };
 typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
+
+/**
+ * Defines the possible results from a draw operation.
+ */
+enum kmz_draw_status_e {
+    KMZ_DRAW_OK = 0,
+    KMZ_DRAW_ERR_OUT_OF_MEMORY = -64,
+    KMZ_DRAW_ERR_UNKNOWN = -1000,
+    KMZ_DRAW_ERR_USER = -1024,
+};
+typedef enum kmz_draw_status_e KmzDrawStatus;
 
 // endregion;
 
@@ -155,6 +166,15 @@ struct kmz_polygon_t {
 };
 typedef struct kmz_polygon_t KmzPolygon;
 
+/**
+ * Defines the structure of an integer-based positioned circle.
+ */
+struct kmz_circle_t {
+    KmzPoint center;
+    size_t radius;
+};
+typedef struct kmz_circle_t KmzCircle;
+
 // endregion;
 
 
@@ -207,6 +227,21 @@ struct kmz_polygon_f_t {
 };
 typedef struct kmz_polygon_f_t KmzPolygonF;
 
+/**
+ * Defines the structure of a float-based positioned circle.
+ */
+struct kmz_circle_f_t {
+    KmzPointF center;
+    float radius;
+};
+typedef struct kmz_circle_f_t KmzCircleF;
+
+// endregion;
+
+
+
+// region Geometry Constants:
+
 extern const KmzSize KmzSize__ZERO;
 
 extern const KmzSizeF KmzSizeF__ZERO;
@@ -227,6 +262,16 @@ extern const KmzPolygon KmzPolygon__ZERO;
 
 extern const KmzPolygonF KmzPolygonF__ZERO;
 
+extern const KmzCircle KmzCircle__ZERO;
+
+extern const KmzCricleF KmzCircleF__ZERO;
+
+// endregion;
+
+
+
+// region Geometry Ctors:
+
 #define kmz_size(w, h) ((KmzSize){w,h})
 
 #define kmz_sizef(w, h) ((KmzSizeF){w,h})
@@ -243,9 +288,17 @@ extern const KmzPolygonF KmzPolygonF__ZERO;
 
 #define kmz_linef(start, end) ((KmzLineF){start,end})
 
-#define kmz_polygon(count, points) ((KmzPolygon){count,points})
+#define kmz_polygon(count, points) ((KmzPolygon){KMZ_TRUE,count,points})
 
-#define kmz_polygonf(count, points) ((KmzPolygonF){count,points})
+#define kmz_polygonf(count, points) ((KmzPolygonF){KMZ_TRUE,count,points})
+
+#define kmz_polyline(count, points) ((KmzPolygon){KMZ_FALSE,count,points})
+
+#define kmz_polylinef(count, points) ((KmzPolygonF){KMZ_FALSE,count,points})
+
+#define kmz_circle(center, radius) ((KmzCircle){center,radius})
+
+#define kmz_circlef(center, radius) ((KmzCircleF){center,radius})
 
 // endregion;
 
