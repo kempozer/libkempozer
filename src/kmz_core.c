@@ -36,7 +36,7 @@
 
 struct kmz_image_t {
     const KmzImageType * _type;
-    kmz_image_ptr _me;
+    void * _me;
 };
 
 struct kmz_matrix_t  {
@@ -85,7 +85,7 @@ KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffe
     return me;
 }
 
-const KmzImagePtr KmzImage__new(const KmzImageType * const restrict type, kmz_arg_ptr argv) {
+KmzImage * const KmzImage__new(const KmzImageType * const restrict type, const void * const restrict argv) {
     KmzImagePtr ptr = malloc(sizeof(struct kmz_image_t));
     if (NULL == ptr) {
         return NULL;
@@ -105,7 +105,7 @@ const KmzImagePtr KmzImage__new(const KmzImageType * const restrict type, kmz_ar
     return ptr;
 }
 
-void KmzImage__free(KmzImagePtr me) {
+void KmzImage__free(KmzImage * const restrict me) {
     if (NULL == me->_type->_dtor) {
         free(me->_me);
     } else {
@@ -114,23 +114,23 @@ void KmzImage__free(KmzImagePtr me) {
     free(me);
 }
 
-const KmzImageType * const KmzImage__type(const KmzImagePtr me) {
+const KmzImageType * const KmzImage__type(const KmzImage * const restrict me) {
     return me->_type;
 }
 
-const KmzSize KmzImage__dimen(const KmzImagePtr me) {
+const KmzSize KmzImage__dimen(const KmzImage * const restrict me) {
     return me->_type->dimen(me->_me);
 }
 
-const kmz_color_32 KmzImage__argb_at(const KmzImagePtr me, const KmzPoint point) {
+const kmz_color_32 KmzImage__argb_at(const KmzImage * const restrict me, const KmzPoint point) {
     return me->_type->argb_at(me->_me, point);
 }
 
-void KmzImage__set_argb_at(const KmzImagePtr me, const KmzPoint point, const kmz_color_32 color) {
+void KmzImage__set_argb_at(KmzImage * const restrict me, const KmzPoint point, const kmz_color_32 color) {
     me->_type->set_argb_at(me->_me, point, color);
 }
 
-const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, const KmzRectangle src_area, kmz_color_32 * const restrict dst) {
+const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImage * const restrict me, const KmzRectangle src_area, kmz_color_32 * const restrict dst) {
     if (me->_type->read_argb_block) {
         return me->_type->read_argb_block(me->_me, src_area, dst);
     }
@@ -155,7 +155,7 @@ const KmzPixelOperationStatus KmzImage__read_argb_block(const KmzImagePtr me, co
     return KMZ_PIXEL_OP_OK;
 }
 
-const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, const KmzRectangle dst_area, const kmz_color_32 * const restrict src) {
+const KmzPixelOperationStatus KmzImage__write_argb_block(KmzImage * const restrict me, const KmzRectangle dst_area, const kmz_color_32 * const restrict src) {
     if (me->_type->write_argb_block) {
         return me->_type->write_argb_block(me->_me, dst_area, src);
     }
@@ -180,11 +180,11 @@ const KmzPixelOperationStatus KmzImage__write_argb_block(const KmzImagePtr me, c
     return KMZ_PIXEL_OP_OK;
 }
 
-const KmzBool KmzImage__is_valid(const KmzImagePtr me, const KmzPoint point) {
+const KmzBool KmzImage__is_valid(const KmzImage * const restrict me, const KmzPoint point) {
     return me->_type->is_valid(me->_me, point);
 }
 
-static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImagePtr me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
+static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const KmzImage * const restrict me, kmz_color_32 * const restrict buffer, KmzRectangle i_area,
         const KmzSize buffer_size, const KmzSize h_buffer_size, const size_t hsize,
         const size_t w) {
     const size_t w_m_o = w - 1;
@@ -218,13 +218,13 @@ static inline const KmzPixelOperationStatus _KmzImage__populate_buffer(const Kmz
     return status;
 }
 
-const KmzPixelOperationStatus KmzImage__apply_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter,
+const KmzPixelOperationStatus KmzImage__apply_filter(KmzImage * const restrict me, const void * const restrict argv, const KmzFilter filter,
         const KmzRectangle area, const size_t m_size) {
     return KmzImage__apply_buffered_filter(me, argv, filter, area, m_size, me);
 }
 
-const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImagePtr me, const kmz_arg_ptr argv, const KmzFilter filter, const KmzRectangle area,
-        const size_t m_size, const KmzImagePtr output) {
+const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImage * const restrict me, const void * const restrict argv, const KmzFilter filter, const KmzRectangle area,
+        const size_t m_size, KmzImage * const restrict output) {
     const KmzSize dimen = KmzImage__dimen(me);
     const size_t hsize = m_size / 2;
     const ssize_t x = kmz_clamp(area.pos.x, 0, dimen.w),

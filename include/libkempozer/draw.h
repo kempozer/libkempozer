@@ -45,6 +45,12 @@ struct kmz_painter_t;
 typedef struct kmz_painter_t KmzPainter;
 
 /**
+ * Defines an abstract, opaque pattern within kempozer.
+ */
+struct kmz_pattern_t;
+typedef struct kmz_pattern_t KmzPattern;
+
+/**
  * Defines the structure of a brush used for filling in solid objects while drawing within kempozer.
  */
 struct kmz_brush_t {
@@ -117,11 +123,9 @@ struct kmz_pattern_type_t {
 };
 typedef struct kmz_pattern_type_t KmzPatternType;
 
-/**
- * Defines an abstract, opaque pattern within kempozer.
- */
-struct kmz_pattern_t;
-typedef struct kmz_pattern_t KmzPattern;
+KmzPattern * const KmzPattern__new(const KmzPatternType * const restrict type, const void * const restrict argv);
+
+void KmzPattern__free(KmzPattern * const restrict me);
 
 /**
  * Defines the methods available to an abstract painter within kempozer.
@@ -461,6 +465,44 @@ struct kmz_painter_type_t {
     // endregion;
 };
 typedef struct kmz_painter_type_t KmzPainterType;
+
+KmzPainter * const KmzPainter__new(const KmzPainterType * const restrict type, const void * const restrict argv);
+
+void KmzPainter__free(KmzPainter * const restrict me);
+
+KmzBrush KmzPainter__brush(const KmzPainter * const restrict me);
+
+void KmzPainter__set_brush(KmzPainter * const restrict me, const KmzBrush brush);
+
+KmzPen KmzPainter__pen(const KmzPainter * const restrict me);
+
+void KmzPainter__set_pen(KmzPainter * const restrict me, const KmzPen brush);
+
+const KmzDrawStatus KmzPainter__draw_circle(KmzPainter * const restrict me, const KmzCircle circle);
+
+const KmzDrawStatus KmzPainter__draw_circlef(KmzPainter * const restrict me, const KmzCircleF circle);
+
+const KmzDrawStatus KmzPainter__draw_line(KmzPainter * const restrict me, const KmzLine line);
+
+const KmzDrawStatus KmzPainter__draw_linef(KmzPainter * const restrict me, const KmzLineF line);
+
+const KmzDrawStatus KmzPainter__draw_point(KmzPainter * const restrict me, const KmzPoint point);
+
+const KmzDrawStatus KmzPainter__draw_pointf(KmzPainter * const restrict me, const KmzPointF point);
+
+const KmzDrawStatus KmzPainter__draw_polygon(KmzPainter * const restrict me, const KmzPolygon polygon);
+
+const KmzDrawStatus KmzPainter__draw_polygonf(KmzPainter * const restrict me, const KmzPolygonF polygon);
+
+const KmzDrawStatus KmzPainter__draw_rectangle(KmzPainter * const restrict me, const KmzRectangle rectangle);
+
+const KmzDrawStatus KmzPainter__draw_rectanglef(KmzPainter * const restrict me, const KmzRectangleF rectangle);
+
+const KmzDrawStatus KmzPainter__paint(KmzPainter * const restrict me, KmzImage * const restrict me);
+
+const KmzBool KmzPainter__redo(KmzPainter * const restrict me);
+
+const KmzBool KmzPainter__undo(KmzPainter * const restrict me);
 
 extern const KmzBrush KmzBrush__TRANSPARENT;
 

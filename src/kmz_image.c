@@ -174,10 +174,11 @@ const KmzImageType kmz_image = {
     ._new=(void * const (*)(void))&_KmzImage__new,
     ._ctor=(void (*)(void * const restrict, const void * const restrict))&_KmzImage__ctor,
     ._dtor=(void (*)(void * const restrict))&_KmzImage__dtor,
-    .dimen=(const KmzSize (*)(const kmz_image_ptr))&_KmzImage__dimen,
-    .argb_at=(const kmz_color_32 (*)(const kmz_image_ptr, const KmzPoint))&_KmzImage__argb_at,
-    .set_argb_at=(void (*)(kmz_image_ptr, const KmzPoint, const kmz_color_32))&_KmzImage__set_argb_at,
-    .is_valid=(const KmzBool (*)(const kmz_image_ptr, const KmzPoint))&_KmzImage__is_valid,
-    .read_argb_block=(const KmzPixelOperationStatus (*)(const kmz_image_ptr, const KmzRectangle, kmz_color_32 * const restrict))&_KmzImage__read_argb_block,
-    .write_argb_block=(const KmzPixelOperationStatus (*)(kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const restrict))&_KmzImage__write_argb_block
+    .dimen=(const KmzSize (*)(const void * const restrict))&_KmzImage__dimen,
+    .argb_at=(const kmz_color_32 (*)(const void * const restrict, const KmzPoint))&_KmzImage__argb_at,
+    .set_argb_at=(void (*)(void * const restrict, const KmzPoint, const kmz_color_32))&_KmzImage__set_argb_at,
+    .is_valid=(const KmzBool (*)(const void * const restrict, const KmzPoint))&_KmzImage__is_valid,
+    .read_argb_block=(const KmzPixelOperationStatus (*)(const void * const restrict, const KmzRectangle, kmz_color_32 * const restrict))&_KmzImage__read_argb_block,
+    .write_argb_block=(const KmzPixelOperationStatus (*)(void * const restrict, const KmzRectangle, const kmz_color_32 * const restrict))&_KmzImage__write_argb_block
 };
+
