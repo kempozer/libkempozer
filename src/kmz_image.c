@@ -49,7 +49,7 @@ struct _kmz_image_argv_t {
     KmzBool copy_source;
 };
 
-KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
+KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
     if (image->header.color.is_truecolor) {
         struct _kmz_image_argv_t argv = {image->header.signature.dimen, image->pixels.truecolor, KMZ_TRUE};
         return KmzImage__new(&kmz_image, &argv);
@@ -57,7 +57,7 @@ KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict ima
     return NULL;
 }
 
-KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
     struct _kmz_image_argv_t argv = {dimen, buffer, copy_source};
     return KmzImage__new(&kmz_image, &argv);
 }

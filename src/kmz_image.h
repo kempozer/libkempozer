@@ -45,12 +45,12 @@
 /**
  * Returns a new image from the given GD 2x file.
  */
-KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
+KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
 
 /**
  * Returns a new image from the given buffer.
  */
-KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source);
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source);
 
 /**
  * Provides a general purpose ARGB-based image.
