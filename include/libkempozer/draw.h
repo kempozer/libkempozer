@@ -30,10 +30,11 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef draw_h
-#define draw_h
+#ifndef libkempozer_draw_h
+#define libkempozer_draw_h
 
 #include <libkempozer.h>
+#include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
 #include <libkempozer/image.h>
 
@@ -66,6 +67,8 @@ typedef struct kmz_pen_t KmzPen;
  * Defines the methods available to an abstract pattern within kempozer.
  */
 struct kmz_pattern_type_t {
+    // region Version 1:
+
     /**
      * @par Allocates an uninitialized pattern represented by this {@link KmzPatternType}.
      *
@@ -109,6 +112,8 @@ struct kmz_pattern_type_t {
      * @param me A pointer to an initialized pattern represented by this {@link KmzPatternType}.
      */
     void (* const _dtor)(void * const restrict);
+
+    // endregion;
 };
 typedef struct kmz_pattern_type_t KmzPatternType;
 
@@ -122,6 +127,8 @@ typedef struct kmz_pattern_t KmzPattern;
  * Defines the methods available to an abstract painter within kempozer.
  */
 struct kmz_painter_type_t {
+    // region Version 1:
+
     /**
      * @par Allocates an uninitialized painter represented by this {@link KmzPainterType}.
      *
@@ -184,7 +191,7 @@ struct kmz_painter_type_t {
      *
      * @par This method MUST:
      * * be defined
-     * * Do nothing if `me` is {@link NULL}
+     * * do nothing if `me` is {@link NULL}
      * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
      *
      * @param me The target of this invocation.
@@ -210,7 +217,7 @@ struct kmz_painter_type_t {
      *
      * @par This method MUST:
      * * be defined
-     * * Do nothing if `me` is {@link NULL}
+     * * do nothing if `me` is {@link NULL}
      * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
      *
      * @param me The target of this invocation.
@@ -219,69 +226,239 @@ struct kmz_painter_type_t {
     void (* const set_pen)(void * const restrict, const KmzPen);
 
     /**
+     * @par Draws an integer line on the target painter using the target painter's pen.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_linef} if integer drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_line} or {@link KmzPainterType::draw_linef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param line The integer line to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_line)(void * const restrict, const KmzLine);
 
     /**
+     * @par Draws a float line on the target painter using the target painter's pen.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_line} if float drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_line} or {@link KmzPainterType::draw_linef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param line The float line to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_linef)(void * const restrict, const KmzLineF);
 
     /**
+     * @par Draws an integer point on the target painter using the target painter's pen.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_pointf} if integer drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_point} or {@link KmzPainterType::draw_pointf} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param point The integer point to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_point)(void * const restrict, const KmzPoint);
 
     /**
+     * @par Draws a float point on the target painter using the target painter's pen.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_point} if float drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_point} or {@link KmzPainterType::draw_pointf} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param point The float point to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_pointf)(void * const restrict, const KmzPointF);
 
     /**
+     * @par Draws an integer polygon or polyline on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_polygonf} if integer drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_polygon} or {@link KmzPainterType::draw_polygonf} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param polygon The integer polygon or polyline to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_polygon)(void * const restrict, const KmzPolygon);
 
     /**
+     * @par Draws a float polygon or polyline on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_polygon} if float drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_polygon} or {@link KmzPainterType::draw_polygonf} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param polygon The float polygon to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_polygonf)(void * const restrict, const KmzPolygonF);
 
     /**
+     * @par Draws an integer rectangle on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_rectanglef} if integer drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_rectangle} or {@link KmzPainterType::draw_rectanglef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param rectangle The integer rectangle to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_rectangle)(void * const restrict, const KmzRectangle);
 
     /**
+     * @par Draws a float rectangle on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_rectangle} if float drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_rectangle} or {@link KmzPainterType::draw_rectanglef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param rectangle The float rectangle to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_rectanglef)(void * const restrict, const KmzRectangleF);
 
     /**
+     * @par Draws an integer circle on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_circlef} if integer drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_circle} or {@link KmzPainterType::draw_circlef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param circle The integer circle to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_circle)(void * const restrict, const KmzCircle);
 
     /**
+     * @par Draws a float line on the target painter using the target painter's pen and brush.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @par This method MAY:
+     * * forward its arguments to {@link KmzPainter__draw_circle} if float drawing is not supported.
+     *
+     * @remark Either {@link KmzPainterType::draw_circle} or {@link KmzPainterType::draw_circlef} MUST implement a drawing routine. They MUST NOT cause an infinite loop.
+     *
+     * @param me The target of this invocation.
+     * @param circle The float circle to draw.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
     const KmzDrawStatus (* const draw_circlef)(void * const restrict, const KmzCircleF);
 
     /**
+     * @par Saves the contents of the target painter at the provided posiition within the provided image.
      *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL}
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @param me The target of this invocation.
+     * @param pos The position to draw the changes to.
+     * @param image The image to draw the changes to.
+     * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    void (* const paint)(void * const restrict, const KmzPoint, KmzImage * const restrict);
+    const KmzDrawStatus (* const paint)(void * const restrict, const KmzPoint, KmzImage * const restrict);
 
     /**
+     * @par Undoes the most recent change of the target painter.
      *
+     * @par This method MUST:
+     * * be defined if {@link KmzPainterType::redo} is defined
+     * * do nothing if `me` is {@link NULL}
+     * * return {@link KMZ_FALSE} if undo operations are not supported
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @param me The target of this invocation.
+     * @return {@link KMZ_TRUE} if the undo operation is successful, otherwise {@link KMZ_FALSE}.
      */
     const KmzBool (* const undo)(void * const restrict);
 
     /**
+     * @par Redoes the most recent change of the target painter.
      *
+     * @par This method MUST:
+     * * be defined if {@link KmzPainterType::undo} is defined
+     * * do nothing if `me` is {@link NULL}
+     * * return {@link KMZ_FALSE} if redo operations are not supported
+     * * accept the appropriate pointer type for the painter being accessed instead of `void * const`.
+     *
+     * @param me The target of this invocation.
+     * @return {@link KMZ_TRUE} if the redo operation is successful, otherwise {@link KMZ_FALSE}.
      */
     const KmzBool (* const redo)(void * const restrict);
+
+    // endregion;
 };
 typedef struct kmz_painter_type_t KmzPainterType;
 
@@ -289,4 +466,4 @@ extern const KmzBrush KmzBrush__TRANSPARENT;
 
 extern const KmzPen KmzPen__TRANSPARENT;
 
-#endif /* draw_h */
+#endif /* libkempozer_draw_h */

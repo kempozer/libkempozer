@@ -30,8 +30,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef color_h
-#define color_h
+#ifndef libkempozer_color_h
+#define libkempozer_color_h
 
 #include <libkempozer.h>
 
@@ -182,4 +182,4 @@ const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
  */
 const kmz_color_32 kmz_color_32__from_hex(const kmz_hex_string color);
 
-#endif /* color_h */
+#endif /* libkempozer_color_h */

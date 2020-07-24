@@ -30,11 +30,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef gdfile_h
-#define gdfile_h
+#ifndef libkempozer_gdfile_h
+#define libkempozer_gdfile_h
 
 #include <stdio.h>
 #include <libkempozer.h>
+#include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
 
 /**
@@ -108,4 +109,5 @@ const char * const kmz_status_msg(const KmzGd2xImageFileStatus status);
 const char * const kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status,
         const int error);
 
-#endif /* gdfile_h */
+
+#endif /* libkempozer_gdfile_h */

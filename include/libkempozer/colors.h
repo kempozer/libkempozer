@@ -30,8 +30,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef colors_h
-#define colors_h
+#ifndef libkempozer_colors_h
+#define libkempozer_colors_h
 
 #include <libkempozer.h>
 #include <libkempozer/color.h>
@@ -179,4 +179,4 @@ extern const KmzArgbColor KmzArgbColor__ALICE_BLUE,
     KmzArgbColor__YELLOW,
     KmzArgbColor__YELLOW_GREEN;
 
-#endif /* colors_h */
+#endif /* libkempozer_colors_h */

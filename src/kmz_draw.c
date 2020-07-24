@@ -32,6 +32,7 @@
 
 #include "kmz_draw.h"
 
+/*
 struct _kmz_painter_layer_t {
     KmzRectangle _area;
     size_t _len;
@@ -134,4 +135,4 @@ static inline KmzBool _KmzPainter__pop_layer(_KmzPainter * const restrict me, _K
 const KmzBrush KmzBrush__TRANSPARENT = {.color=0x7F000000};
 const KmzPen KmzPen__TRANSPARENT = {.color=0x7F000000};
 const KmzPenF KmzPenF__TRANSPARENT = {.color=0x7F000000};
-
+*/

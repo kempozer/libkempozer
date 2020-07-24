@@ -30,10 +30,11 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef image_h
-#define image_h
+#ifndef libkempozer_image_h
+#define libkempozer_image_h
 
 #include <libkempozer.h>
+#include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
 #include <libkempozer/gdfile.h>
 
@@ -440,4 +441,4 @@ KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen,
  */
 extern const KmzImageType kmz_image;
 
-#endif /* image_h */
+#endif /* libkempozer_image_h */
