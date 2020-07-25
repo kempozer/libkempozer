@@ -35,6 +35,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <libkempozer.h>
 #include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
@@ -174,7 +175,7 @@ struct kmz_image_file_type_t {
      * @param path The path to save `me` to.
      * @return {@link KMZ_IMAGE_FILE_OK} if the image was saved sucessfully, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const save)(void * const me, const char * const path);
+    const KmzImageFileStatus (* const save_to)(void * const me, FILE * const path);
 
     /**
      * @par Attempts to load the image file represented by this {@link KmzImageFileType} from the given path.
@@ -187,7 +188,7 @@ struct kmz_image_file_type_t {
      * @param path The path to load into `me`.
      * @return {@link KMZ_IMAGE_FILE_OK} if the image was saved sucessfully, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const load)(void * const me, const char * const path);
+    const KmzImageFileStatus (* const load_from)(void * const me, FILE * const path);
 
     /**
      * @par Gets the total number of colors available in the palette of the image file represented by this {@link KmzImageFileType}.
@@ -363,7 +364,11 @@ const char * const KmzImageFile__status_msg(const KmzImageFile * const me, const
 
 const KmzImageFileStatus KmzImageFile__save(KmzImageFile * const me, const char * const path);
 
+const KmzImageFileStatus KmzImageFile__save_to(KmzImageFile * const me, FILE * const path);
+
 const KmzImageFileStatus KmzImageFile__load(KmzImageFile * const me, const char * const path);
+
+const KmzImageFileStatus KmzImageFile__load_from(KmzImageFile * const me, FILE * const path);
 
 const size_t KmzImageFile__palette_color_count(const KmzImageFile * const me);
 

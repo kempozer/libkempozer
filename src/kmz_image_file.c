@@ -93,11 +93,37 @@ const char * const KmzImageFile__status_msg(const KmzImageFile * const restrict 
 }
 
 const KmzImageFileStatus KmzImageFile__save(KmzImageFile * const restrict me, const char * const restrict path) {
-    return me->_type->save(me->_me, path);
+    FILE * const restrict file = fopen(path, "wb+");
+
+    if (NULL == file) {
+        return KMZ_IMAGE_FILE_ERR_WRITE_FAILED;
+    }
+
+    const KmzImageFileStatus status = KmzImageFile__save_to(me, file);
+
+    fclose(file);
+    return status;
+}
+
+const KmzImageFileStatus KmzImageFile__save_to(KmzImageFile * const restrict me, FILE * const restrict path) {
+    return me->_type->save_to(me->_me, path);
 }
 
 const KmzImageFileStatus KmzImageFile__load(KmzImageFile * const restrict me, const char * const restrict path) {
-    return me->_type->load(me->_me, path);
+    FILE * const restrict file = fopen(path, "rb+");
+
+    if (NULL == file) {
+        return KMZ_IMAGE_FILE_ERR_READ_FAILED;
+    }
+
+    const KmzImageFileStatus status = KmzImageFile__load_from(me, file);
+
+    fclose(file);
+    return status;
+}
+
+const KmzImageFileStatus KmzImageFile__load_from(KmzImageFile * const restrict me, FILE * const restrict path) {
+    return me->_type->load_from(me->_me, path);
 }
 
 const size_t KmzImageFile__palette_color_count(const KmzImageFile * const restrict me) {

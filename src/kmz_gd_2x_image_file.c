@@ -304,40 +304,33 @@ static const char * const _KmzGd2xImageFile__status_msg(const KmzGd2xImageFile *
     }
 }
 
-static const KmzGd2xImageFileStatus _KmzGd2xImageFile__save(KmzGd2xImageFile * const restrict me, const char * const path) {
-    FILE * const restrict f = fopen(path, "wb+");
+static const KmzGd2xImageFileStatus _KmzGd2xImageFile__save_to(KmzGd2xImageFile * const restrict me, FILE * const path) {
+    FILE * const restrict f = path;
     if (NULL == f) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_INVALID_FILE_PTR;
     }
 
     if (0 != _kmz_write_short(f, me->header.signature.type)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_WRITE_SIGNATURE;
     }
     if (0 != _kmz_write_short(f, me->header.signature.dimen.w)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_WRITE_WIDTH;
     }
     if (0 != _kmz_write_short(f, me->header.signature.dimen.h)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_WRITE_HEIGHT;
     }
     if (0 != _kmz_write_byte(f, me->header.signature.type == KMZ_GD_2X_IMAGE_FILE_TRUECOLOR)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_WRITE_IS_TRUECOLOR;
     }
 
     switch (me->header.signature.type) {
         case KMZ_GD_2X_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_write_int(f, me->header.color.value.truecolor.transparent)) {
-                fclose(f);
                 return me->status = KMZ_GD_ERR_WRITE_TRUECOLOR_TRANSPARENT;
             }
             break;
         case KMZ_GD_2X_IMAGE_FILE_PALETTE:
             // TODO: Implement palette image writing
-            fclose(f);
             return me->status = KMZ_GD_ERR_UNSUPPORTED_OPERATION;
     }
 
@@ -346,60 +339,48 @@ static const KmzGd2xImageFileStatus _KmzGd2xImageFile__save(KmzGd2xImageFile * c
 
     if (is_truecolor) {
         if (0 != _kmz_write_int_buffer(f, me->pixels.truecolor, len)) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_WRITE_PIXELS;
         }
     } else {
         if (0 != _kmz_write_byte_buffer(f, me->pixels.palette, len)) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_WRITE_PIXELS;
         }
     }
-    fclose(f);
     return me->status = KMZ_GD_OK;
 }
 
-static const KmzGd2xImageFileStatus _KmzGd2xImageFile__load(KmzGd2xImageFile * const restrict me, const char * const path) {
-    FILE * const restrict f = fopen(path, "rb+");
+static const KmzGd2xImageFileStatus _KmzGd2xImageFile__load_from(KmzGd2xImageFile * const restrict me, FILE * const path) {
+    FILE * const restrict f = path;
     if (NULL == f) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_INVALID_FILE_PTR;
     }
     if (0 != _kmz_read_short(f, &me->header.signature.type)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_READ_SIGNATURE;
     }
     if (0 != _kmz_read_short(f, &me->header.signature.dimen.w)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_READ_WIDTH;
     }
     if (0 != _kmz_read_short(f, &me->header.signature.dimen.h)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_READ_HEIGHT;
     }
     if (0 != _kmz_read_byte(f, &me->header.color.is_truecolor)) {
-        fclose(f);
         return me->status = KMZ_GD_ERR_READ_IS_TRUECOLOR;
     }
 
     switch (me->header.signature.type) {
         case KMZ_GD_2X_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_read_int(f, &me->header.color.value.truecolor.transparent)) {
-                fclose(f);
                 return me->status = KMZ_GD_ERR_READ_TRUECOLOR_TRANSPARENT;
             }
             break;
         case KMZ_GD_2X_IMAGE_FILE_PALETTE:
             if (0 != _kmz_read_short(f, &me->header.color.value.palette.count)) {
-                fclose(f);
                 return me->status = KMZ_GD_ERR_READ_PALETTE_COUNT;
             }
             if (0 != _kmz_read_int(f, &me->header.color.value.palette.transparent)) {
-                fclose(f);
                 return me->status = KMZ_GD_ERR_READ_PALETTE_TRANSPARENT;
             }
             if (0 != _kmz_read_int_buffer(f, me->header.color.value.palette.colors, 256)) {
-                fclose(f);
                 return me->status = KMZ_GD_ERR_READ_PALETTE_COLORS;
             }
     }
@@ -411,26 +392,21 @@ static const KmzGd2xImageFileStatus _KmzGd2xImageFile__load(KmzGd2xImageFile * c
     if (is_truecolor) {
         me->pixels.truecolor = calloc(len, sizeof(kmz_color_32));
         if (NULL == me->pixels.truecolor) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_OUT_OF_MEMORY;
         }
         if (0 != _kmz_read_int_buffer(f, me->pixels.truecolor, len)) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_READ_PIXELS;
         }
     } else {
         me->pixels.palette = calloc(len, sizeof(uint8_t));
         if (NULL == me->pixels.palette) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_OUT_OF_MEMORY;
         }
         if (0 != _kmz_read_byte_buffer(f, me->pixels.palette, len)) {
-            fclose(f);
             return me->status = KMZ_GD_ERR_READ_PIXELS;
         }
     }
 
-    fclose(f);
     return me->status = KMZ_GD_OK;
 }
 
@@ -526,8 +502,8 @@ const KmzImageFileType kmz_gd_2x_image_file = {
     .status=(const KmzImageFileStatus (*)(const void * const))&_KmzGd2xImageFile__status,
     .clear_status=(void (*)(void * const))&_KmzGd2xImageFile__clear_status,
     .status_msg=(const char * const (*)(const void * const, const KmzImageFileStatus))&_KmzGd2xImageFile__status_msg,
-    .save=(const KmzImageFileStatus (*)(void * const, const char * const))&_KmzGd2xImageFile__save,
-    .load=(const KmzImageFileStatus (*)(void * const, const char * const))&_KmzGd2xImageFile__load,
+    .save_to=(const KmzImageFileStatus (*)(void * const, FILE * const))&_KmzGd2xImageFile__save_to,
+    .load_from=(const KmzImageFileStatus (*)(void * const, FILE * const))&_KmzGd2xImageFile__load_from,
     .palette_color_count=(const size_t (*)(const void * const))&_KmzGd2xImageFile__palette_color_count,
     .read_palette_colors=(const KmzImageFileStatus (*)(void * const, kmz_color_32 * const))&_KmzGd2xImageFile__read_palette_colors,
     .read_palette_pixels=(const KmzImageFileStatus (*)(void * const, uint8_t * const))&_KmzGd2xImageFile__read_palette_pixels,
