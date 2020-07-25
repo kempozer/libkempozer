@@ -159,7 +159,7 @@ typedef struct kmz_gd_2x_image_file_truecolor_header_t KmzGd2xImageFileTruecolor
 struct kmz_gd_2x_image_file_palette_header_t {
     uint16_t count;
     kmz_color_32 transparent;
-    kmz_color_32 colors[32];
+    kmz_color_32 colors[256];
 };
 typedef struct kmz_gd_2x_image_file_palette_header_t KmzGd2xImageFilePaletteHeader;
 
