@@ -53,7 +53,7 @@ typedef uint32_t kmz_color_32;
 /**
  * Defines a null terminated string that contains a hex color in the format of `0xXXXXXX`, `#XXXXXX`, `0xXXXXXXXX`, or `#XXXXXXXX`.
  */
-typedef char * const restrict kmz_hex_string;
+typedef const char * const restrict kmz_hex_string;
 
 /**
  * Defines the structure of an ARGB color that is separated into its appropriate channels.
@@ -114,7 +114,7 @@ KmzArgbColor KmzArgbColor__from_ahsl_color(const KmzAhslColor color);
  * @param color A color stored as a null terminated string containing a hex color formatted as 0xXXXXXX, #XXXXXX, 0xXXXXXXXX, or #XXXXXXXX.
  * @return A {@link KmzArgbColor} structure that represents the provided {@link kmz_hex_string}.
  */
-KmzArgbColor KmzArgbColor__from_hex(const kmz_hex_string color);
+KmzArgbColor KmzArgbColor__from_hex(kmz_hex_string color);
 
 
 
@@ -154,7 +154,7 @@ KmzAhslColor KmzAhslColor__from_argb_color(const KmzArgbColor color);
  * @param color A color stored as a null terminated string containing a hex color formatted as 0xXXXXXX, #XXXXXX, 0xXXXXXXXX, or #XXXXXXXX.
  * @return A {@link KmzAhslColor} structure that represents the provided {@link kmz_hex_string}.
  */
-KmzAhslColor KmzAhslColor__from_hex(const kmz_hex_string color);
+KmzAhslColor KmzAhslColor__from_hex(kmz_hex_string color);
 
 
 
@@ -180,6 +180,6 @@ const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color);
  * @param color A color stored as a null terminated string containing a hex color formatted as 0xXXXXXX, #XXXXXX, 0xXXXXXXXX, or #XXXXXXXX.
  * @return A single {@link kmz_color_32} value that represents the provided {@link kmz_hex_string}.
  */
-const kmz_color_32 kmz_color_32__from_hex(const kmz_hex_string color);
+const kmz_color_32 kmz_color_32__from_hex(kmz_hex_string color);
 
 #endif /* libkempozer_color_h */

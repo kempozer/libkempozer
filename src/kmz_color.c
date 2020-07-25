@@ -58,7 +58,7 @@ static inline const kmz_percent _kmz_rgb2delta(const kmz_percent max, const kmz_
     return ((((max - channel) / 6.f) + half_max_delta) / max_delta);
 }
 
-KmzArgbColor KmzArgbColor__from_hex(const kmz_hex_string color) {
+KmzArgbColor KmzArgbColor__from_hex(kmz_hex_string color) {
     return KmzArgbColor__from_color_32(kmz_color_32__from_hex(color));
 }
 
@@ -103,7 +103,7 @@ const KmzBool KmzArgbColor__equal_to(const KmzArgbColor me, const KmzArgbColor o
     return me.a == other.a && me.r == other.r && me.g == other.g && me.b == other.b;
 }
 
-KmzAhslColor KmzAhslColor__from_hex(const kmz_hex_string color) {
+KmzAhslColor KmzAhslColor__from_hex(kmz_hex_string color) {
     return KmzAhslColor__from_argb_color(KmzArgbColor__from_hex(color));
 }
 
@@ -144,7 +144,6 @@ KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color) {
             s = (max_delta / (2.f - max - min));
         }
 
-
         const kmz_percent half_max_delta = max_delta / 2.f;
 
         const kmz_percent red_delta = _kmz_rgb2delta(max, red, max_delta, half_max_delta),
@@ -183,7 +182,7 @@ const kmz_color_32 kmz_color_32__from_ahsl_color(const KmzAhslColor color) {
     return kmz_color_32__from_argb_color(KmzArgbColor__from_ahsl_color(color));
 }
 
-const kmz_color_32 kmz_color_32__from_hex(const kmz_hex_string color) {
+const kmz_color_32 kmz_color_32__from_hex(kmz_hex_string color) {
     switch (strlen(color)) {
         case 10:
         case 8:
