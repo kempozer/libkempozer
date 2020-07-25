@@ -45,7 +45,7 @@
 #define KMZ_GD_2X_IMAGE_FILE_PALETTE 0xFFFF
 #define KMZ_GD_2X_IMAGE_FILE_NO_TRANSPARENT 0xFFFFFFFF
 
-KmzImageFile * const KmzGd2xImageFile__new();
+KmzImageFile * const KmzGd2xImageFile__new(void);
 
 const extern KmzImageFileType kmz_gd_2x_image_file;
 

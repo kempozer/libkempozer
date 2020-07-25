@@ -543,3 +543,7 @@ const KmzImageFileType kmz_gd_2x_image_file = {
     .set_metadata=NULL,
     .remove_metadata=NULL,
 };
+
+KmzImageFile * const KmzGd2xImageFile__new(void) {
+    return KmzImageFile__new(&kmz_gd_2x_image_file, NULL);
+}
