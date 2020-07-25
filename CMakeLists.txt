@@ -22,6 +22,7 @@ set(HEADERS ${SOURCE_DIR}/kmz_color.h
 
 add_library(kempozer SHARED ${SOURCES} ${HEADERS})
 configure_file(kmz_config.h.in ${SOURCE_DIR}/kmz_config.h)
+include_directories(BEFORE ${API_DIR})
 
 install(TARGETS kempozer DESTINATION lib)
 install(FILES ${API_DIR}/libkempozer.h DESTINATION include)

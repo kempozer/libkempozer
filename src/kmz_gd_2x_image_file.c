@@ -157,12 +157,12 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
     }
 
     switch (o->header.signature.type) {
-        case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
+        case KMZ_GD_2X_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_read_int(f, &o->header.color.value.truecolor.transparent)) {
                 return KMZ_GD_ERR_READ_TRUECOLOR_TRANSPARENT;
             }
             break;
-        case KMZ_GD_2x_IMAGE_FILE_PALETTE:
+        case KMZ_GD_2X_IMAGE_FILE_PALETTE:
             if (0 != _kmz_read_short(f, &o->header.color.value.palette.count)) {
                 return KMZ_GD_ERR_READ_PALETTE_COUNT;
             }
@@ -175,7 +175,7 @@ const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f, 
     }
 
     const size_t len = o->header.signature.dimen.w * o->header.signature.dimen.h;
-    const uint8_t is_truecolor = o->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
+    const uint8_t is_truecolor = o->header.signature.type == KMZ_GD_2X_IMAGE_FILE_TRUECOLOR;
     o->header.color.is_truecolor = is_truecolor;
 
     if (is_truecolor) {
@@ -216,23 +216,23 @@ const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
     if (0 != _kmz_write_short(f, i->header.signature.dimen.h)) {
         return KMZ_GD_ERR_WRITE_HEIGHT;
     }
-    if (0 != _kmz_write_byte(f, i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR)) {
+    if (0 != _kmz_write_byte(f, i->header.signature.type == KMZ_GD_2X_IMAGE_FILE_TRUECOLOR)) {
         return KMZ_GD_ERR_WRITE_IS_TRUECOLOR;
     }
 
     switch (i->header.signature.type) {
-        case KMZ_GD_2x_IMAGE_FILE_TRUECOLOR:
+        case KMZ_GD_2X_IMAGE_FILE_TRUECOLOR:
             if (0 != _kmz_write_int(f, i->header.color.value.truecolor.transparent)) {
                 return KMZ_GD_ERR_WRITE_TRUECOLOR_TRANSPARENT;
             }
             break;
-        case KMZ_GD_2x_IMAGE_FILE_PALETTE:
+        case KMZ_GD_2X_IMAGE_FILE_PALETTE:
             // TODO: Implement palette image writing
             return KMZ_GD_ERR_UNSUPPORTED_OPERATION;
     }
 
     const size_t len = i->header.signature.dimen.w * i->header.signature.dimen.h;
-    const size_t is_truecolor = i->header.signature.type == KMZ_GD_2x_IMAGE_FILE_TRUECOLOR;
+    const size_t is_truecolor = i->header.signature.type == KMZ_GD_2X_IMAGE_FILE_TRUECOLOR;
 
     if (is_truecolor) {
         if (0 != _kmz_write_int_buffer(f, i->pixels.truecolor, len)) {

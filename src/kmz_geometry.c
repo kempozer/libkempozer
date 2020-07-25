@@ -32,62 +32,6 @@
 
 #include "kmz_geometry.h"
 
-const KmzBool KmzSize__equal_to(const KmzSize me, const KmzSize other) {
-    return me.h == other.h && me.w == other.w;
-}
-
-const KmzBool KmzSizeF__equal_to(const KmzSizeF me, const KmzSizeF other) {
-    return me.h == other.h && me.w == other.w;
-}
-
-const KmzBool KmzPoint__equal_to(const KmzPoint me, const KmzPoint other) {
-    return me.x == other.x && me.y == other.y;
-}
-
-const KmzBool KmzPointF__equal_to(const KmzPointF me, const KmzPointF other) {
-    return me.x == other.x && me.y == other.y;
-}
-
-const KmzBool KmzRectangle__equal_to(const KmzRectangle me, const KmzRectangle other) {
-    return KmzPoint__equal_to(me.pos, other.pos) && KmzSize__equal_to(me.size, other.size);
-}
-
-const KmzBool KmzRectangleF__equal_to(const KmzRectangleF me, const KmzRectangleF other) {
-    return KmzPointF__equal_to(me.pos, other.pos) && KmzSizeF__equal_to(me.size, other.size);
-}
-
-const KmzBool KmzLine__equal_to(const KmzLine me, const KmzLine other) {
-    return KmzPoint__equal_to(me.start, other.start) && KmzPoint__equal_to(me.end, other.end);
-}
-
-const KmzBool KmzLineF__equal_to(const KmzLineF me, const KmzLineF other) {
-    return KmzPointF__equal_to(me.start, other.start) && KmzPointF__equal_to(me.end, other.end);
-}
-
-const KmzBool KmzPolygonF__equal_to(const KmzPolygonF me, const KmzPolygonF other) {
-    if (me.closed == other.closed && me.count == other.count) {
-        for (size_t i = 0; i < me.count; ++i) {
-            if (!KmzPointF__equal_to(me.points[i], other.points[i])) {
-                return KMZ_FALSE;
-            }
-        }
-        return KMZ_TRUE;
-    }
-    return KMZ_FALSE;
-}
-
-const KmzBool KmzPolygon__equal_to(const KmzPolygon me, const KmzPolygon other) {
-    if (me.closed == other.closed && me.count == other.count) {
-        for (size_t i = 0; i < me.count; ++i) {
-            if (!KmzPoint__equal_to(me.points[i], other.points[i])) {
-                return KMZ_FALSE;
-            }
-        }
-        return KMZ_TRUE;
-    }
-    return KMZ_FALSE;
-}
-
 const KmzSize KmzSize__ZERO = {.w=0, .h=0};
 const KmzSizeF KmzSizeF__ZERO = {.w=0., .h=0.};
 const KmzPoint KmzPoint__ZERO = {.x=0, .y=0};

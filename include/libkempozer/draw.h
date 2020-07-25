@@ -33,6 +33,8 @@
 #ifndef libkempozer_draw_h
 #define libkempozer_draw_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <libkempozer.h>
 #include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
@@ -103,7 +105,7 @@ struct kmz_pattern_type_t {
      * @param me A pointer to an uninitialized pattern represented by this {@link KmzPatternType}.
      * @param argv A pointer to the arguments used to initialize the uninitialized pattern, or {@link NULL} if no arguments are to be used.
      */
-    void (* const _ctor)(void * const restrict, const void * const restrict);
+    void (* const _ctor)(void * const me, const void * const argv);
 
     /**
      * @par Deallocates an initialized pattern represented by this {@link KmzPatternType}.
@@ -117,15 +119,15 @@ struct kmz_pattern_type_t {
      *
      * @param me A pointer to an initialized pattern represented by this {@link KmzPatternType}.
      */
-    void (* const _dtor)(void * const restrict);
+    void (* const _dtor)(void * const me);
 
     // endregion;
 };
 typedef struct kmz_pattern_type_t KmzPatternType;
 
-KmzPattern * const KmzPattern__new(const KmzPatternType * const restrict type, const void * const restrict argv);
+KmzPattern * const KmzPattern__new(const KmzPatternType * const type, const void * const argv);
 
-void KmzPattern__free(KmzPattern * const restrict me);
+void KmzPattern__free(KmzPattern * const me);
 
 /**
  * Defines the methods available to an abstract painter within kempozer.
@@ -161,7 +163,7 @@ struct kmz_painter_type_t {
      * @param me A pointer to an uninitialized painter represented by this {@link KmzPatternType}.
      * @param argv A pointer to the arguments used to initialize the uninitialized painter, or {@link NULL} if no arguments are to be used.
      */
-    void (* const _ctor)(void * const restrict, const void * const restrict);
+    void (* const _ctor)(void * const me, const void * const argv);
 
     /**
      * @par Deallocates an initialized painter represented by this {@link KmzPainterType}.
@@ -175,7 +177,7 @@ struct kmz_painter_type_t {
      *
      * @param me A pointer to an initialized painter represented by this {@link KmzPainterType}.
      */
-    void (* const _dtor)(void * const restrict);
+    void (* const _dtor)(void * const me);
 
     /**
      * @par Returns the brush of the target painter for filling in solid shapes.
@@ -188,7 +190,7 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @return The {@link KmzBrush} that will be used to fill in solid shapes.
      */
-    const KmzBrush (* const brush)(void * const restrict);
+    const KmzBrush (* const brush)(void * const me);
 
     /**
      * @par Updates the brush of the target painter for filling in solid shapes.
@@ -201,7 +203,7 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @param brush The new brush to use.
      */
-    void (* const set_brush)(void * const restrict, const KmzBrush);
+    void (* const set_brush)(void * const me, const KmzBrush brush);
 
     /**
      * @par Returns the pen of the target painter for filling in lines.
@@ -214,7 +216,7 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @return The {@link KmzPen} that will be used to fill in lines.
      */
-    const KmzPen (* const pen)(void * const restrict);
+    const KmzPen (* const pen)(void * const me);
 
     /**
      * @par Updates the pen of the target painter for filling in lines.
@@ -227,7 +229,7 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @param pen The new pen to use.
      */
-    void (* const set_pen)(void * const restrict, const KmzPen);
+    void (* const set_pen)(void * const me, const KmzPen pen);
 
     /**
      * @par Draws an integer line on the target painter using the target painter's pen.
@@ -246,7 +248,7 @@ struct kmz_painter_type_t {
      * @param line The integer line to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_line)(void * const restrict, const KmzLine);
+    const KmzDrawStatus (* const draw_line)(void * const me, const KmzLine line);
 
     /**
      * @par Draws a float line on the target painter using the target painter's pen.
@@ -265,7 +267,7 @@ struct kmz_painter_type_t {
      * @param line The float line to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_linef)(void * const restrict, const KmzLineF);
+    const KmzDrawStatus (* const draw_linef)(void * const me, const KmzLineF line);
 
     /**
      * @par Draws an integer point on the target painter using the target painter's pen.
@@ -284,7 +286,7 @@ struct kmz_painter_type_t {
      * @param point The integer point to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_point)(void * const restrict, const KmzPoint);
+    const KmzDrawStatus (* const draw_point)(void * const me, const KmzPoint point);
 
     /**
      * @par Draws a float point on the target painter using the target painter's pen.
@@ -303,7 +305,7 @@ struct kmz_painter_type_t {
      * @param point The float point to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_pointf)(void * const restrict, const KmzPointF);
+    const KmzDrawStatus (* const draw_pointf)(void * const me, const KmzPointF point);
 
     /**
      * @par Draws an integer polygon or polyline on the target painter using the target painter's pen and brush.
@@ -322,7 +324,7 @@ struct kmz_painter_type_t {
      * @param polygon The integer polygon or polyline to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_polygon)(void * const restrict, const KmzPolygon);
+    const KmzDrawStatus (* const draw_polygon)(void * const me, const KmzPolygon polygon);
 
     /**
      * @par Draws a float polygon or polyline on the target painter using the target painter's pen and brush.
@@ -341,7 +343,7 @@ struct kmz_painter_type_t {
      * @param polygon The float polygon to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_polygonf)(void * const restrict, const KmzPolygonF);
+    const KmzDrawStatus (* const draw_polygonf)(void * const me, const KmzPolygonF polygon);
 
     /**
      * @par Draws an integer rectangle on the target painter using the target painter's pen and brush.
@@ -360,7 +362,7 @@ struct kmz_painter_type_t {
      * @param rectangle The integer rectangle to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_rectangle)(void * const restrict, const KmzRectangle);
+    const KmzDrawStatus (* const draw_rectangle)(void * const me, const KmzRectangle rectangle);
 
     /**
      * @par Draws a float rectangle on the target painter using the target painter's pen and brush.
@@ -379,7 +381,7 @@ struct kmz_painter_type_t {
      * @param rectangle The float rectangle to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_rectanglef)(void * const restrict, const KmzRectangleF);
+    const KmzDrawStatus (* const draw_rectanglef)(void * const me, const KmzRectangleF rectangle);
 
     /**
      * @par Draws an integer circle on the target painter using the target painter's pen and brush.
@@ -398,7 +400,7 @@ struct kmz_painter_type_t {
      * @param circle The integer circle to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_circle)(void * const restrict, const KmzCircle);
+    const KmzDrawStatus (* const draw_circle)(void * const me, const KmzCircle circle);
 
     /**
      * @par Draws a float line on the target painter using the target painter's pen and brush.
@@ -417,7 +419,7 @@ struct kmz_painter_type_t {
      * @param circle The float circle to draw.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const draw_circlef)(void * const restrict, const KmzCircleF);
+    const KmzDrawStatus (* const draw_circlef)(void * const me, const KmzCircleF circle);
 
     /**
      * @par Saves the contents of the target painter at the provided posiition within the provided image.
@@ -432,7 +434,7 @@ struct kmz_painter_type_t {
      * @param image The image to draw the changes to.
      * @return {@link KMZ_DRAW_OK} if the drawing operation is successful, otherwise an appropriate value from {@link KmzDrawStatus}.
      */
-    const KmzDrawStatus (* const paint)(void * const restrict, const KmzPoint, KmzImage * const restrict);
+    const KmzDrawStatus (* const paint)(void * const me, const KmzPoint pos, KmzImage * const image);
 
     /**
      * @par Undoes the most recent change of the target painter.
@@ -446,7 +448,7 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @return {@link KMZ_TRUE} if the undo operation is successful, otherwise {@link KMZ_FALSE}.
      */
-    const KmzBool (* const undo)(void * const restrict);
+    const KmzBool (* const undo)(void * const me);
 
     /**
      * @par Redoes the most recent change of the target painter.
@@ -460,49 +462,49 @@ struct kmz_painter_type_t {
      * @param me The target of this invocation.
      * @return {@link KMZ_TRUE} if the redo operation is successful, otherwise {@link KMZ_FALSE}.
      */
-    const KmzBool (* const redo)(void * const restrict);
+    const KmzBool (* const redo)(void * const me);
 
     // endregion;
 };
 typedef struct kmz_painter_type_t KmzPainterType;
 
-KmzPainter * const KmzPainter__new(const KmzPainterType * const restrict type, const void * const restrict argv);
+KmzPainter * const KmzPainter__new(const KmzPainterType * const type, const void * const argv);
 
-void KmzPainter__free(KmzPainter * const restrict me);
+void KmzPainter__free(KmzPainter * const me);
 
-KmzBrush KmzPainter__brush(const KmzPainter * const restrict me);
+KmzBrush KmzPainter__brush(const KmzPainter * const me);
 
-void KmzPainter__set_brush(KmzPainter * const restrict me, const KmzBrush brush);
+void KmzPainter__set_brush(KmzPainter * const me, const KmzBrush brush);
 
-KmzPen KmzPainter__pen(const KmzPainter * const restrict me);
+KmzPen KmzPainter__pen(const KmzPainter * const me);
 
-void KmzPainter__set_pen(KmzPainter * const restrict me, const KmzPen brush);
+void KmzPainter__set_pen(KmzPainter * const me, const KmzPen brush);
 
-const KmzDrawStatus KmzPainter__draw_circle(KmzPainter * const restrict me, const KmzCircle circle);
+const KmzDrawStatus KmzPainter__draw_circle(KmzPainter * const me, const KmzCircle circle);
 
-const KmzDrawStatus KmzPainter__draw_circlef(KmzPainter * const restrict me, const KmzCircleF circle);
+const KmzDrawStatus KmzPainter__draw_circlef(KmzPainter * const me, const KmzCircleF circle);
 
-const KmzDrawStatus KmzPainter__draw_line(KmzPainter * const restrict me, const KmzLine line);
+const KmzDrawStatus KmzPainter__draw_line(KmzPainter * const me, const KmzLine line);
 
-const KmzDrawStatus KmzPainter__draw_linef(KmzPainter * const restrict me, const KmzLineF line);
+const KmzDrawStatus KmzPainter__draw_linef(KmzPainter * const me, const KmzLineF line);
 
-const KmzDrawStatus KmzPainter__draw_point(KmzPainter * const restrict me, const KmzPoint point);
+const KmzDrawStatus KmzPainter__draw_point(KmzPainter * const me, const KmzPoint point);
 
-const KmzDrawStatus KmzPainter__draw_pointf(KmzPainter * const restrict me, const KmzPointF point);
+const KmzDrawStatus KmzPainter__draw_pointf(KmzPainter * const me, const KmzPointF point);
 
-const KmzDrawStatus KmzPainter__draw_polygon(KmzPainter * const restrict me, const KmzPolygon polygon);
+const KmzDrawStatus KmzPainter__draw_polygon(KmzPainter * const me, const KmzPolygon polygon);
 
-const KmzDrawStatus KmzPainter__draw_polygonf(KmzPainter * const restrict me, const KmzPolygonF polygon);
+const KmzDrawStatus KmzPainter__draw_polygonf(KmzPainter * const me, const KmzPolygonF polygon);
 
-const KmzDrawStatus KmzPainter__draw_rectangle(KmzPainter * const restrict me, const KmzRectangle rectangle);
+const KmzDrawStatus KmzPainter__draw_rectangle(KmzPainter * const me, const KmzRectangle rectangle);
 
-const KmzDrawStatus KmzPainter__draw_rectanglef(KmzPainter * const restrict me, const KmzRectangleF rectangle);
+const KmzDrawStatus KmzPainter__draw_rectanglef(KmzPainter * const me, const KmzRectangleF rectangle);
 
-const KmzDrawStatus KmzPainter__paint(KmzPainter * const restrict me, KmzImage * const restrict me);
+const KmzDrawStatus KmzPainter__paint(KmzPainter * const me, KmzImage * const image);
 
-const KmzBool KmzPainter__redo(KmzPainter * const restrict me);
+const KmzBool KmzPainter__redo(KmzPainter * const me);
 
-const KmzBool KmzPainter__undo(KmzPainter * const restrict me);
+const KmzBool KmzPainter__undo(KmzPainter * const me);
 
 extern const KmzBrush KmzBrush__TRANSPARENT;
 

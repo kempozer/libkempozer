@@ -42,19 +42,4 @@
 #include "kmz_gd_2x_image_file.h"
 #include "kmz_core.h"
 
-/**
- * Returns a new image from the given GD 2x file.
- */
-KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image);
-
-/**
- * Returns a new image from the given buffer.
- */
-KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source);
-
-/**
- * Provides a general purpose ARGB-based image.
- */
-extern const KmzImageType kmz_image;
-
 #endif /* kmz_image_h */

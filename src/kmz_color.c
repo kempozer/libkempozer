@@ -99,10 +99,6 @@ KmzArgbColor KmzArgbColor__from_ahsl_color(const KmzAhslColor color) {
     return KmzArgbColor__from_channels(a, r, g, b);
 }
 
-const KmzBool KmzArgbColor__equal_to(const KmzArgbColor me, const KmzArgbColor other) {
-    return me.a == other.a && me.r == other.r && me.g == other.g && me.b == other.b;
-}
-
 KmzAhslColor KmzAhslColor__from_hex(kmz_hex_string color) {
     return KmzAhslColor__from_argb_color(KmzArgbColor__from_hex(color));
 }
@@ -170,10 +166,6 @@ KmzAhslColor KmzAhslColor__from_argb_color(KmzArgbColor color) {
     return KmzAhslColor__from_channels(a, h, s, l);
 }
 
-const KmzBool KmzAhslColor__equal_to(const KmzAhslColor me, const KmzAhslColor other) {
-    return me.a == other.a && me.h == other.h && me.s == other.s && me.l == other.l;
-}
-
 const kmz_color_32 kmz_color_32__from_argb_color(const KmzArgbColor color) {
     return (kmz_color_32)((color.a << 24u) | (color.r << 16u) | (color.g << 8u) | color.b);
 }
@@ -198,10 +190,6 @@ const kmz_color_32 kmz_color_32__from_hex(kmz_hex_string color) {
             break;
     }
     return 0;
-}
-
-const KmzBool kmz_color_32__equal_to(const kmz_color_32 me, const kmz_color_32 other) {
-    return me == other;
 }
 
 const KmzArgbColor KmzArgbColor__ALICE_BLUE = {.a=0, .r=0xF0, .g=0xF8, .b=0xFF},

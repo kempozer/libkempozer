@@ -86,7 +86,7 @@ KmzMatrix * const KmzMatrix__new_from_buffer(kmz_color_32 * const restrict buffe
 }
 
 KmzImage * const KmzImage__new(const KmzImageType * const restrict type, const void * const restrict argv) {
-    KmzImagePtr ptr = malloc(sizeof(struct kmz_image_t));
+    KmzImage * ptr = malloc(sizeof(struct kmz_image_t));
     if (NULL == ptr) {
         return NULL;
     }

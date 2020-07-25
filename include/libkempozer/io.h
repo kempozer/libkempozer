@@ -33,6 +33,8 @@
 #ifndef libkempozer_io_h
 #define libkempozer_io_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <libkempozer.h>
 #include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
@@ -71,7 +73,7 @@ struct kmz_image_file_type_t {
      * @param me A pointer to an uninitialized image file represented by this {@link KmzImageFileType}.
      * @param argv A pointer to the arguments used to initialize the uninitialized image file, or {@link NULL} if no arguments are to be used.
      */
-    void (* const _ctor)(void * const restrict, const void * const restrict);
+    void (* const _ctor)(void * const me, const void * const argv);
 
     /**
      * @par Deallocates an initialized image file represented by this {@link KmzImageFileType}.
@@ -85,7 +87,7 @@ struct kmz_image_file_type_t {
      *
      * @param me A pointer to an initialized image file being represented by this {@link KmzImageFileType}.
      */
-    void (* const _dtor)(void * const restrict);
+    void (* const _dtor)(void * const me);
 
     /**
      * @par Returns the dimensions of the image file represented by this {@link KmzImageFileType}.
@@ -99,7 +101,7 @@ struct kmz_image_file_type_t {
      * @param me The target of this invocation.
      * @return A {@link KmzSize} containing the dimensions of the target {@link KmzImageFile}.
      */
-    const KmzSize (* const dimen)(const void * const restrict);
+    const KmzSize (* const dimen)(const void * const me);
 
     /**
      * @par Returns the color type stored and supported by the image file represented by this {@link KmzImageFileType}.
@@ -116,7 +118,7 @@ struct kmz_image_file_type_t {
      * @param me The target of this invocation.
      * @return The appropriate {@link KmzImageFileColorType} for the target.
      */
-    const KmzImageFileColorType (* const color_type)(const void * const restrict);
+    const KmzImageFileColorType (* const color_type)(const void * const me);
 
     /**
      * @par Returns the most recent status of the image file represented by this {@link KmzImageFileType}.
@@ -130,7 +132,7 @@ struct kmz_image_file_type_t {
      * @param me The target of this invocation.
      * @return {@link KMZ_IMAGE_FILE_OK} if the status of the target is not errored, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const status)(const void * const restrict);
+    const KmzImageFileStatus (* const status)(const void * const me);
 
     /**
      * @par Returns a status message appropriate for the {@link KmzImageFileType} and {@link KmzImageFileStatus}.
@@ -147,7 +149,7 @@ struct kmz_image_file_type_t {
      * @param status The status to retrieve the message from.
      * @return A string representing the message of the given status, or {@link NULL} if the status isn't defined by the target.
      */
-    const char * const (* const status_msg)(const void * const restrict, const KmzImageFileStatus);
+    const char * const (* const status_msg)(const void * const me, const KmzImageFileStatus status);
 
     /**
      * @par Attempts to save the image file represented by this {@link KmzImageFileType} to the given path.
@@ -160,7 +162,7 @@ struct kmz_image_file_type_t {
      * @param path The path to save `me` to.
      * @return {@link KMZ_IMAGE_FILE_OK} if the image was saved sucessfully, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const save)(const void * const restrict, const char * const restrict);
+    const KmzImageFileStatus (* const save)(const void * const me, const char * const path);
 
     /**
      * @par Attempts to load the image file represented by this {@link KmzImageFileType} from the given path.
@@ -173,7 +175,7 @@ struct kmz_image_file_type_t {
      * @param path The path to load into `me`.
      * @return {@link KMZ_IMAGE_FILE_OK} if the image was saved sucessfully, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const load)(void * const restrict, const char * const restrict);
+    const KmzImageFileStatus (* const load)(void * const me, const char * const path);
 
     /**
      * @par Attempts to read the pixels of the image file represented by this {@link KmzImageFileType} into the given memory.
@@ -187,8 +189,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the palette pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_palette_pixels)(const void * const restrict,
-            uint8_t * const restrict);
+    const KmzImageFileStatus (* const read_palette_pixels)(const void * const me, uint8_t * const buffer);
 
     /**
      *
@@ -196,8 +197,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the truecolor pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_truecolor_pixels)(const void * const restrict,
-            kmz_color_32 * const restrict);
+    const KmzImageFileStatus (* const read_truecolor_pixels)(const void * const me, kmz_color_32 * const buffer);
 
     /**
      *
@@ -205,8 +205,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the AHSL pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_ahsl_pixels)(const void * const restrict,
-            KmzAhslColor * const restrict);
+    const KmzImageFileStatus (* const read_ahsl_pixels)(const void * const me, KmzAhslColor * const buffer);
 
     /**
      *
@@ -219,13 +218,13 @@ struct kmz_image_file_type_t {
      * @param copy_source {@link KMZ_TRUE} if the pixel source and palette source should be copied, otherwise {@link KMZ_FALSE}.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const set_palette_image)(void * const restrict,
-            const size_t,
-            const size_t,
-            const kmz_color_32 * const restrict,
-            const KmzSize,
-            const uint8_t * const restrict,
-            const KmzBool);
+    const KmzImageFileStatus (* const set_palette_image)(void * const me,
+            const size_t color_count,
+            const size_t pad_count,
+            const kmz_color_32 * const palette,
+            const KmzSize dimen,
+            const uint8_t * const pixels,
+            const KmzBool copy_source);
 
     /**
      *
@@ -235,10 +234,10 @@ struct kmz_image_file_type_t {
      * @param copy_source {@link KMZ_TRUE} if the pixel source should be copied, otherwise {@link KMZ_FALSE}.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const set_truecolor_image)(void * const restrict,
-            const KmzSize,
-            const kmz_color_32 * const restrict,
-            const KmzBool);
+    const KmzImageFileStatus (* const set_truecolor_image)(void * const me,
+            const KmzSize dimen,
+            const kmz_color_32 * const pixels,
+            const KmzBool copy_source);
 
     /**
      *
@@ -248,17 +247,17 @@ struct kmz_image_file_type_t {
      * @param copy_source {@link KMZ_TRUE} if the pixel source should be copied, otherwise {@link KMZ_FALSE}.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const set_ahsl_image)(void * const restrict,
-            const KmzSize,
-            const KmzAhslColor * const restrict,
-            const KmzBool);
+    const KmzImageFileStatus (* const set_ahsl_image)(void * const me,
+            const KmzSize dimen,
+            const KmzAhslColor * const pixels,
+            const KmzBool copy_source);
 
     /**
      * 
      * @param me The target of this invocation.
      * @return {@link KMZ_TRUE} if metadata is supported by the target, otherwise {@link KMZ_FALSE}.
      */
-    const KmzBool (* const supports_metadata)(const void * const restrict);
+    const KmzBool (* const supports_metadata)(const void * const me);
 
     /**
      *
@@ -266,8 +265,7 @@ struct kmz_image_file_type_t {
      * @param name The name of the metadata to check for support of.
      * @return {@link KMZ_TRUE} if the given name matches a supported metadata field, otherwise {@link KMZ_FALSE}.
      */
-    const KmzBool (* const is_supported_metadata)(const void * const restrict,
-            const char * const restrict);
+    const KmzBool (* const is_supported_metadata)(const void * const me, const char * const name);
 
     /**
      *
@@ -275,8 +273,7 @@ struct kmz_image_file_type_t {
      * @param name The name of the metadata to return.
      * @return The value of the metadata, or {@link NULL} if no metadata exists or an image isn't currently loaded.
      */
-    const char * const (* const metadata)(const void * const restrict,
-            const char * const restrict);
+    const char * const (* const metadata)(const void * const me, const char * const name);
 
     /**
      *
@@ -284,8 +281,7 @@ struct kmz_image_file_type_t {
      * @param name The name of the metadata to return.
      * @return {@link KMZ_TRUE} if the metadata has been set on the target, otherwise {@link KMZ_FALSE}.
      */
-    const KmzBool (* const has_metadata)(const void * const restrict,
-            const char * const restrict);
+    const KmzBool (* const has_metadata)(const void * const me, const char * const name);
 
     /**
      * 
@@ -294,9 +290,7 @@ struct kmz_image_file_type_t {
      * @param value The new value of the metadata.
      * @return {@link KMZ_IMAGE_FILE_OK} if the operation is successful, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const set_metadata)(void * const restrict,
-            const char * const restrict,
-            const char * const restrict);
+    const KmzImageFileStatus (* const set_metadata)(void * const me, const char * const name, const char * const value);
 
     /**
      *
@@ -304,8 +298,7 @@ struct kmz_image_file_type_t {
      * @param name The name of the metadata to remove.
      * @return {@link KMZ_IMAGE_FILE_OK} if the operation is successful, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const remove_metadata)(void * const restrict,
-            const char * const restrict);
+    const KmzImageFileStatus (* const remove_metadata)(void * const me, const char * const name);
 
     // endregion;
 };

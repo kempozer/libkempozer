@@ -33,6 +33,8 @@
 #ifndef libkempozer_colors_h
 #define libkempozer_colors_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <libkempozer.h>
 #include <libkempozer/color.h>
 

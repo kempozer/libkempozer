@@ -33,10 +33,16 @@
 #ifndef libkempozer_gdfile_h
 #define libkempozer_gdfile_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <libkempozer.h>
 #include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
+
+#define KMZ_GD_2X_IMAGE_FILE_TRUECOLOR 0xFFFE
+#define KMZ_GD_2X_IMAGE_FILE_PALETTE 0xFFFF
+#define KMZ_GD_2X_IMAGE_FILE_NO_TRANSPARENT 0xFFFFFFFF
 
 /**
  * Defines the structure of the header of a GD image as parsed by kempozer.
@@ -98,16 +104,12 @@ struct kmz_gd_2x_image_file_t {
 };
 typedef struct kmz_gd_2x_image_file_t KmzGd2xImageFile;
 
-const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const restrict f,
-        KmzGd2xImageFile * const restrict o);
+const KmzGd2xImageFileStatus kmz_read_gd_2x_image_file(FILE * const f, KmzGd2xImageFile * const o);
 
-const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const restrict f,
-        const KmzGd2xImageFile * const restrict i);
+const KmzGd2xImageFileStatus kmz_write_gd_2x_image_file(FILE * const f, const KmzGd2xImageFile * const i);
 
 const char * const kmz_status_msg(const KmzGd2xImageFileStatus status);
 
-const char * const kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status,
-        const int error);
-
+const char * const kmz_status_msg_with_err_code(const KmzGd2xImageFileStatus status, const int error);
 
 #endif /* libkempozer_gdfile_h */

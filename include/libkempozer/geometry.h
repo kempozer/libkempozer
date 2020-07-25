@@ -33,6 +33,7 @@
 #ifndef libkempozer_geometry_h
 #define libkempozer_geometry_h
 
+#include <stdlib.h>
 #include <stdint.h>
 #include <libkempozer.h>
 

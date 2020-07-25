@@ -38,5 +38,6 @@
 #include "kmz_geometry.h"
 #include "kmz_color.h"
 #include "kmz_core.h"
+#include "../include/libkempozer/draw.h"
 
 #endif /* kmz_draw_h */

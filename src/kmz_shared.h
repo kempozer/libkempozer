@@ -38,35 +38,8 @@
 
 #include "kmz_config.h"
 
-typedef float kmz_percent;
-typedef uint8_t kmz_channel;
+#include "../include/libkempozer.h"
 
-enum kmz_bool_e {
-    KMZ_FALSE = 0,
-    KMZ_TRUE = 1,
-};
-typedef enum kmz_bool_e KmzBool;
-
-#define kmz_clamp(val, min, max) (val < min ? min : (val > max ? max : val))
-
-#define kmz_size(w, h) ((KmzSize){w,h})
-
-#define kmz_sizef(w, h) ((KmzSizeF){w,h})
-
-#define kmz_point(x, y) ((KmzPoint){x,y})
-
-#define kmz_pointf(x, y) ((KmzPointF){x,y})
-
-#define kmz_rectangle(pos, size) ((KmzRectangle){pos,size})
-
-#define kmz_rectanglef(pos, size) ((KmzRectangleF){pos,size})
-
-#define kmz_line(start, end) ((KmzLine){start,end})
-
-#define kmz_linef(start, end) ((KmzLineF){start,end})
-
-#define kmz_polygon(count, points) ((KmzPolygon){count,points})
-
-#define kmz_polygonf(count, points) ((KmzPolygonF){count,points})
+#define kmz_clamp(val, min, max) (val<min?min:(val>max?max:val))
 
 #endif /* kmz_shared_h */

@@ -33,6 +33,8 @@
 #ifndef libkempozer_color_h
 #define libkempozer_color_h
 
+#include <stdlib.h>
+#include <stdint.h>
 #include <libkempozer.h>
 
 /**
@@ -53,7 +55,7 @@ typedef uint32_t kmz_color_32;
 /**
  * Defines a null terminated string that contains a hex color in the format of `0xXXXXXX`, `#XXXXXX`, `0xXXXXXXXX`, or `#XXXXXXXX`.
  */
-typedef const char * const restrict kmz_hex_string;
+typedef const char * const kmz_hex_string;
 
 /**
  * Defines the structure of an ARGB color that is separated into its appropriate channels.
