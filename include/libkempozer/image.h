@@ -38,7 +38,7 @@
 #include <libkempozer.h>
 #include <libkempozer/geometry.h>
 #include <libkempozer/color.h>
-#include <libkempozer/gdfile.h>
+#include <libkempozer/io.h>
 
 /**
  * Defines the methods of a type that can be used as an image within kempozer.
@@ -413,6 +413,15 @@ const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImage * c
         const KmzRectangle area,
         const size_t m_size,
         KmzImage * const buffer);
+
+/**
+ * Creates a new image using the provided file.
+ *
+ * @param dimen The dimensions of the image.
+ * @param buffer The buffer to use as a source of pixels for the image.
+ * @param copy_source {@link KMZ_TRUE} if `buffer` should be copied, otherwise {@link KMZ_FALSE}.
+ */
+KmzImage * const KmzImage__new_from_file(KmzImageFile * const file);
 
 /**
  * Creates a new image using the provided buffer.

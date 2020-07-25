@@ -49,6 +49,43 @@ struct _kmz_image_argv_t {
     KmzBool copy_source;
 };
 
+KmzImage * const KmzImage__new_from_file(KmzImageFile * const restrict file) {
+    const KmzImageFileColorType color_type = KmzImageFile__color_type(file);
+    struct _kmz_image_argv_t argv = {KmzImageFile__dimen(file), NULL, KMZ_TRUE};
+    const size_t count = argv.dimen.h * argv.dimen.w;
+
+    if (KMZ_IMAGE_FILE_TRUECOLOR == color_type) {
+        argv.pixels = calloc(count, sizeof(kmz_color_32));
+        KmzImageFile__read_truecolor_pixels(file, argv.pixels);
+    } else if (KMZ_IMAGE_FILE_PALETTE == color_type) {
+        argv.pixels = calloc(count, sizeof(kmz_color_32));
+        kmz_color_32 * const restrict colors = calloc(KmzImageFile__palette_color_count(file), sizeof(kmz_color_32));
+        uint8_t * const restrict buffer = calloc(count, sizeof(uint8_t));
+        KmzImageFile__read_palette_colors(file, colors);
+        KmzImageFile__read_palette_pixels(file, buffer);
+        for (size_t i = 0; i < count; ++i) {
+            argv.pixels[i] = colors[buffer[i]];
+        }
+        free(colors);
+        free(buffer);
+    } else if (KMZ_IMAGE_FILE_AHSL == color_type) {
+        argv.pixels = calloc(argv.dimen.h * argv.dimen.w, sizeof(kmz_color_32));
+        KmzAhslColor * const restrict buffer = calloc(count, sizeof(KmzAhslColor));
+        KmzImageFile__read_ahsl_pixels(file, buffer);
+        for (size_t i = 0; i < count; ++i) {
+            argv.pixels[i] = kmz_color_32__from_ahsl_color(buffer[i]);
+        }
+        free(buffer);
+    }
+    
+    if (NULL == argv.pixels) {
+        return NULL;
+    }
+    KmzImage * const restrict me = KmzImage__new(&kmz_image, &argv);
+    free(argv.pixels);
+    return me;
+}
+
 KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
     struct _kmz_image_argv_t argv = {dimen, buffer, copy_source};
     return KmzImage__new(&kmz_image, &argv);

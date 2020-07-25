@@ -32,7 +32,7 @@
 
 /**
  * |Definition                  |Header                 |
- * |KmzImage__new_from_gd_2x()  |libkempozer/image.h    |
+ * |KmzImage__new_from_file()   |libkempozer/image.h    |
  * |KmzImage__new_from_buffer() |libkempozer/image.h    |
  * |const KmzImageType kmz_image|libkempozer/image.h    |
  */
