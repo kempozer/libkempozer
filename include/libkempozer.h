@@ -47,11 +47,13 @@ enum kmz_bool_e {
 typedef enum kmz_bool_e KmzBool;
 
 /**
- * Defines the potential return values of a drawing operation within kempozer.
+ * Defines the possible results from a draw operation.
  */
 enum kmz_draw_status_e {
     KMZ_DRAW_OK = 0,
-    KMZ_DRAW_ERR_OUT_OF_MEMORY = -1,
+    KMZ_DRAW_ERR_OUT_OF_MEMORY = -64,
+    KMZ_DRAW_ERR_UNKNOWN = -1000,
+    KMZ_DRAW_ERR_USER = -1024,
 };
 typedef enum kmz_draw_status_e KmzDrawStatus;
 
@@ -102,17 +104,6 @@ enum kmz_pixel_operation_status_e {
     KMZ_PIXEL_OP_ERR_USER_ERR = -1024,
 };
 typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
-
-/**
- * Defines the possible results from a draw operation.
- */
-enum kmz_draw_status_e {
-    KMZ_DRAW_OK = 0,
-    KMZ_DRAW_ERR_OUT_OF_MEMORY = -64,
-    KMZ_DRAW_ERR_UNKNOWN = -1000,
-    KMZ_DRAW_ERR_USER = -1024,
-};
-typedef enum kmz_draw_status_e KmzDrawStatus;
 
 // endregion;
 
