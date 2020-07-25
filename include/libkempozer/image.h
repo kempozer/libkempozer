@@ -415,16 +415,6 @@ const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImage * c
         KmzImage * const buffer);
 
 /**
- * Creates a new GD-based image.
- *
- * @param image The source to create the image from.
- * @return The allocated and initialized {@link KmzImage} or {@link NULL} if there's not enough memory to allocate the image.
- *
- * @deprecated Moving to an abstract ImageFile type instead.
- */
-__attribute__((deprecated)) KmzImage * const KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const image);
-
-/**
  * Creates a new image using the provided buffer.
  *
  * @param dimen The dimensions of the image.

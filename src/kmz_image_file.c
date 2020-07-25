@@ -137,20 +137,19 @@ const KmzImageFileStatus KmzImageFile__read_ahsl_pixels(KmzImageFile * const res
 
 const KmzImageFileStatus KmzImageFile__set_palette_image(KmzImageFile * const restrict me,
         const size_t color_count,
-        const size_t pad_count,
         const kmz_color_32 * restrict palette,
         const KmzSize dimen,
-        const uint8_t * const restrict pixels,
+        uint8_t * const restrict pixels,
         const KmzBool copy_source) {
     if (me->_type->set_palette_image) {
-        return me->_type->set_palette_image(me->_me, color_count, pad_count, palette, dimen, pixels, copy_source);
+        return me->_type->set_palette_image(me->_me, color_count, palette, dimen, pixels, copy_source);
     }
     return KMZ_IMAGE_FILE_ERR_NOT_PALETTE_IMAGE;
 }
 
 const KmzImageFileStatus KmzImageFile__set_truecolor_image(KmzImageFile * const restrict me,
         const KmzSize dimen,
-        const kmz_color_32 * const restrict buffer,
+        kmz_color_32 * const restrict buffer,
         const KmzBool copy_source) {
     if (me->_type->set_truecolor_image) {
         return me->_type->set_truecolor_image(me->_me, dimen, buffer, copy_source);
@@ -160,7 +159,7 @@ const KmzImageFileStatus KmzImageFile__set_truecolor_image(KmzImageFile * const 
 
 const KmzImageFileStatus KmzImageFile__set_ahsl_image(KmzImageFile * const restrict me,
         const KmzSize dimen,
-        const KmzAhslColor * const restrict buffer,
+        KmzAhslColor * const restrict buffer,
         const KmzBool copy_source) {
     if (me->_type->set_ahsl_image) {
         return me->_type->set_ahsl_image(me->_me, dimen, buffer, copy_source);

@@ -135,6 +135,18 @@ struct kmz_image_file_type_t {
     const KmzImageFileStatus (* const status)(const void * const me);
 
     /**
+     * Clears the most recent status of the image file represented by this {@link KmzImageFileType}.
+     *
+     * @par This method MUST:
+     * * be defined
+     * * do nothing if `me` is {@link NULL} or {@link KmzImageFileType::status} returns {@link KMZ_IMAGE_FILE_ERR_NOT_LOADED}.
+     * * set the `status` to {@link KMZ_IMAGE_FILE_OK}.
+     *
+     * @param me The target of this invocation.
+     */
+    void (* const clear_status)(void * const me);
+
+    /**
      * @par Returns a status message appropriate for the {@link KmzImageFileType} and {@link KmzImageFileStatus}.
      *
      * @par This method MUST:
@@ -188,7 +200,7 @@ struct kmz_image_file_type_t {
      * @param me The target of this invocation.
      * @return The total number of colors within the target's palette.
      */
-    const size_t (* const palette_color_count)(void * const me);
+    const size_t (* const palette_color_count)(const void * const me);
 
     /**
      * @par Attempts to read the palette colors of the image file represented by this {@link KmzImageFileType} into the given memory.
@@ -247,10 +259,9 @@ struct kmz_image_file_type_t {
      */
     const KmzImageFileStatus (* const set_palette_image)(void * const me,
             const size_t color_count,
-            const size_t pad_count,
             const kmz_color_32 * const palette,
             const KmzSize dimen,
-            const uint8_t * const pixels,
+            uint8_t * const pixels,
             const KmzBool copy_source);
 
     /**
@@ -263,7 +274,7 @@ struct kmz_image_file_type_t {
      */
     const KmzImageFileStatus (* const set_truecolor_image)(void * const me,
             const KmzSize dimen,
-            const kmz_color_32 * const pixels,
+            kmz_color_32 * const pixels,
             const KmzBool copy_source);
 
     /**
@@ -346,6 +357,8 @@ const KmzImageFileColorType KmzImageFile__color_type(const KmzImageFile * const 
 
 const KmzImageFileStatus KmzImageFile__status(const KmzImageFile * const me);
 
+void KmzImageFile__clear_status(const KmzImageFile * const me);
+
 const char * const KmzImageFile__status_msg(const KmzImageFile * const me, const KmzImageFileStatus status);
 
 const KmzImageFileStatus KmzImageFile__save(KmzImageFile * const me, const char * const path);
@@ -364,20 +377,19 @@ const KmzImageFileStatus KmzImageFile__read_ahsl_pixels(KmzImageFile * const me,
 
 const KmzImageFileStatus KmzImageFile__set_palette_image(KmzImageFile * const me,
         const size_t color_count,
-        const size_t pad_count,
         const kmz_color_32 * const palette,
         const KmzSize dimen,
-        const uint8_t * const pixels,
+        uint8_t * const pixels,
         const KmzBool copy_source);
 
 const KmzImageFileStatus KmzImageFile__set_truecolor_image(KmzImageFile * const me,
         const KmzSize dimen,
-        const kmz_color_32 * const pixels,
+        kmz_color_32 * const pixels,
         const KmzBool copy_source);
 
 const KmzImageFileStatus KmzImageFile__set_ahsl_image(KmzImageFile * const me,
         const KmzSize dimen,
-        const KmzAhslColor * const pixels,
+        KmzAhslColor * const pixels,
         const KmzBool copy_source);
 
 const KmzBool KmzImageFile__supports_metadata(const KmzImageFile * const me);
