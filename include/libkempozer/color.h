@@ -97,10 +97,7 @@ KmzArgbColor KmzArgbColor__from_color_32(const kmz_color_32 color);
  * @param b The 8-bit blue channel of the ARGB color.
  * @return A {@link KmzArgbColor} structure that represents the provided ARGB values.
  */
-KmzArgbColor KmzArgbColor__from_channels(const kmz_channel a,
-        const kmz_channel r,
-        const kmz_channel g,
-        const kmz_channel b);
+KmzArgbColor KmzArgbColor__from_channels(const kmz_channel a, const kmz_channel r, const kmz_channel g, const kmz_channel b);
 
 /**
  * Creates an ARGB structure from the provided AHSL structure.
@@ -137,10 +134,7 @@ KmzAhslColor KmzAhslColor__from_color_32(const kmz_color_32 color);
  * @param l The float luminosity channel of the AHSL color.
  * @return A {@link KmzAhslColor} structure that represents the provided AHSL values.
  */
-KmzAhslColor KmzAhslColor__from_channels(const kmz_channel a,
-        const kmz_percent h,
-        const kmz_percent s,
-        const kmz_percent l);
+KmzAhslColor KmzAhslColor__from_channels(const kmz_channel a, const kmz_percent h, const kmz_percent s, const kmz_percent l);
 
 /**
  * Creates an AHSL structure from the provided ARGB structure.

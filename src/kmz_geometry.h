@@ -30,6 +30,21 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                              |Header                     |
+ * |const KmzSize KmzSize__ZERO             |libkempozer/geometries.h   |
+ * |const KmzSizeF KmzSizeF__ZERO           |libkempozer/geometries.h   |
+ * |const KmzPoint KmzPoint__ZERO           |libkempozer/geometries.h   |
+ * |const KmzPointF KmzPointF__ZERO         |libkempozer/geometries.h   |
+ * |const KmzRectangle KmzRectangle__ZERO   |libkempozer/geometries.h   |
+ * |const KmzRectangleF KmzRectangleF__ZERO |libkempozer/geometries.h   |
+ * |const KmzLine KmzLine__ZERO             |libkempozer/geometries.h   |
+ * |const KmzLineF KmzLineF__ZERO           |libkempozer/geometries.h   |
+ * |const KmzPolygon KmzPolygon__ZERO       |libkempozer/geometries.h   |
+ * |const KmzPolygonF KmzPolygonF__ZERO     |libkempozer/geometries.h   |
+ * |const KmzCircle KmzCircle__ZERO         |libkempozer/geometries.h   |
+ * |const KmzCircleF KmzCircleF__ZERO       |libkempozer/geometries.h   |
+ */
 #ifndef kmz_geometry_h
 #define kmz_geometry_h
 

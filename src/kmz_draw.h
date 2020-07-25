@@ -30,6 +30,31 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                              |Header             |
+ * |KmzPattern__new()                       |libkempozer/draw.h |
+ * |KmzPattern__free()                      |libkempozer/draw.h |
+ * |KmzPainter__new()                       |libkempozer/draw.h |
+ * |KmzPainter__free()                      |libkempozer/draw.h |
+ * |KmzPainter__brush()                     |libkempozer/draw.h |
+ * |KmzPainter__set_brush()                 |libkempozer/draw.h |
+ * |KmzPainter__pen()                       |libkempozer/draw.h |
+ * |KmzPainter__set_pen()                   |libkempozer/draw.h |
+ * |KmzPainter__draw_circle()               |libkempozer/draw.h |
+ * |KmzPainter__draw_circlef()              |libkempozer/draw.h |
+ * |KmzPainter__draw_line()                 |libkempozer/draw.h |
+ * |KmzPainter__draw_linef()                |libkempozer/draw.h |
+ * |KmzPainter__draw_point()                |libkempozer/draw.h |
+ * |KmzPainter__draw_pointf()               |libkempozer/draw.h |
+ * |KmzPainter__draw_polygon()              |libkempozer/draw.h |
+ * |KmzPainter__draw_polygonf()             |libkempozer/draw.h |
+ * |KmzPainter__draw_rectangle()            |libkempozer/draw.h |
+ * |KmzPainter__draw_rectanglef()           |libkempozer/draw.h |
+ * |KmzPainter__redo()                      |libkempozer/draw.h |
+ * |KmzPainter__undo()                      |libkempozer/draw.h |
+ * |const KmzBrush KmzBrush__TRANSPARENT    |libkempozer/draw.h |
+ * |const KmzPen KmzPen__TRANSPARENT        |libkempozer/draw.h |
+ */
 #ifndef kmz_draw_h
 #define kmz_draw_h
 

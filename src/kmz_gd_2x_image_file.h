@@ -30,6 +30,13 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                      |Header                 |
+ * |kmz_read_gd_2x_image_file()     |libkempozer/gdfile.h   |
+ * |kmz_write_gd_2x_image_file()    |libkempozer/gdfile.h   |
+ * |kmz_status_msg()                |libkempozer/gdfile.h   |
+ * |kmz_status_msg_with_err_code()  |libkempozer/gdfile.h   |
+ */
 #ifndef kmz_gd_2x_image_file_h
 #define kmz_gd_2x_image_file_h
 

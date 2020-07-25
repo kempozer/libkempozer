@@ -30,6 +30,27 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                          |Header                 |
+ * |KmzMatrix__new_from_buffer()        |libkempozer/image.h    |
+ * |KmzMatrix__size()                   |libkempozer/image.h    |
+ * |KmzMatrix__hsize()                  |libkempozer/image.h    |
+ * |KmzMatrix__pos()                    |libkempozer/image.h    |
+ * |KmzMatrix__set_pos()                |libkempozer/image.h    |
+ * |KmzMatrix__argb_at()                |libkempozer/image.h    |
+ * |KmzMatrix__set_argb_at()            |libkempozer/image.h    |
+ * |KmzImage__new()                     |libkempozer/image.h    |
+ * |KmzImage__free()                    |libkempozer/image.h    |
+ * |KmzImage__type()                    |libkempozer/image.h    |
+ * |KmzImage__dimen()                   |libkempozer/image.h    |
+ * |KmzImage__argb_at()                 |libkempozer/image.h    |
+ * |KmzImage__set_argb_at()             |libkempozer/image.h    |
+ * |KmzImage__read_argb_block()         |libkempozer/image.h    |
+ * |KmzImage__write_argb_block()        |libkempozer/image.h    |
+ * |KmzImage__is_valid()                |libkempozer/image.h    |
+ * |KmzImage__apply_filter()            |libkempozer/image.h    |
+ * |KmzImage__apply_buffered_filter()   |libkempozer/image.h    |
+ */
 #ifndef kmz_core_h
 #define kmz_core_h
 

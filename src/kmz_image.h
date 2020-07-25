@@ -30,6 +30,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                  |Header                 |
+ * |KmzImage__new_from_gd_2x()  |libkempozer/image.h    |
+ * |KmzImage__new_from_buffer() |libkempozer/image.h    |
+ * |const KmzImageType kmz_image|libkempozer/image.h    |
+ */
 #ifndef kmz_image_h
 #define kmz_image_h
 

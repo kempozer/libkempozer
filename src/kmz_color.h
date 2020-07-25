@@ -30,6 +30,21 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+/**
+ * |Definition                      |Header                 |
+ * |KmzArgbColor__from_color_32()   |libkempozer/color.h    |
+ * |KmzArgbColor__from_channels()   |libkempozer/color.h    |
+ * |KmzArgbColor__from_ahsl_color() |libkempozer/color.h    |
+ * |KmzArgbColor__from_hex()        |libkempozer/color.h    |
+ * |KmzAhslColor__from_color_32()   |libkempozer/color.h    |
+ * |KmzAhslColor__from_channels()   |libkempozer/color.h    |
+ * |KmzAhslColor__from_argb_color() |libkempozer/color.h    |
+ * |KmzAhslColor__from_hex()        |libkempozer/color.h    |
+ * |kmz_color_32__from_argb_color() |libkempozer/color.h    |
+ * |kmz_color_32__from_ahsl_color() |libkempozer/color.h    |
+ * |kmz_color_32__from_ex()         |libkempozer/color.h    |
+ * |*                               |libkempozer/colors.h   |
+ */
 #ifndef kmz_color_h
 #define kmz_color_h
 
