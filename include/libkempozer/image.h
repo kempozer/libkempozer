@@ -441,29 +441,4 @@ KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen,
  */
 extern const KmzImageType kmz_image;
 
-// region Type Builder:
-
-#define decl_KmzImageType_allocator(fn) \
-    ._new=((void * const (*)(void)) & ## fn )
-
-#define decl_KmzImageType_constructor(fn) \
-    ._ctor=((void (*)(void * const restrict, const void * const restrict)) & ## fn )
-
-#define decl_KmzImageType_destructor(fn) \
-    ._dtor=((void (*)(void * const restrict)) & ## fn)
-
-#define decl_KmzImageType_argb_at(fn) \
-    .argb_at=((const kmz_color_32 (*)(const void * const restrict, const KmzPoint)) & ## fn )
-
-#define decl_KmzImageType_dimen(fn) \
-    .dimen=((const KmzSize (*)(const void * const restrict)) & ## fn )
-
-#define decl_KmzImageType(name, methods...) \
-    const KmzImageType __ ## name = ((KmzImageType) { \
-           methods __VA_OPT__(,) \
-    }); \
-    const KmzImageType * const #name = &__ ## name
-
-// endregion;
-
 #endif /* libkempozer_image_h */
