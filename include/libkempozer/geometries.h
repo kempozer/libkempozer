@@ -61,7 +61,7 @@ extern const KmzPolygonF KmzPolygonF__ZERO;
 
 extern const KmzCircle KmzCircle__ZERO;
 
-extern const KmzCricleF KmzCircleF__ZERO;
+extern const KmzCircleF KmzCircleF__ZERO;
 
 // endregion;
 
