@@ -305,7 +305,7 @@ static const char * const _KmzGd2xImageFile__status_msg(const KmzGd2xImageFile *
 }
 
 static const KmzGd2xImageFileStatus _KmzGd2xImageFile__save_to(KmzGd2xImageFile * const restrict me, FILE * const path) {
-    FILE * const restrict f = path;
+    FILE * const f = path;
     if (NULL == f) {
         return me->status = KMZ_GD_ERR_INVALID_FILE_PTR;
     }
@@ -350,7 +350,7 @@ static const KmzGd2xImageFileStatus _KmzGd2xImageFile__save_to(KmzGd2xImageFile 
 }
 
 static const KmzGd2xImageFileStatus _KmzGd2xImageFile__load_from(KmzGd2xImageFile * const restrict me, FILE * const path) {
-    FILE * const restrict f = path;
+    FILE * const f = path;
     if (NULL == f) {
         return me->status = KMZ_GD_ERR_INVALID_FILE_PTR;
     }
