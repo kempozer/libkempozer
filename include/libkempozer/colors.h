@@ -38,8 +38,6 @@
 #include <libkempozer.h>
 #include <libkempozer/color.h>
 
-// TODO: Document color values
-
 extern const KmzArgbColor KmzArgbColor__ALICE_BLUE,
     KmzArgbColor__ANTIQUE_WHITE,
     KmzArgbColor__AQUA,

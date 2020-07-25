@@ -162,7 +162,7 @@ struct kmz_image_file_type_t {
      * @param path The path to save `me` to.
      * @return {@link KMZ_IMAGE_FILE_OK} if the image was saved sucessfully, otherwise an appropriate {@link KmzImageFileStatus} specifying the error.
      */
-    const KmzImageFileStatus (* const save)(const void * const me, const char * const path);
+    const KmzImageFileStatus (* const save)(void * const me, const char * const path);
 
     /**
      * @par Attempts to load the image file represented by this {@link KmzImageFileType} from the given path.
@@ -178,6 +178,33 @@ struct kmz_image_file_type_t {
     const KmzImageFileStatus (* const load)(void * const me, const char * const path);
 
     /**
+     * @par Gets the total number of colors available in the palette of the image file represented by this {@link KmzImageFileType}.
+     *
+     * @par This method MUST:
+     * * be {@link NULL} if not implemented
+     * * do nothing if `me` is {@link NULL}
+     * * return 0 if the image file isn't palette-based or hasn't been loaded yet.
+     *
+     * @param me The target of this invocation.
+     * @return The total number of colors within the target's palette.
+     */
+    const size_t (* const palette_color_count)(void * const me);
+
+    /**
+     * @par Attempts to read the palette colors of the image file represented by this {@link KmzImageFileType} into the given memory.
+     *
+     * @par This method MUST:
+     * * be {@link NULL} if not implemented
+     * * do nothing if `me` is {@link NULL}
+     * * return the appropriate error if `buffer` is {@link NULL}.
+     *
+     * @param me The target of this invocation.
+     * @param buffer The buffer to write the palette colors of the target to.
+     * @return The current status of `me`.
+     */
+    const KmzImageFileStatus (* const read_palette_colors)(void * const me, kmz_color_32 * const buffer);
+
+    /**
      * @par Attempts to read the pixels of the image file represented by this {@link KmzImageFileType} into the given memory.
      *
      * @par This method MUST:
@@ -189,7 +216,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the palette pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_palette_pixels)(const void * const me, uint8_t * const buffer);
+    const KmzImageFileStatus (* const read_palette_pixels)(void * const me, uint8_t * const buffer);
 
     /**
      *
@@ -197,7 +224,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the truecolor pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_truecolor_pixels)(const void * const me, kmz_color_32 * const buffer);
+    const KmzImageFileStatus (* const read_truecolor_pixels)(void * const me, kmz_color_32 * const buffer);
 
     /**
      *
@@ -205,7 +232,7 @@ struct kmz_image_file_type_t {
      * @param buffer The buffer to write the AHSL pixels of the target to.
      * @return The current status of `me`.
      */
-    const KmzImageFileStatus (* const read_ahsl_pixels)(const void * const me, KmzAhslColor * const buffer);
+    const KmzImageFileStatus (* const read_ahsl_pixels)(void * const me, KmzAhslColor * const buffer);
 
     /**
      *
@@ -302,5 +329,67 @@ struct kmz_image_file_type_t {
 
     // endregion;
 };
+typedef struct kmz_image_file_type_t KmzImageFileType;
+
+struct kmz_image_file_t;
+typedef struct kmz_image_file_t KmzImageFile;
+
+KmzImageFile * const KmzImageFile__new(const KmzImageFileType * const type, const void * const argv);
+
+void KmzImageFile__free(KmzImageFile * const me);
+
+const KmzImageFileType * const KmzImageFile__type(const KmzImageFile * const me);
+
+const KmzSize KmzImageFile__dimen(const KmzImageFile * const me);
+
+const KmzImageFileColorType KmzImageFile__color_type(const KmzImageFile * const me);
+
+const KmzImageFileStatus KmzImageFile__status(const KmzImageFile * const me);
+
+const char * const KmzImageFile__status_msg(const KmzImageFile * const me, const KmzImageFileStatus status);
+
+const KmzImageFileStatus KmzImageFile__save(KmzImageFile * const me, const char * const path);
+
+const KmzImageFileStatus KmzImageFile__load(KmzImageFile * const me, const char * const path);
+
+const size_t KmzImageFile__palette_color_count(const KmzImageFile * const me);
+
+const KmzImageFileStatus KmzImageFile__read_palette_colors(KmzImageFile * const me, kmz_color_32 * const buffer);
+
+const KmzImageFileStatus KmzImageFile__read_palette_pixels(KmzImageFile * const me, uint8_t * const buffer);
+
+const KmzImageFileStatus KmzImageFile__read_truecolor_pixels(KmzImageFile * const me, kmz_color_32 * const buffer);
+
+const KmzImageFileStatus KmzImageFile__read_ahsl_pixels(KmzImageFile * const me, KmzAhslColor * const buffer);
+
+const KmzImageFileStatus KmzImageFile__set_palette_image(KmzImageFile * const me,
+        const size_t color_count,
+        const size_t pad_count,
+        const kmz_color_32 * const palette,
+        const KmzSize dimen,
+        const uint8_t * const pixels,
+        const KmzBool copy_source);
+
+const KmzImageFileStatus KmzImageFile__set_truecolor_image(KmzImageFile * const me,
+        const KmzSize dimen,
+        const kmz_color_32 * const pixels,
+        const KmzBool copy_source);
+
+const KmzImageFileStatus KmzImageFile__set_ahsl_image(KmzImageFile * const me,
+        const KmzSize dimen,
+        const KmzAhslColor * const pixels,
+        const KmzBool copy_source);
+
+const KmzBool KmzImageFile__supports_metadata(const KmzImageFile * const me);
+
+const KmzBool KmzImageFile__is_supported_metadata(const KmzImageFile * const me, const char * const name);
+
+const char * const KmzImageFile__metadata(const KmzImageFile * const me, const char * const name);
+
+const KmzBool KmzImageFile__has_metadata(const KmzImageFile * const me, const char * const name);
+
+const KmzImageFileStatus KmzImageFile__set_metadata(KmzImageFile * const me, const char * const name, const char * const value);
+
+const KmzImageFileStatus KmzImageFile__remove_metadata(KmzImageFile * const me, const char * const name);
 
 #endif /* libkempozer_io_h */

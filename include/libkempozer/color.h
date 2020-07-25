@@ -80,6 +80,7 @@ struct kmz_ahsl_color_t {
 typedef struct kmz_ahsl_color_t KmzAhslColor;
 
 
+
 /**
  * Creates an ARGB structure from the provided, single value ARGB.
  *
