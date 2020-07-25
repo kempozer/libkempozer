@@ -471,7 +471,7 @@ static const KmzGd2xImageFileStatus _KmzGd2xImageFile__read_truecolor_pixels(Kmz
     return me->status;
 }
 
-const KmzGd2xImageFileStatus _KmzGd2xImageFile__set_palette_image(KmzGd2xImageFile * const restrict me, const size_t color_count,
+static const KmzGd2xImageFileStatus _KmzGd2xImageFile__set_palette_image(KmzGd2xImageFile * const restrict me, const size_t color_count,
         kmz_color_32 * const palette, const KmzSize dimen, uint8_t * const pixels, const KmzBool copy_source) {
     if (KMZ_GD_OK == me->status) {
         if (KMZ_TRUE == me->owns_pixels) {
@@ -495,7 +495,7 @@ const KmzGd2xImageFileStatus _KmzGd2xImageFile__set_palette_image(KmzGd2xImageFi
     return me->status;
 }
 
-const KmzGd2xImageFileStatus _KmzGd2xImageFile__set_truecolor_image(KmzGd2xImageFile * const restrict me, const KmzSize dimen,
+static const KmzGd2xImageFileStatus _KmzGd2xImageFile__set_truecolor_image(KmzGd2xImageFile * const restrict me, const KmzSize dimen,
         kmz_color_32 * const restrict pixels, const KmzBool copy_source) {
     if (KMZ_GD_OK == me->status) {
         if (KMZ_TRUE == me->owns_pixels) {
