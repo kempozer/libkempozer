@@ -58,6 +58,38 @@ enum kmz_draw_status_e {
 typedef enum kmz_draw_status_e KmzDrawStatus;
 
 /**
+ * Defines the potential return values of an image read/write operation within kempozer.
+ */
+enum kmz_image_file_status_e {
+    KMZ_IMAGE_FILE_OK = 0,
+    KMZ_IMAGE_FILE_ERR_NOT_LOADED = -1,
+    KMZ_IMAGE_FILE_ERR_READ_FAILED = -2,
+    KMZ_IMAGE_FILE_ERR_WRITE_FAILED = -3,
+    KMZ_IMAGE_FILE_ERR_UNSUPPORTED_OPERATION = -63,
+    KMZ_IMAGE_FILE_ERR_OUT_OF_MEMORY = -64,
+    /**
+     * All implementors of custom KmzImageFile MUST provide their own status enum with error codes beginning at -1024.
+     */
+    KMZ_IMAGE_FILE_ERR_USER_ERROR = -1024,
+};
+typedef enum kmz_image_file_status_e KmzImageFileStatus;
+
+/**
+ * Defines the types of colors supported by this image file.
+ */
+enum kmz_image_file_color_type_e {
+    KMZ_IMAGE_FILE_TRUECOLOR = 0,
+    KMZ_IMAGE_FILE_PALETTE = 1,    
+    KMZ_IMAGE_FILE_AHSL = 2,
+    KMZ_IMAGE_FILE_UNKNOWN = -63,
+    /**
+     * All implementors of custom KmzImageFile MAY provide their own color type enum with type codes beginning at -1024.
+     */
+    KMZ_IMAGE_FILE_USER_TYPE = -1024,
+};
+typedef enum kmz_image_file_color_type_e KmzImageFileColorType;
+
+/**
  * Defines the potential return values of a GD image read/write operation within kempozer.
  */
 enum kmz_gd_2x_image_file_status_e {

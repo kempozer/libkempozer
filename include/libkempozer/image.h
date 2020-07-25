@@ -116,7 +116,7 @@ struct kmz_image_type_t {
     const kmz_color_32 (* const argb_at)(const void * const restrict, const KmzPoint);
 
     /**
-     * @parSets a single ARGB value at the given coordinates in the image represented by this {@link KmzImageType}.
+     * @par Sets a single ARGB value at the given coordinates in the image represented by this {@link KmzImageType}.
      *
      * @par This method MUST:
      * * be defined
