@@ -417,9 +417,7 @@ const KmzPixelOperationStatus KmzImage__apply_buffered_filter(const KmzImage * c
 /**
  * Creates a new image using the provided file.
  *
- * @param dimen The dimensions of the image.
- * @param buffer The buffer to use as a source of pixels for the image.
- * @param copy_source {@link KMZ_TRUE} if `buffer` should be copied, otherwise {@link KMZ_FALSE}.
+ * @param file The file of the image.
  */
 KmzImage * const KmzImage__new_from_file(KmzImageFile * const file);
 
