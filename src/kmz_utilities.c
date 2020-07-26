@@ -30,3 +30,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
+#include "kmz_utilities.h"
+
+const char * const kmz_version_string(void) {
+    return KMZ_VERSION_STRING(KMZ_LIBRARY_NAME, KMZ_VERSION_FULL);
+}

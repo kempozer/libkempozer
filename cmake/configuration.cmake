@@ -7,14 +7,16 @@ set(SOURCES ${SOURCE_DIR}/kmz_color.c
     ${SOURCE_DIR}/kmz_draw.c
     ${SOURCE_DIR}/kmz_geometry.c
     ${SOURCE_DIR}/kmz_image.c
-    ${SOURCE_DIR}/kmz_image_file.c)
+    ${SOURCE_DIR}/kmz_image_file.c
+    ${SOURCE_DIR}/kmz_utilities.c)
 set(HEADERS ${SOURCE_DIR}/kmz_color.h
     ${SOURCE_DIR}/kmz_core.h
     ${SOURCE_DIR}/kmz_draw.h
     ${SOURCE_DIR}/kmz_geometry.h
     ${SOURCE_DIR}/kmz_image.h
     ${SOURCE_DIR}/kmz_image_file.h
-    ${SOURCE_DIR}/kmz_shared.h)
+    ${SOURCE_DIR}/kmz_shared.h
+    ${SOURCE_DIR}/kmz_utilities.h)
 set(STD_API ${API_DIR}/libkempozer/color.h
     ${API_DIR}/libkempozer/colors.h
     ${API_DIR}/libkempozer/draw.h

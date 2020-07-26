@@ -143,6 +143,11 @@ enum kmz_pixel_operation_status_e {
 };
 typedef enum kmz_pixel_operation_status_e KmzPixelOperationStatus;
 
+/**
+ * @return A string containing the version information for kempozer.
+ */
+const char * const kmz_version_string(void);
+
 // endregion;
 
 #endif /* libkempozer_h */
