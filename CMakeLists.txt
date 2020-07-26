@@ -4,28 +4,20 @@ project(kempozer VERSION 0.1)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
-set(API_DIR ${PROJECT_SOURCE_DIR}/include)
-set(SOURCES ${SOURCE_DIR}/kmz_color.c
-    ${SOURCE_DIR}/kmz_core.c
-    ${SOURCE_DIR}/kmz_draw.c
-    ${SOURCE_DIR}/kmz_gd_2x_image_file.c
-    ${SOURCE_DIR}/kmz_geometry.c
-    ${SOURCE_DIR}/kmz_image.c
-    ${SOURCE_DIR}/kmz_image_file.c)
-set(HEADERS ${SOURCE_DIR}/kmz_color.h
-    ${SOURCE_DIR}/kmz_core.h
-    ${SOURCE_DIR}/kmz_draw.h
-    ${SOURCE_DIR}/kmz_gd_2x_image_file.h
-    ${SOURCE_DIR}/kmz_geometry.h
-    ${SOURCE_DIR}/kmz_image.h
-    ${SOURCE_DIR}/kmz_image_file.h
-    ${SOURCE_DIR}/kmz_shared.h)
+include(cmake/arguments.cmake)
+include(cmake/configuration.cmake)
 
-add_library(kempozer SHARED ${SOURCES} ${HEADERS})
-configure_file(kmz_config.h.in ${SOURCE_DIR}/kmz_config.h)
-include_directories(BEFORE ${API_DIR})
+add_library(kempozer SHARED)
+target_sources(kempozer PUBLIC ${SOURCES} ${HEADERS})
 
-install(TARGETS kempozer DESTINATION lib)
-install(FILES ${API_DIR}/libkempozer.h DESTINATION include)
-install(DIRECTORY ${API_DIR}/libkempozer/ DESTINATION include/libkempozer)
+if (GD_IMAGE_FILE_SUPPORTED)
+    include(cmake/gd_image_file_support.cmake)
+endif()
+
+install(TARGETS kempozer
+    DESTINATION lib)
+install(FILES ${API_DIR}/libkempozer.h
+    DESTINATION include)
+install(FILES ${STD_API}
+    DESTINATION include/libkempozer) 
+

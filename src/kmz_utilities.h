@@ -30,31 +30,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-/**
- * |Definition                          |Header                 |
- * |kmz_read_gd_2x_image_file()         |libkempozer/gdfile.h   |
- * |kmz_write_gd_2x_image_file()        |libkempozer/gdfile.h   |
- * |kmz_status_msg()                    |libkempozer/gdfile.h   |
- * |kmz_status_msg_with_err_code()      |libkempozer/gdfile.h   |
- * |KmzGd2xImageFIle__new_from_path()   |libkempozer/gdfile.h   |
- */
-#ifndef kmz_gd_2x_image_file_h
-#define kmz_gd_2x_image_file_h
+#ifndef kmz_utilities_h
+#define kmz_utilities_h
 
-#include "kmz_config.h"
-
+#include <assert.h>
 #include <stdlib.h>
-#include <string.h>
+#include "kmz_config.h"
+#include "../include/libkempozer.h"
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#include <Winsock.h>
-#else
-#include <arpa/inet.h>
-#endif
-
-#include "kmz_shared.h"
-#include "kmz_geometry.h"
-#include "kmz_color.h"
-#include "../include/libkempozer/gdfile.h"
-
-#endif /* kmz_gd_2x_image_file_h */
+#endif /* kmz_utilities_h */
