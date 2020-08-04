@@ -1,7 +1,13 @@
 #ifndef kmz_config_h
 #define kmz_config_h
 
-#define KMZ_VERSION_MAJOR @kempozer_VERSION_MAJOR@
-#define KMZ_VERSION_MINOR @kempozer_VERSION_MINOR@
+#define KMZ_LIBRARY_NAME    @PROJECT_NAME@
+#define KMZ_DESCRIPTION     @kempozer_DESCRIPTION@
+#define KMZ_VERSION_FULL    @kempozer_VERSION@
+#define KMZ_VERSION_MAJOR   @kempozer_VERSION_MAJOR@
+#define KMZ_VERSION_MINOR   @kempozer_VERSION_MINOR@
+#define KMZ_VERSION_PATCH   @kempozer_VERSION_PATCH@
+#define KMZ_VERSION_TWEAK   @kempozer_VERSION_TWEAK@
+#define KMZ_VERSION_STRING(NAME, VER) "lib@PROJECT_NAME@ v@kempozer_VERSION@"
 
 #endif /* kmz_config_h */

@@ -1,34 +1,34 @@
 /*-
- BSD 3-Clause License
+  BSD 3-Clause License
 
- Copyright (c) 2020, Kempozer
- All rights reserved.
+  Copyright (c) 2020, Kempozer
+  All rights reserved.
 
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions are met:
 
- 1. Redistributions of source code must retain the above copyright notice, this
-    list of conditions and the following disclaimer.
+  1. Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
 
- 2. Redistributions in binary form must reproduce the above copyright notice,
-    this list of conditions and the following disclaimer in the documentation
-    and/or other materials provided with the distribution.
+  2. Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
 
- 3. Neither the name of the copyright holder nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
+  3. Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
 
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
 
 #include "kmz_image.h"
 
@@ -49,28 +49,57 @@ struct _kmz_image_argv_t {
     KmzBool copy_source;
 };
 
-KmzImagePtr KmzImage__new_from_gd_2x(const KmzGd2xImageFile * const restrict image) {
-    if (image->header.color.is_truecolor) {
-        struct _kmz_image_argv_t argv = {image->header.signature.dimen, image->pixels.truecolor, KMZ_TRUE};
-        return KmzImage__new(&kmz_image, &argv);
+KmzImage * const KmzImage__new_from_file(KmzImageFile * const restrict file) {
+    const KmzImageFileColorType color_type = KmzImageFile__color_type(file);
+    struct _kmz_image_argv_t argv = {KmzImageFile__dimen(file), NULL, KMZ_TRUE};
+    const size_t count = argv.dimen.h * argv.dimen.w;
+
+    if (KMZ_IMAGE_FILE_TRUECOLOR == color_type) {
+        argv.pixels = calloc(count, sizeof(kmz_color_32));
+        KmzImageFile__read_truecolor_pixels(file, argv.pixels);
+    } else if (KMZ_IMAGE_FILE_PALETTE == color_type) {
+        argv.pixels = calloc(count, sizeof(kmz_color_32));
+        kmz_color_32 * const restrict colors = calloc(KmzImageFile__palette_color_count(file), sizeof(kmz_color_32));
+        uint8_t * const restrict buffer = calloc(count, sizeof(uint8_t));
+        KmzImageFile__read_palette_colors(file, colors);
+        KmzImageFile__read_palette_pixels(file, buffer);
+        for (size_t i = 0; i < count; ++i) {
+            argv.pixels[i] = colors[buffer[i]];
+        }
+        free(colors);
+        free(buffer);
+    } else if (KMZ_IMAGE_FILE_AHSL == color_type) {
+        argv.pixels = calloc(argv.dimen.h * argv.dimen.w, sizeof(kmz_color_32));
+        KmzAhslColor * const restrict buffer = calloc(count, sizeof(KmzAhslColor));
+        KmzImageFile__read_ahsl_pixels(file, buffer);
+        for (size_t i = 0; i < count; ++i) {
+            argv.pixels[i] = kmz_color_32__from_ahsl_color(buffer[i]);
+        }
+        free(buffer);
     }
-    return NULL;
+    
+    if (NULL == argv.pixels) {
+        return NULL;
+    }
+    KmzImage * const restrict me = KmzImage__new(&kmz_image, &argv);
+    free(argv.pixels);
+    return me;
 }
 
-KmzImagePtr KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
+KmzImage * const KmzImage__new_from_buffer(const KmzSize dimen, kmz_color_32 * const restrict buffer, const KmzBool copy_source) {
     struct _kmz_image_argv_t argv = {dimen, buffer, copy_source};
     return KmzImage__new(&kmz_image, &argv);
 }
 
 static struct _kmz_image_t * const _KmzImage__new(void) {
     struct _kmz_image_t * const restrict me = malloc(sizeof(struct _kmz_image_t));
-    
+
     if (NULL != me) {
         me->dimen = KmzSize__ZERO;
         me->len = 0;
         me->pixels = NULL;
     }
-    
+
     return me;
 }
 
@@ -111,21 +140,21 @@ static void _KmzImage__set_argb_at(struct _kmz_image_t * const restrict me, cons
 }
 
 static const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _kmz_image_t * const restrict me, const KmzRectangle src_area,
-                                                                kmz_color_32 * const restrict dst) {
+        kmz_color_32 * const restrict dst) {
     if (src_area.pos.x < 0 || src_area.pos.x >= me->dimen.w || src_area.pos.y < 0 || src_area.pos.y >= me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_POS;
     } else if ((src_area.size.w + src_area.pos.x) > me->dimen.w || (src_area.size.h + src_area.pos.y) > me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_SIZE;
     } else if (NULL == dst) {
-        return ERR_PIXEL_OP_READ_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_READ_INVALID_PTR;
     }
-    
+
     if (0 == src_area.pos.x && 0 == src_area.pos.y && src_area.size.w == me->dimen.w && src_area.size.h == me->dimen.h) {
         memcpy(dst, me->pixels, me->len * sizeof(kmz_color_32));
     } else {
         size_t src_len = src_area.size.w * sizeof(kmz_color_32),
                src_offset = _KmzImage__get_offset(src_area.pos, me->dimen);
-            
+
         size_t src_line = (size_t)src_area.pos.y, src_end = (size_t)src_area.pos.y + src_area.size.h, dst_offset = 0;
         while (src_line < src_end) {
             memcpy(dst + dst_offset, me->pixels + src_offset, src_len);
@@ -134,26 +163,26 @@ static const KmzPixelOperationStatus _KmzImage__read_argb_block(const struct _km
             ++src_line;
         }
     }
-    
-    return PIXEL_OP_OK;
+
+    return KMZ_PIXEL_OP_OK;
 }
 
 static const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_image_t * const restrict me, const KmzRectangle dst_area,
-                                                                const kmz_color_32 * const restrict src) {
+        const kmz_color_32 * const restrict src) {
     if (dst_area.pos.x < 0 || dst_area.pos.x >= me->dimen.w || dst_area.pos.y < 0 || dst_area.pos.y >= me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_POS;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_POS;
     } else if ((dst_area.size.w + dst_area.pos.x) > me->dimen.w || (dst_area.size.h + dst_area.pos.y) > me->dimen.h) {
-        return ERR_PIXEL_OP_READ_INVALID_SIZE;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_SIZE;
     } else if (NULL == src) {
-        return ERR_PIXEL_OP_READ_INVALID_PTR;
+        return KMZ_PIXEL_OP_ERR_WRITE_INVALID_PTR;
     }
-    
+
     if (0 == dst_area.pos.x && 0 == dst_area.pos.y && dst_area.size.w == me->dimen.w && dst_area.size.h == me->dimen.h) {
         memcpy(me->pixels, src, me->len * sizeof(kmz_color_32));
     } else {
         size_t dst_len = dst_area.size.w * sizeof(kmz_color_32),
                dst_offset = _KmzImage__get_offset(dst_area.pos, me->dimen);
-            
+
         size_t dst_line = (size_t)dst_area.pos.y, dst_end = (size_t)dst_area.pos.y + dst_area.size.h, src_offset = 0;
         while (dst_line < dst_end) {
             memcpy(me->pixels + dst_offset, src + src_offset, dst_len);
@@ -162,8 +191,8 @@ static const KmzPixelOperationStatus _KmzImage__write_argb_block(struct _kmz_ima
             ++dst_line;
         }
     }
-    
-    return PIXEL_OP_OK;
+
+    return KMZ_PIXEL_OP_OK;
 }
 
 static const KmzBool _KmzImage__is_valid(const struct _kmz_image_t * const restrict me, const KmzPoint point) {
@@ -174,10 +203,11 @@ const KmzImageType kmz_image = {
     ._new=(void * const (*)(void))&_KmzImage__new,
     ._ctor=(void (*)(void * const restrict, const void * const restrict))&_KmzImage__ctor,
     ._dtor=(void (*)(void * const restrict))&_KmzImage__dtor,
-    .dimen=(const KmzSize (*)(const kmz_image_ptr))&_KmzImage__dimen,
-    .argb_at=(const kmz_color_32 (*)(const kmz_image_ptr, const KmzPoint))&_KmzImage__argb_at,
-    .set_argb_at=(void (*)(kmz_image_ptr, const KmzPoint, const kmz_color_32))&_KmzImage__set_argb_at,
-    .is_valid=(const KmzBool (*)(const kmz_image_ptr, const KmzPoint))&_KmzImage__is_valid,
-    .read_argb_block=(const KmzPixelOperationStatus (*)(const kmz_image_ptr, const KmzRectangle, kmz_color_32 * const restrict))&_KmzImage__read_argb_block,
-    .write_argb_block=(const KmzPixelOperationStatus (*)(kmz_image_ptr, const KmzRectangle, const kmz_color_32 * const restrict))&_KmzImage__write_argb_block
+    .dimen=(const KmzSize (*)(const void * const restrict))&_KmzImage__dimen,
+    .argb_at=(const kmz_color_32 (*)(const void * const restrict, const KmzPoint))&_KmzImage__argb_at,
+    .set_argb_at=(void (*)(void * const restrict, const KmzPoint, const kmz_color_32))&_KmzImage__set_argb_at,
+    .is_valid=(const KmzBool (*)(const void * const restrict, const KmzPoint))&_KmzImage__is_valid,
+    .read_argb_block=(const KmzPixelOperationStatus (*)(const void * const restrict, const KmzRectangle, kmz_color_32 * const restrict))&_KmzImage__read_argb_block,
+    .write_argb_block=(const KmzPixelOperationStatus (*)(void * const restrict, const KmzRectangle, const kmz_color_32 * const restrict))&_KmzImage__write_argb_block
 };
+

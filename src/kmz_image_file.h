@@ -30,16 +30,12 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef kmz_shared_h
-#define kmz_shared_h
+#ifndef kmz_image_file_h
+#define kmz_image_file_h
 
 #include <stdio.h>
 #include <stdint.h>
-
-#include "kmz_config.h"
-
 #include "../include/libkempozer.h"
+#include "../include/libkempozer/io.h"
 
-#define kmz_clamp(val, min, max) (val<min?min:(val>max?max:val))
-
-#endif /* kmz_shared_h */
+#endif /* kmz_image_file_h */

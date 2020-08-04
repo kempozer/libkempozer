@@ -1,3 +1,4 @@
+
 /*-
   BSD 3-Clause License
 
@@ -30,16 +31,39 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef kmz_shared_h
-#define kmz_shared_h
+#ifndef libkempozer_geometries_h
+#define libkempozer_geometries_h
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <libkempozer/geometry.h>
 
-#include "kmz_config.h"
+// region Geometry Constants:
 
-#include "../include/libkempozer.h"
+extern const KmzSize KmzSize__ZERO;
 
-#define kmz_clamp(val, min, max) (val<min?min:(val>max?max:val))
+extern const KmzSizeF KmzSizeF__ZERO;
 
-#endif /* kmz_shared_h */
+extern const KmzPoint KmzPoint__ZERO;
+
+extern const KmzPointF KmzPointF__ZERO;
+
+extern const KmzRectangle KmzRectangle__ZERO;
+
+extern const KmzRectangleF KmzRectangleF__ZERO;
+
+extern const KmzLine KmzLine__ZERO;
+
+extern const KmzLineF KmzLineF__ZERO;
+
+extern const KmzPolygon KmzPolygon__ZERO;
+
+extern const KmzPolygonF KmzPolygonF__ZERO;
+
+extern const KmzCircle KmzCircle__ZERO;
+
+extern const KmzCircleF KmzCircleF__ZERO;
+
+// endregion;
+
+#endif /* libkempozer_geometries_h */

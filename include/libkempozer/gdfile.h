@@ -30,16 +30,23 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef kmz_shared_h
-#define kmz_shared_h
+#ifndef libkempozer_gdfile_h
+#define libkempozer_gdfile_h
 
-#include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <libkempozer.h>
+#include <libkempozer/geometry.h>
+#include <libkempozer/color.h>
+#include <libkempozer/io.h>
 
-#include "kmz_config.h"
+#define KMZ_GD_2X_IMAGE_FILE_TRUECOLOR 0xFFFE
+#define KMZ_GD_2X_IMAGE_FILE_PALETTE 0xFFFF
+#define KMZ_GD_2X_IMAGE_FILE_NO_TRANSPARENT 0xFFFFFFFF
 
-#include "../include/libkempozer.h"
+KmzImageFile * const KmzGd2xImageFile__new(void);
 
-#define kmz_clamp(val, min, max) (val<min?min:(val>max?max:val))
+const extern KmzImageFileType kmz_gd_2x_image_file;
 
-#endif /* kmz_shared_h */
+#endif /* libkempozer_gdfile_h */

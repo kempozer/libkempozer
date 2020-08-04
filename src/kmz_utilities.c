@@ -30,16 +30,8 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 
-#ifndef kmz_shared_h
-#define kmz_shared_h
+#include "kmz_utilities.h"
 
-#include <stdio.h>
-#include <stdint.h>
-
-#include "kmz_config.h"
-
-#include "../include/libkempozer.h"
-
-#define kmz_clamp(val, min, max) (val<min?min:(val>max?max:val))
-
-#endif /* kmz_shared_h */
+const char * const kmz_version_string(void) {
+    return KMZ_VERSION_STRING(KMZ_LIBRARY_NAME, KMZ_VERSION_FULL);
+}

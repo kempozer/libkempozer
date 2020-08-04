@@ -1,18 +1,23 @@
-cmake_minimum_required(VERSION 3.17)
-project(kempozer VERSION 0.1)
+cmake_minimum_required(VERSION 3.10)
+project(kempozer VERSION 0.1.0.0)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
-set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
-set(SOURCES ${SOURCE_DIR}/kmz_color.c
-            ${SOURCE_DIR}/kmz_core.c
-            ${SOURCE_DIR}/kmz_draw.c
-            ${SOURCE_DIR}/kmz_gd_2x_image_file.c
-            ${SOURCE_DIR}/kmz_image.c)
+include(cmake/arguments.cmake)
+include(cmake/configuration.cmake)
 
-add_library(kempozer SHARED ${SOURCES})
-configure_file(kmz_config.h.in ${SOURCE_DIR}/kmz_config.h)
+add_library(kempozer SHARED)
+target_sources(kempozer PUBLIC ${SOURCES} ${HEADERS})
 
-install(TARGETS kempozer DESTINATION lib)
-install(FILES ${SOURCE_DIR}/libkempozer.h DESTINATION include)
+if (GD_IMAGE_FILE_SUPPORTED)
+    include(cmake/gd_image_file_support.cmake)
+endif()
+
+install(TARGETS kempozer
+    DESTINATION lib)
+install(FILES ${API_DIR}/libkempozer.h
+    DESTINATION include)
+install(FILES ${STD_API}
+    DESTINATION include/libkempozer) 
+
